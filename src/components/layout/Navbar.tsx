@@ -28,13 +28,12 @@ export default function Navbar() {
       <header
         className="sticky top-0 z-50"
         style={{
-          background: 'color-mix(in srgb, var(--bg-primary) 88%, transparent)',
-          backdropFilter: 'blur(20px) saturate(180%)',
-          WebkitBackdropFilter: 'blur(20px) saturate(180%)',
+          background: 'var(--bg-primary)',
           borderBottom: '1px solid var(--rule-color)',
+          boxShadow: '0 1px 10px rgba(0,0,0,0.05)',
         }}
       >
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-16 h-14 flex items-center justify-between">
+        <div className="max-w-7xl mx-auto px-4 h-14 flex items-center justify-between">
 
           {/* ── Logo ── */}
           <Link href="/" className="no-underline flex items-center gap-2.5 group flex-shrink-0">

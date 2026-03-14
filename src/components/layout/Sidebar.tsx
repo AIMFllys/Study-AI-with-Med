@@ -3,7 +3,7 @@
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { ChevronDown } from 'lucide-react';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import type { NavItem } from '@/types/mdx';
 
 interface SidebarProps {
@@ -57,17 +57,29 @@ export default function Sidebar({ items }: SidebarProps) {
 /* ── Mobile Sidebar Chips (separate export for use outside flex) ── */
 export function MobileSidebarChips({ items }: SidebarProps) {
   const pathname = usePathname();
+  const [readProgress, setReadProgress] = useState(0);
+
+  /* Sync reading progress */
+  useEffect(() => {
+    const handleScroll = () => {
+      const scrollTop = window.scrollY;
+      const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+      setReadProgress(docHeight > 0 ? Math.min(scrollTop / docHeight, 1) : 0);
+    };
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    handleScroll();
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
 
   return (
     <div
-      className="lg:hidden sticky overflow-x-auto custom-scrollbar"
+      className="lg:hidden sticky overflow-x-auto custom-scrollbar no-scrollbar"
       style={{
-        top: 'calc(3.5rem + 2.5rem)', /* below navbar (3.5rem) + sub-nav (2.5rem) */
+        top: '3.5rem',
         zIndex: 30,
-        background: 'color-mix(in srgb, var(--bg-primary) 94%, transparent)',
-        backdropFilter: 'blur(12px)',
-        WebkitBackdropFilter: 'blur(12px)',
+        background: 'var(--bg-primary)',
         borderBottom: '1px solid var(--rule-color)',
+        boxShadow: '0 2px 10px rgba(0,0,0,0.05)',
       }}
     >
       <div className="flex items-center gap-1 px-3 py-2 whitespace-nowrap">
@@ -75,6 +87,13 @@ export function MobileSidebarChips({ items }: SidebarProps) {
         {items.map((item) => (
           <MobileChip key={item.slug} item={item} pathname={pathname} />
         ))}
+      </div>
+      {/* Progress Bar */}
+      <div className="h-[2px] w-full bg-transparent overflow-hidden">
+        <div 
+          className="h-full bg-gradient-to-r from-[var(--accent)] to-[var(--accent-light)] transition-all duration-200 ease-out"
+          style={{ width: `${readProgress * 100}%` }}
+        />
       </div>
     </div>
   );
