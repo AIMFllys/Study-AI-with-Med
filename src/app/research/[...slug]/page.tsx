@@ -3,7 +3,7 @@ import { getContentBySlug, getAllContentSlugs } from '@/lib/mdx';
 import { getMdxComponents } from '@/components/mdx';
 import { ReferenceList } from '@/components/mdx/Citation';
 import TableOfContents from '@/components/layout/TableOfContents';
-import MobileSubNav from '@/components/layout/MobileSubNav';
+import MobileTocFloat from '@/components/layout/MobileTocFloat';
 import remarkGfm from 'remark-gfm';
 import remarkMath from 'remark-math';
 import rehypeSlug from 'rehype-slug';
@@ -51,7 +51,7 @@ export default async function ResearchPage({
 
   return (
     <>
-      <MobileSubNav headings={data.headings} />
+      <MobileTocFloat headings={data.headings} />
       <article
         className="flex-1 min-w-0 py-10 sm:py-16 px-4 sm:px-8 lg:px-14"
         style={{ animation: 'page-turn 0.5s cubic-bezier(0.23,1,0.32,1) both' }}

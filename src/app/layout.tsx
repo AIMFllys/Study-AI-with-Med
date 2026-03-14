@@ -42,7 +42,7 @@ export default function RootLayout({
           crossOrigin="anonymous"
         />
       </head>
-      <body className="min-h-screen flex flex-col">
+      <body className="min-h-screen flex flex-col pb-16 md:pb-0">
         <ThemeProvider attribute="class" defaultTheme="dark" enableSystem>
           <Navbar />
           <main className="flex-1">{children}</main>
