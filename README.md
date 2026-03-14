@@ -1,91 +1,104 @@
 # 🧬 Study AI with Med
 
-> **羽升（YuSheng）的 AI 赋能医学探索日志**
+> **这是羽升的 AI 赋能医学学习日志 —— 一个初学者的真实探索记录**
 
 [![Next.js](https://img.shields.io/badge/Next.js-16+-black?logo=next.js)](https://nextjs.org/)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5+-3178C6?logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](./LICENSE)
 
-## 📖 About
+---
 
-本项目是我在学习和研究**人工智能赋能医学**方向过程中的系统性记录。从蛋白质折叠的生成式突破到多模态临床决策智能体，深度剖析当前国内外最成功及最具前景的 AI 医学核心成就。
+## 📖 这是什么？
 
-- 🔬 **深度拆解** — 每一项突破背后的底层算法原理（扩散模型、GNN、多模态 Transformer 等）
-- 🧪 **动手实验** — 跑通精选的开源项目，记录过程与发现
-- 📚 **严格引用** — 所有内容标注学术来源，可追溯可验证
-- 🌐 **开源共享** — 所有代码与内容开放于 GitHub
+我是一名正在学习 **AI 赋能医学** 方向的在校学生（完全初学者）。
 
-## 🚀 Features
+这个仓库是我**边学边记**的过程产物。我的目标很简单：
 
-- **MDX 富文本引擎** — LaTeX 数学公式 (KaTeX)、Mermaid 流程图、语法高亮代码块 (Shiki)
-- **浏览器端 Python 运行** — 基于 Pyodide (WebAssembly)，无需后端服务器
-- **日夜模式切换** — next-themes + Tailwind v4 CSS 变量体系
-- **右侧目录导航** — IntersectionObserver 滚动高亮
-- **动态路由** — `content/` 下新增 `.mdx` 文件即自动生成页面
-- **AI 可读接口** — `/api/content` JSON API 暴露全部内容
+1. 先读一读相关报告和论文，弄清楚"这个东西是做什么用的"
+2. 找几个开源项目，在自己电脑上跑通，看看实际效果是什么样的
+3. 把学到的内容整理成笔记，写在这个网站上留存
 
-## 📂 研究主题
+我不敢说自己"深度理解"了什么，很多内容我自己也还在摸索。如果你也在入门这个方向，欢迎一起交流 :)
 
-| # | 主题 | 关键技术 | 代表成就 |
-|---|------|----------|----------|
-| 1 | 蛋白质结构解析与生命分子生成 | 条件扩散模型、因果语言建模 | AlphaFold 3、xTrimoPGLM |
-| 2 | AI 药物发现全生命周期 (AIDD) | 图神经网络、GAN、强化学习 | 英矽智能 Pharma.AI |
-| 3 | 多模态医疗大模型 (Med-LLMs) | 多模态 Transformer、知识图谱对齐 | Med-Gemini、混元医疗 |
-| 4 | 精准医学影像与数字病理 | 3D CNN/ViT、计算流体力学 | PANDA、数坤 CT-FFR |
-| 5 | 临床智能体 (Agentic AI) | 多智能体协作、工具调用 | SurgBox、PsyDraw、IMAS |
+---
 
-## 🛠️ Tech Stack
+## 🗺️ 目前在学什么？
 
-| Layer | Technology |
-|-------|-----------|
-| Framework | Next.js 16+ (App Router, Turbopack) |
-| Language | TypeScript 5, React 19 |
-| Content | MDX, next-mdx-remote, gray-matter |
-| Math | remark-math + rehype-katex (KaTeX) |
-| Code | rehype-pretty-code (Shiki) |
-| Diagrams | Mermaid.js |
-| Python | Pyodide (WASM) |
-| Styling | Tailwind CSS v4, next-themes |
-| Icons | Lucide React |
+| 方向 | 简单说就是… | 代表工作 | 笔记进度 |
+|------|------------|----------|---------|
+| 蛋白质结构预测 | 计算机怎么"猜"出蛋白质的形状 | AlphaFold 3、xTrimoPGLM | ✅ 已整理 |
+| AI 药物设计 (AIDD) | 用 AI 设计新药分子 | 英矽智能 Pharma.AI | ✅ 已整理 |
+| 医疗大模型 | 会看 CT 会读病历的 AI | Med-Gemini、混元医疗 | ✅ 已整理 |
+| 临床 AI 智能体 | AI 像医生一样自己做决策 | ReAct 框架 | ✅ 已整理 |
+| 精准影像 & 数字病理 | AI 帮助医生读影像 | PANDA、数坤 CT-FFR | 📝 整理中 |
 
-## 🏃 Getting Started
+---
+
+## 🧪 动手部分说明
+
+笔记里包含一些可以**直接在浏览器里运行的 Python 小代码**（基于 Pyodide/WASM，无需安装任何环境），主要是我用来验证自己理解的一些简单演示，不是生产级别的代码，仅供参考。
+
+---
+
+## 🌐 网站功能
+
+网站用 Next.js 搭建，支持学术笔记常用的各种排版：
+
+- **数学公式**（KaTeX）—— 看论文时常常遇到，我直接把公式搬进来了
+- **流程图**（Mermaid）—— 用来帮自己理清算法流程
+- **代码高亮**（Shiki）—— 阅读开源项目代码时的笔记
+- **浏览器 Python**（Pyodide）—— 点击就能运行的小实验
+- **日夜模式**、**右侧目录导航**
+
+---
+
+## 🏃 本地运行
+
+如果你想在本地跑这个项目：
 
 ```bash
-# Clone
 git clone https://github.com/AIMFllys/Study-AI-with-Med.git
 cd Study-AI-with-Med
 
-# Install
 npm install
 
-# Dev (port 5986)
+# 启动，端口默认 5986
 npm run dev
-
-# Build
-npm run build
 ```
 
-Open [http://localhost:5986](http://localhost:5986) to view the platform.
+打开 [http://localhost:5986](http://localhost:5986) 即可。
 
-## 📝 Adding New Content
+---
 
-1. Create a `.mdx` file in `content/` directory
-2. Add frontmatter (title, description, category, references)
-3. Write content using standard Markdown + custom components
-4. The page is automatically available at `/research/[your-filename]`
+## ✏️ 添加新笔记
 
-**Available MDX Components:**
-- `<Callout type="info|warning|danger">` — Highlight boxes
-- `<MermaidChart>` — Flowcharts & diagrams
-- `<PythonRunner>` — Browser-based Python execution
-- `<GitHubCard repo="owner/name" />` — GitHub project cards
-- `<Citation id="refId" />` — Academic citations
-- `<ReferenceList />` — Auto-generated reference list
+在 `content/` 目录下新建 `.mdx` 文件，写好 frontmatter，页面就会自动出现在网站里：
 
-## 📚 References
+```yaml
+---
+title: "笔记标题"
+description: "简介"
+date: "2026-03-14"
+category: "分类"
+order: 5
+---
+```
 
-All citations within the platform are sourced from peer-reviewed publications, official documentation, and authoritative industry reports. Each article includes a complete reference list with DOI/URL links.
+支持的特殊组件：`<Callout>`、`<MermaidChart>`、`<PythonRunner>`、`<GitHubCard>`、`<Citation>`
 
-## 📄 License
+---
 
-MIT © 2026 YuSheng (羽升)
+## 📚 关于引用
+
+尽量做到每一条内容都有明确来源。引用格式参考学术规范，来源包括公开论文（Nature / arXiv）、官方文档和行业报告。如有错误欢迎指正。
+
+---
+
+## 🙋 关于我
+
+医学院在读学生，对 AI 赋能医学感兴趣，正处于从"完全不懂"到"稍微入门"的阶段。  
+这个仓库就是我的公开学习笔记本，欢迎 Star / Fork / 开 Issue 跟我聊 😊
+
+---
+
+*MIT © 2026 羽升 (YuSheng)*
