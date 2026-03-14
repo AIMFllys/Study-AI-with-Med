@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32" fill="none">
+  <!-- Background rounded square -->
+  <rect width="32" height="32" rx="6" fill="#0ea5e9"/>
+  
+  <!-- Book spine shadow -->
+  <rect x="0" y="0" width="4" height="32" rx="6 0 0 6" fill="rgba(0,0,0,0.15)"/>
+  
+  <!-- DNA / Neural node motif - simplified molecule -->
+  <circle cx="16" cy="10" r="2.5" fill="white" opacity="0.95"/>
+  <circle cx="22" cy="16" r="2" fill="white" opacity="0.75"/>
+  <circle cx="10" cy="16" r="2" fill="white" opacity="0.75"/>
+  <circle cx="16" cy="22" r="2.5" fill="white" opacity="0.95"/>
+  
+  <!-- Connection lines (neural network / molecular bonds) -->
+  <line x1="16" y1="12.5" x2="22" y2="14" stroke="white" stroke-width="1.2" opacity="0.5"/>
+  <line x1="16" y1="12.5" x2="10" y2="14" stroke="white" stroke-width="1.2" opacity="0.5"/>
+  <line x1="10" y1="18" x2="16" y2="19.5" stroke="white" stroke-width="1.2" opacity="0.5"/>
+  <line x1="22" y1="18" x2="16" y2="19.5" stroke="white" stroke-width="1.2" opacity="0.5"/>
+  
+  <!-- AI text -->
+  <text x="16" y="17.5" text-anchor="middle" font-family="serif" font-weight="900" font-size="7" fill="white" font-style="italic" opacity="0.2">AI</text>
+</svg>

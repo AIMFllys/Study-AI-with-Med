@@ -2,8 +2,8 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { ChevronDown, X, BookOpen } from 'lucide-react';
-import { useState, useEffect, useCallback } from 'react';
+import { ChevronDown } from 'lucide-react';
+import { useState } from 'react';
 import type { NavItem } from '@/types/mdx';
 
 interface SidebarProps {
@@ -12,139 +12,149 @@ interface SidebarProps {
 
 export default function Sidebar({ items }: SidebarProps) {
   const pathname = usePathname();
-  const [mobileOpen, setMobileOpen] = useState(false);
-
-  // Close on navigation
-  useEffect(() => {
-    setMobileOpen(false);
-  }, [pathname]);
-
-  // Prevent body scroll when drawer open
-  useEffect(() => {
-    if (mobileOpen) {
-      document.body.style.overflow = 'hidden';
-    } else {
-      document.body.style.overflow = '';
-    }
-    return () => { document.body.style.overflow = ''; };
-  }, [mobileOpen]);
 
   return (
-    <>
-      {/* ── Mobile Trigger Button (floating) ── */}
-      <button
-        onClick={() => setMobileOpen(true)}
-        className="fixed left-3 bottom-20 z-40 lg:hidden flex items-center gap-1.5 px-3 py-2 rounded-lg transition-all duration-300"
-        style={{
-          background: 'color-mix(in srgb, var(--bg-primary) 90%, transparent)',
-          backdropFilter: 'blur(12px)',
-          border: '1px solid var(--card-border)',
-          color: 'var(--text-secondary)',
-          boxShadow: '0 4px 20px rgba(0,0,0,0.15)',
-        }}
-        aria-label="打开目录"
-      >
-        <BookOpen className="w-4 h-4" style={{ color: 'var(--accent)' }} />
-        <span className="text-[10px] font-sans tracking-wider uppercase">目录</span>
-      </button>
+    /* Desktop Sidebar only — mobile navigation is handled by MobileSidebarChips */
+    <aside
+      className="hidden lg:flex flex-col w-64 flex-shrink-0 sticky top-14 h-[calc(100vh-3.5rem)]
+        overflow-y-auto custom-scrollbar py-8 pr-1"
+      style={{
+        borderRight: '1px solid var(--rule-color)',
+        background: 'var(--bg-secondary)',
+      }}
+    >
+      {/* 章节标注 */}
+      <div className="px-5 mb-6">
+        <p
+          className="font-sans text-[9px] tracking-[0.3em] uppercase mb-1"
+          style={{ color: 'var(--accent)', opacity: 0.6 }}
+        >
+          Contents
+        </p>
+        <div className="h-px" style={{ background: 'var(--rule-color)' }} />
+      </div>
 
-      {/* ── Mobile Drawer Overlay ── */}
-      {mobileOpen && (
-        <div
-          className="fixed inset-0 z-50 lg:hidden"
-          onClick={() => setMobileOpen(false)}
-          style={{ background: 'rgba(0,0,0,0.5)', backdropFilter: 'blur(4px)' }}
-        />
-      )}
-
-      {/* ── Mobile Drawer ── */}
-      <aside
-        className={`fixed top-0 left-0 z-50 h-full w-72 flex flex-col lg:hidden transition-transform duration-300 ease-out ${
-          mobileOpen ? 'translate-x-0' : '-translate-x-full'
-        }`}
-        style={{
-          background: 'var(--bg-secondary)',
-          borderRight: '1px solid var(--rule-color)',
-          boxShadow: mobileOpen ? '8px 0 40px rgba(0,0,0,0.3)' : 'none',
-        }}
-      >
-        {/* Drawer Header */}
-        <div className="flex items-center justify-between px-5 py-4" style={{ borderBottom: '1px solid var(--rule-color)' }}>
-          <div className="flex items-center gap-2">
-            <span className="font-serif italic text-xs" style={{ color: 'var(--accent)', opacity: 0.5 }}>§</span>
-            <span className="font-sans text-[10px] tracking-[0.3em] uppercase" style={{ color: 'var(--text-tertiary)' }}>
-              Contents
-            </span>
-          </div>
-          <button
-            onClick={() => setMobileOpen(false)}
-            className="w-7 h-7 flex items-center justify-center rounded-sm transition-colors"
-            style={{ color: 'var(--text-tertiary)', border: '1px solid var(--rule-color)' }}
-          >
-            <X className="w-3.5 h-3.5" />
-          </button>
+      <nav className="px-4 flex-1">
+        <OverviewLink pathname={pathname} />
+        <div className="h-px my-4 mx-1" style={{ background: 'var(--rule-color)' }} />
+        <div className="space-y-0.5">
+          {items.map((item) => (
+            <SidebarItem key={item.slug} item={item} pathname={pathname} />
+          ))}
         </div>
+      </nav>
 
-        {/* Drawer Content */}
-        <nav className="flex-1 overflow-y-auto custom-scrollbar px-4 py-4">
-          <OverviewLink pathname={pathname} />
-          <div className="h-px my-3 mx-1" style={{ background: 'var(--rule-color)' }} />
-          <div className="space-y-0.5">
-            {items.map((item) => (
-              <SidebarItem key={item.slug} item={item} pathname={pathname} />
-            ))}
-          </div>
-        </nav>
-
-        {/* Drawer Footer */}
-        <div className="px-5 py-3" style={{ borderTop: '1px solid var(--rule-color)' }}>
-          <p className="font-serif italic text-[10px] text-[var(--text-tertiary)] opacity-40 leading-relaxed">
-            Study AI with Medicine
-          </p>
-        </div>
-      </aside>
-
-      {/* ── Desktop Sidebar (unchanged structure) ── */}
-      <aside
-        className="hidden lg:flex flex-col w-64 flex-shrink-0 sticky top-14 h-[calc(100vh-3.5rem)]
-          overflow-y-auto custom-scrollbar py-8 pr-1"
-        style={{
-          borderRight: '1px solid var(--rule-color)',
-          background: 'var(--bg-secondary)',
-        }}
-      >
-        {/* 章节标注 */}
-        <div className="px-5 mb-6">
-          <p
-            className="font-sans text-[9px] tracking-[0.3em] uppercase mb-1"
-            style={{ color: 'var(--accent)', opacity: 0.6 }}
-          >
-            Contents
-          </p>
-          <div className="h-px" style={{ background: 'var(--rule-color)' }} />
-        </div>
-
-        <nav className="px-4 flex-1">
-          <OverviewLink pathname={pathname} />
-          <div className="h-px my-4 mx-1" style={{ background: 'var(--rule-color)' }} />
-          <div className="space-y-0.5">
-            {items.map((item) => (
-              <SidebarItem key={item.slug} item={item} pathname={pathname} />
-            ))}
-          </div>
-        </nav>
-
-        {/* 底部装饰 */}
-        <div className="px-5 mt-6 pt-4" style={{ borderTop: '1px solid var(--rule-color)' }}>
-          <p className="font-serif italic text-[10px] text-[var(--text-tertiary)] opacity-40 leading-relaxed">
-            Study AI with Medicine
-          </p>
-        </div>
-      </aside>
-    </>
+      {/* 底部装饰 */}
+      <div className="px-5 mt-6 pt-4" style={{ borderTop: '1px solid var(--rule-color)' }}>
+        <p className="font-serif italic text-[10px] text-[var(--text-tertiary)] opacity-40 leading-relaxed">
+          Study AI with Medicine
+        </p>
+      </div>
+    </aside>
   );
 }
 
+/* ── Mobile Sidebar Chips (separate export for use outside flex) ── */
+export function MobileSidebarChips({ items }: SidebarProps) {
+  const pathname = usePathname();
+
+  return (
+    <div
+      className="lg:hidden sticky overflow-x-auto custom-scrollbar"
+      style={{
+        top: 'calc(3.5rem + 2.5rem)', /* below navbar (3.5rem) + sub-nav (2.5rem) */
+        zIndex: 30,
+        background: 'color-mix(in srgb, var(--bg-primary) 94%, transparent)',
+        backdropFilter: 'blur(12px)',
+        WebkitBackdropFilter: 'blur(12px)',
+        borderBottom: '1px solid var(--rule-color)',
+      }}
+    >
+      <div className="flex items-center gap-1 px-3 py-2 whitespace-nowrap">
+        <MobileOverviewChip pathname={pathname} />
+        {items.map((item) => (
+          <MobileChip key={item.slug} item={item} pathname={pathname} />
+        ))}
+      </div>
+    </div>
+  );
+}
+
+/* ── Mobile chip components ── */
+function MobileOverviewChip({ pathname }: { pathname: string }) {
+  const isActive = pathname === '/research';
+  return (
+    <Link
+      href="/research"
+      className="no-underline flex items-center gap-1 px-3 py-1.5 rounded-full text-[11px] font-sans transition-all duration-200 shrink-0"
+      style={{
+        color: isActive ? 'var(--accent)' : 'var(--text-secondary)',
+        background: isActive ? 'rgba(14,165,233,0.1)' : 'rgba(128,128,128,0.06)',
+        border: `1px solid ${isActive ? 'rgba(14,165,233,0.3)' : 'var(--card-border)'}`,
+        fontWeight: isActive ? 500 : 400,
+      }}
+    >
+      总览
+    </Link>
+  );
+}
+
+function MobileChip({ item, pathname }: { item: NavItem; pathname: string }) {
+  const isActive = pathname.startsWith(`/research/${item.slug}`);
+
+  if (item.disabled) {
+    return (
+      <span
+        className="flex items-center gap-1 px-3 py-1.5 rounded-full text-[11px] font-sans shrink-0 cursor-not-allowed"
+        style={{
+          color: 'var(--text-tertiary)',
+          opacity: 0.35,
+          background: 'rgba(128,128,128,0.04)',
+          border: '1px solid var(--card-border)',
+        }}
+      >
+        {item.title}
+      </span>
+    );
+  }
+
+  if (item.children) {
+    const firstChild = item.children[0];
+    const href = firstChild ? `/research/${firstChild.slug}` : `/research/${item.slug}`;
+    return (
+      <Link
+        href={href}
+        className="no-underline flex items-center gap-1 px-3 py-1.5 rounded-full text-[11px] font-sans transition-all duration-200 shrink-0"
+        style={{
+          color: isActive ? 'var(--accent)' : 'var(--text-secondary)',
+          background: isActive ? 'rgba(14,165,233,0.1)' : 'rgba(128,128,128,0.06)',
+          border: `1px solid ${isActive ? 'rgba(14,165,233,0.3)' : 'var(--card-border)'}`,
+          fontWeight: isActive ? 500 : 400,
+        }}
+      >
+        {item.title}
+      </Link>
+    );
+  }
+
+  return (
+    <Link
+      href={`/research/${item.slug}`}
+      className="no-underline flex items-center gap-1 px-3 py-1.5 rounded-full text-[11px] font-sans transition-all duration-200 shrink-0"
+      style={{
+        color: isActive ? 'var(--accent)' : 'var(--text-secondary)',
+        background: isActive ? 'rgba(14,165,233,0.1)' : 'rgba(128,128,128,0.06)',
+        border: `1px solid ${isActive ? 'rgba(14,165,233,0.3)' : 'var(--card-border)'}`,
+        fontWeight: isActive ? 500 : 400,
+      }}
+    >
+      {item.title}
+    </Link>
+  );
+}
+
+
+/* ── Desktop components ── */
 function OverviewLink({ pathname }: { pathname: string }) {
   const isActive = pathname === '/research';
   return (

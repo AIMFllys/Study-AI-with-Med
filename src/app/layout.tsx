@@ -18,6 +18,10 @@ export const metadata: Metadata = {
     siteName: 'Study AI with Med',
     type: 'website',
   },
+  icons: {
+    icon: '/logo.svg',
+    apple: '/apple-touch-icon.png',
+  },
 };
 
 export default function RootLayout({
@@ -38,7 +42,7 @@ export default function RootLayout({
           crossOrigin="anonymous"
         />
       </head>
-      <body className="min-h-screen flex flex-col pb-20 md:pb-0">
+      <body className="min-h-screen flex flex-col">
         <ThemeProvider attribute="class" defaultTheme="dark" enableSystem>
           <Navbar />
           <main className="flex-1">{children}</main>
