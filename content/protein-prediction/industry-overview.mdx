@@ -1,0 +1,158 @@
+---
+title: "行业 AI+蛋白质方向"
+description: "从 AlphaFold 2 掀起的革命，到 Boltz-1 的完全开源民主化，全面梳理 AI 驱动蛋白质结构预测赛道的核心玩家、技术路线与产业落地现状。"
+date: "2026-03-14"
+category: "AI+蛋白质"
+order: 1
+tags: ["蛋白质折叠", "AlphaFold", "Boltz", "RoseTTAFold", "行业综述"]
+references:
+  - id: "alphafold2"
+    text: "Jumper, J. et al. (2021). Highly accurate protein structure prediction with AlphaFold. Nature, 596, 583-589."
+    url: "https://doi.org/10.1038/s41586-021-03819-2"
+  - id: "alphafold3"
+    text: "Abramson, J. et al. (2024). Accurate structure prediction of biomolecular interactions with AlphaFold 3. Nature, 630, 493-500."
+    url: "https://doi.org/10.1038/s41586-024-07487-w"
+  - id: "boltz1"
+    text: "Wohlwend, J. et al. (2024). Boltz-1: Democratizing Biomolecular Interaction Modeling. bioRxiv."
+    url: "https://github.com/jwohlwend/boltz"
+  - id: "esm2"
+    text: "Lin, Z. et al. (2023). Evolutionary-scale prediction of atomic-level protein structure with a language model. Science, 379(6637)."
+    url: "https://doi.org/10.1126/science.ade2574"
+  - id: "rfaa"
+    text: "Krishna, R. et al. (2024). Generalized biomolecular modeling and design with RoseTTAFold All-Atom. Science, 384(6693)."
+    url: "https://doi.org/10.1126/science.adl2528"
+---
+
+## 赛道全景
+
+蛋白质结构预测是生命科学领域自 2020 年以来变化最为剧烈的赛道之一。**AlphaFold 2** <Citation id="alphafold2" /> 在 CASP14 竞赛中的惊艳亮相，彻底颠覆了这一领域长达半个世纪的研究范式，也引发了以 AI 为核心驱动力的全新竞争格局。
+
+### 技术演进时间线
+
+<MermaidChart>
+timeline
+    title AI 蛋白质预测关键节点
+    2020 : AlphaFold 2 在 CASP14 震惊学界
+    2021 : AlphaFold 2 代码开源 / ESMFold 发布
+    2022 : RoseTTAFold / ESM-2 规模化
+    2023 : ProteinMPNN / ProGen2 / ESM3
+    2024 : AlphaFold 3 (多模态) / RoseTTAFold All-Atom
+         : Boltz-1 完全开源
+    2025 : Boltz-2 / 多模态复合体预测普及化
+</MermaidChart>
+
+---
+
+## 核心技术路线
+
+当前赛道存在两条主要技术路线，各有其适用场景：
+
+| 路线 | 代表模型 | 核心机制 | 优势 | 局限 |
+|------|----------|----------|------|------|
+| **进化尺度语言模型** | ESM-2, ESM3 | 自监督掩码语言建模 | 无需 MSA，速度极快 | 复杂体预测精度有限 |
+| **结构-序列联合建模** | AlphaFold 3, Boltz-1 | 条件扩散 + 多重序列比对 | 高精度复合体预测 | 计算资源需求高 |
+| **全原子图神经网络** | RoseTTAFold All-Atom | SE(3)-等变 GNN | 小分子-蛋白质建模 | 领域覆盖相对窄 |
+
+---
+
+## 主要玩家生态
+
+### 学术/开源阵营
+
+<GitHubCard repo="jwohlwend/boltz" description="Boltz-1：业界首个在预测精度上全面逼近 AlphaFold 3 的完全开源模型（MIT 协议），可本地免费部署。" />
+
+<GitHubCard repo="google-deepmind/alphafold3" description="AlphaFold 3 官方代码仓库，DeepMind 出品，支持蛋白质、DNA、RNA、配体的联合结构预测。" />
+
+<GitHubCard repo="facebookresearch/esm" description="Meta AI 出品的 ESM 系列蛋白质语言模型，ESM-2 提供从 8M 到 15B 多种参数规模，广泛应用于下游任务微调。" />
+
+### 商业化平台
+
+| 平台 | 背景 | 核心产品 | 定位 |
+|------|------|----------|------|
+| **Isomorphic Labs** | Google DeepMind 子公司 | AlphaFold 商业 API | 药物发现全链路 |
+| **百图生科** | 腾讯战略投资 | xTrimoPGLM 千亿模型 | 蛋白质设计 + 功能预测 |
+| **Generate:Biomedicines** | A16z 领投 | Chroma 扩散模型 | de novo 蛋白质设计 |
+| **Chai Discovery** | OpenAI 系 | Chai-1 | 开源高精度复合体预测 |
+
+---
+
+## 评价指标体系
+
+理解模型输出需要掌握几个关键指标：
+
+### pLDDT（每残基局部距离差测试）
+
+$$\text{pLDDT} \in [0, 100]$$
+
+| 分数区间 | 置信度解读 | 可信度 |
+|----------|-----------|--------|
+| 90 – 100 | 极高 | ✅ 可信 |
+| 70 – 90 | 高 | ✅ 通常正确 |
+| 50 – 70 | 中等 | ⚠️ 需谨慎使用 |
+| < 50 | 低 | ❌ 结构可能无序 |
+
+### PTM（预测的 TM 分数）
+
+衡量全局折叠拓扑的正确性，范围 $[0, 1]$，越接近 1 越好。通常 $\text{PTM} > 0.5$ 视为可接受结果。
+
+### ipTM（界面 PTM）
+
+专用于评估蛋白质-蛋白质或蛋白质-配体复合体预测中**界面区域**的准确度，是多链复合体预测最重要的指标。
+
+---
+
+## 动手实验：pLDDT 可视化解析
+
+<PythonRunner>
+import json
+
+# 模拟一个 Boltz-1 输出的置信度数据
+confidence_data = {
+    "confidence_score": 0.613,
+    "ptm": 0.544,
+    "complex_plddt": 0.630,
+    "chains": [
+        {"chain_id": "A", "chain_ptm": 0.544, "chain_plddt": 0.630}
+    ]
+}
+
+print("=== Boltz-1 预测结果解析 ===\n")
+print(f"📊 整体置信度 (Confidence Score): {confidence_data['confidence_score']:.3f}")
+print(f"🔬 PTM 分数 (全局拓扑):            {confidence_data['ptm']:.3f}")
+print(f"⚗️  Complex pLDDT (局部精度):       {confidence_data['complex_plddt']:.3f}")
+print()
+
+score = confidence_data['confidence_score']
+if score >= 0.8:
+    level = "🟢 高置信度 — 可直接用于下游分析"
+elif score >= 0.6:
+    level = "🟡 中等置信度 — 建议结合实验验证"
+else:
+    level = "🔴 低置信度 — 结构可能存在高无序区域"
+
+print(f"评估结论: {level}")
+print()
+print("💡 提示：这是使用 msa: empty 的低资源模式结果，")
+print("   启用 MSA 服务器可显著提升预测精度。")
+</PythonRunner>
+
+---
+
+## 与传统方法的对比
+
+<MermaidChart>
+graph LR
+    A["传统实验方法<br/>X射线晶体学 / 冷冻电镜"] --> A1["耗时: 数月-数年<br/>成本: 数万-数十万美元<br/>精度: 实验级别"]
+    B["AlphaFold 3 / Boltz-1<br/>AI 预测"] --> B1["耗时: 分钟级<br/>成本: 近乎零边际成本<br/>精度: 接近实验级别"]
+</MermaidChart>
+
+---
+
+## 产业应用场景
+
+1. **虚拟筛选加速** — 在数亿化合物库中，利用 AI 预测的蛋白质口袋结构进行对接筛选，命中率提升 3-10 倍
+2. **抗体工程** — 预测抗体-抗原界面，指导 CDR 区域定向改造
+3. **酶工程** — 设计耐热、耐有机溶剂突变体，减少湿实验迭代轮次
+4. **新靶点发现** — 对无结构信息的潜在靶点进行"虚拟解析"，扩大可成药靶点空间
+
+<ReferenceList />

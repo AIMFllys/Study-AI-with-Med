@@ -7,6 +7,7 @@ import remarkGfm from 'remark-gfm';
 import remarkMath from 'remark-math';
 import rehypeSlug from 'rehype-slug';
 import rehypeKatex from 'rehype-katex';
+import rehypePrettyCode from 'rehype-pretty-code';
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
@@ -18,10 +19,10 @@ export default function ResearchIndex() {
 
   if (!data) {
     return (
-      <div className="flex-1 py-12 px-8">
-        <h1 className="text-4xl font-bold mb-4 text-gradient">研究总览</h1>
-        <p className="text-[var(--text-secondary)]">
-          正在准备内容，请在 <code className="text-medical-cyan">content/index.mdx</code> 中添加总览内容。
+      <div className="flex-1 py-16 px-8 lg:px-14">
+        <h1 className="font-serif text-4xl font-bold mb-4 text-gradient">研究总览</h1>
+        <p style={{ color: 'var(--text-secondary)' }}>
+          正在准备内容，请在 <code style={{ color: 'var(--accent)' }}>content/index.mdx</code> 中添加总览内容。
         </p>
       </div>
     );
@@ -31,17 +32,42 @@ export default function ResearchIndex() {
 
   return (
     <>
-      <article className="flex-1 min-w-0 py-12 px-8 lg:px-12">
-        <header className="mb-10">
-          <h1 className="text-4xl font-bold text-gradient mb-4">
+      <article
+        className="flex-1 min-w-0 py-16 px-8 lg:px-14"
+        style={{ animation: 'page-turn 0.5s cubic-bezier(0.23,1,0.32,1) both' }}
+      >
+        <header className="mb-12">
+          {/* 章节标注 */}
+          <div className="flex items-center gap-3 mb-6">
+            <div className="h-px w-8" style={{ background: 'var(--accent)', opacity: 0.5 }} />
+            <span
+              className="font-sans text-[10px] tracking-[0.25em] uppercase"
+              style={{ color: 'var(--accent)', opacity: 0.7 }}
+            >
+              Research Journal · Overview
+            </span>
+          </div>
+
+          <h1
+            className="font-serif font-bold leading-tight mb-4"
+            style={{ fontSize: 'clamp(2rem, 4vw, 3rem)', color: 'var(--text-primary)' }}
+          >
             {data.frontmatter.title}
           </h1>
+
           {data.frontmatter.description && (
-            <p className="text-lg text-[var(--text-secondary)] leading-relaxed">
+            <p
+              className="font-body text-lg leading-relaxed max-w-2xl"
+              style={{ color: 'var(--text-secondary)' }}
+            >
               {data.frontmatter.description}
             </p>
           )}
+
+          {/* 分隔线 */}
+          <div className="h-px mt-8" style={{ background: 'linear-gradient(to right, var(--accent), transparent)', opacity: 0.3 }} />
         </header>
+
         <div className="mdx-content">
           <MDXRemote
             source={data.source}
@@ -49,7 +75,20 @@ export default function ResearchIndex() {
             options={{
               mdxOptions: {
                 remarkPlugins: [remarkGfm, remarkMath],
-                rehypePlugins: [rehypeSlug, rehypeKatex as any],
+                rehypePlugins: [
+                  rehypeSlug,
+                  rehypeKatex as any,
+                  [
+                    rehypePrettyCode as any,
+                    {
+                      theme: {
+                        dark: 'github-dark-dimmed',
+                        light: 'vitesse-light',
+                      },
+                      keepBackground: false,
+                    },
+                  ],
+                ],
               },
             }}
           />

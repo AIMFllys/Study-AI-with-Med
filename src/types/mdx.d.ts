@@ -33,4 +33,5 @@ export interface NavItem {
   category?: string;
   order: number;
   children?: NavItem[];
+  disabled?: boolean;
 }

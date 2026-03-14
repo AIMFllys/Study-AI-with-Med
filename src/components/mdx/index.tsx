@@ -5,6 +5,7 @@ import Citation, { ReferenceList } from './Citation';
 import GitHubCard from './GitHubCard';
 import DataTable from './DataTable';
 import InteractiveHTML from './InteractiveHTML';
+import CodeBlockWrapper from './CodeBlockWrapper';
 import type { MDXComponents } from 'mdx/types';
 
 export function getMdxComponents(references?: { id: string; text: string; url?: string }[]): MDXComponents {
@@ -39,6 +40,22 @@ export function getMdxComponents(references?: { id: string; text: string; url?: 
     th: (props) => <th className="px-4 py-3 text-left font-semibold text-foreground" {...props} />,
     td: (props) => <td className="px-4 py-3 text-medical-slate border-t border-white/5" {...props} />,
     hr: () => <hr className="my-8 border-white/10" />,
+
+    // Wrap code figures with our enhanced CodeBlockWrapper
+    figure: (props: any) => {
+      // Only wrap rehype-pretty-code figures
+      if (props['data-rehype-pretty-code-figure'] !== undefined) {
+        return (
+          <CodeBlockWrapper
+            data-language={props['data-language']}
+            data-title={props['data-title']}
+          >
+            <figure {...props} />
+          </CodeBlockWrapper>
+        );
+      }
+      return <figure {...props} />;
+    },
 
     // Custom MDX components
     Callout,

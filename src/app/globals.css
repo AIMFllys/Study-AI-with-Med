@@ -3,155 +3,798 @@
 @custom-variant dark (&:where(.dark, .dark *));
 
 @theme inline {
-  --color-medical-indigo: #6366f1;
-  --color-medical-cyan: #22d3ee;
-  --color-medical-slate: #94a3b8;
-  --color-medical-card: var(--card-bg);
+  /* =========================================
+     颜色系统：医学深浅蓝 + 书香气息
+     ========================================= */
+  --color-ink-black:    #020617;
+  --color-ink-deep:     #0f172a;
+  --color-ink-medium:   #1e293b;
+  --color-parchment:    #f8fafc;
+  --color-aged-paper:   #f1f5f9;
+  --color-accent-blue:  #0ea5e9;
+  --color-accent-deep:  #0284c7;
+  --color-slate-ink:    #64748b;
 
-  --font-inter: "Inter", system-ui, -apple-system, sans-serif;
+  /* 字体系统：思源宋体 (Noto Serif SC) + Inter */
+  --font-serif:     'Noto Serif SC', 'Source Han Serif SC', 'STZhongsong', 'SimSun', serif;
+  --font-body:      'Inter', 'LXGW WenKai', system-ui, sans-serif;
+  --font-sans:      'Inter', system-ui, -apple-system, sans-serif;
+  --font-mono:      'JetBrains Mono', 'Fira Code', 'Consolas', monospace;
+  --font-inter:     'Inter', system-ui, -apple-system, sans-serif;
 
-  --animate-pulse-slow: pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite;
-  --animate-float: float 6s ease-in-out infinite;
+  /* 书页 & 医学动效 */
+  --animate-pulse-slow:   pulse 5s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+  --animate-float:        float 8s ease-in-out infinite;
+  --animate-fade-up:      fade-up 0.7s ease forwards;
+  --animate-ink-spread:   ink-spread 1.2s ease forwards;
+  --animate-page-turn:    page-turn 0.6s cubic-bezier(0.23, 1, 0.32, 1) forwards;
+  --animate-chapter-reveal: chapter-reveal 0.5s ease forwards;
 
   @keyframes float {
-    0%, 100% { transform: translateY(0); }
-    50% { transform: translateY(-10px); }
+    0%, 100%  { transform: translateY(0px) rotate(0deg); }
+    50%       { transform: translateY(-8px) rotate(0.4deg); }
+  }
+
+  @keyframes fade-up {
+    from { opacity: 0; transform: translateY(24px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  @keyframes ink-spread {
+    from { clip-path: inset(0 100% 0 0); opacity: 0; }
+    to   { clip-path: inset(0 0% 0 0);   opacity: 1; }
+  }
+
+  @keyframes page-turn {
+    0%   { transform: perspective(1000px) rotateY(-8deg) scale(0.98); opacity: 0; }
+    100% { transform: perspective(1000px) rotateY(0deg)   scale(1);   opacity: 1; }
+  }
+
+  @keyframes shimmer-blue {
+    0%   { background-position: -200% center; }
+    100% { background-position:  200% center; }
+  }
+
+  @keyframes underline-grow {
+    from { transform: scaleX(0); }
+    to   { transform: scaleX(1); }
+  }
+
+  @keyframes chapter-reveal {
+    from { opacity: 0; transform: translateX(-15px); }
+    to   { opacity: 1; transform: translateX(0); }
   }
 }
 
+/* =========================================
+   CSS 变量：Light（浅医学蓝/纸张）/ Dark（深邃蓝）
+   ========================================= */
 :root {
-  --bg-primary: #f8fafc;
-  --bg-secondary: #f1f5f9;
-  --text-primary: #0f172a;
-  --text-secondary: #475569;
-  --card-bg: rgba(255, 255, 255, 0.8);
-  --card-border: rgba(0, 0, 0, 0.08);
-  --code-bg: #1e293b;
+  --bg-primary:       #f8fafc; /* 纸质浅蓝灰 */
+  --bg-secondary:     #f0f5fa;
+  --bg-accent:        #e2e8f0;
+  --text-primary:     #0f172a; /* 墨汁深蓝 */
+  --text-secondary:   #334155;
+  --text-tertiary:    #64748b;
+  --card-bg:          rgba(255, 255, 255, 0.85); /* 提升通透感 */
+  --card-border:      rgba(14, 165, 233, 0.15);  /* 浅蓝边框 */
+  --rule-color:       rgba(14, 165, 233, 0.15);
+  --accent:           #0284c7; /* 深医学蓝 */
+  --accent-light:     #0ea5e9;
+  --code-bg:          #f1f5f9;
+  --spine:            rgba(14, 165, 233, 0.2);
+  --paper-grain:      url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.02'/%3E%3C/svg%3E");
 }
 
 .dark {
-  --bg-primary: #030712;
-  --bg-secondary: #0f172a;
-  --text-primary: #f1f5f9;
-  --text-secondary: #94a3b8;
-  --card-bg: rgba(17, 24, 39, 0.7);
-  --card-border: rgba(255, 255, 255, 0.08);
-  --code-bg: #0f172a;
+  --bg-primary:       #020617; /* 极夜深蓝 */
+  --bg-secondary:     #080e21; /* 稍亮的深蓝 */
+  --bg-accent:        #0f172a;
+  --text-primary:     #e2e8f0;
+  --text-secondary:   #94a3b8;
+  --text-tertiary:    #64748b;
+  --card-bg:          rgba(11, 18, 33, 0.75);
+  --card-border:      rgba(56, 189, 248, 0.15);
+  --rule-color:       rgba(56, 189, 248, 0.12);
+  --accent:           #38bdf8; /* 天蓝/医疗蓝 */
+  --accent-light:     #7dd3fc;
+  --code-bg:          #0b1120;
+  --spine:            rgba(56, 189, 248, 0.15);
+  --paper-grain:      url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E");
+}
+
+/* =========================================
+   Base Styles
+   ========================================= */
+html {
+  scroll-behavior: smooth;
 }
 
 body {
   background-color: var(--bg-primary);
   color: var(--text-primary);
-  font-family: var(--font-inter);
+  font-family: var(--font-body);
+  font-size: 16px;
+  line-height: 1.75;
   overflow-x: hidden;
-  transition: background-color 0.3s ease, color 0.3s ease;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  transition: background-color 0.4s ease, color 0.4s ease;
+
+  /* 纸张纹理（医学浅蓝基调） */
+  background-image: var(--paper-grain);
 }
 
-/* Glassmorphism Card */
-.glass-card {
-  background: var(--card-bg);
-  border: 1px solid var(--card-border);
-  backdrop-filter: blur(20px);
-  border-radius: 1rem;
-  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.15);
+/* 书脊分隔线：优雅细线，带医学蓝渐变 */
+.book-rule {
+  border: none;
+  height: 1px;
+  background: linear-gradient(to right, transparent, var(--accent) 20%, var(--accent) 80%, transparent);
+  opacity: 0.3;
+  margin: 2rem 0;
 }
 
-.dark .glass-card {
-  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.5);
-}
+/* =========================================
+   Typography：印刷级别排版，宋体支持
+   ========================================= */
+.font-serif  { font-family: var(--font-serif); }
+.font-body   { font-family: var(--font-body); }
+.font-sans   { font-family: var(--font-sans); }
 
-/* Text Gradient */
+/* 深浅蓝渐变字 */
 .text-gradient {
-  background: linear-gradient(135deg, #6366f1, #22d3ee);
+  background: linear-gradient(135deg, var(--accent) 0%, var(--accent-light) 50%, var(--accent) 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
+  background-size: 200% auto;
 }
 
-/* Glow Effect */
-.glow-indigo {
-  box-shadow: 0 0 20px rgba(99, 102, 241, 0.3);
+.text-gradient-shimmer {
+  background: linear-gradient(90deg, var(--accent) 0%, var(--accent-light) 30%, #a5f3fc 50%, var(--accent-light) 70%, var(--accent) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  background-size: 200% auto;
+  animation: shimmer-blue 5s linear infinite;
 }
 
-/* Foreground color utility */
-.text-foreground {
-  color: var(--text-primary);
+/* 章节编号：医学严谨感 + 书面感 */
+.chapter-number {
+  font-family: var(--font-serif);
+  font-size: 0.75rem;
+  letter-spacing: 0.15em;
+  color: var(--accent);
+  text-transform: uppercase;
 }
 
-/* Custom Webkit Scrollbar */
-.custom-scrollbar::-webkit-scrollbar {
-  width: 4px;
+/* =========================================
+   书籍/文献卡片 (Journal Card)
+   ========================================= */
+.book-card {
+  background: var(--card-bg);
+  border: 1px solid var(--card-border);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border-radius: 6px; /* 稍微圆润一点，更具现代医学感 */
+  box-shadow:
+    0 1px 3px rgba(0,0,0,0.04),
+    0 4px 16px rgba(0,0,0,0.02),
+    inset 0 0 0 1px rgba(255,255,255,0.02);
+  position: relative;
+  overflow: hidden;
+  transition: transform 0.4s cubic-bezier(0.23, 1, 0.32, 1),
+              box-shadow 0.4s cubic-bezier(0.23, 1, 0.32, 1);
 }
 
-.custom-scrollbar::-webkit-scrollbar-track {
-  background: transparent;
+.book-card::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 3px;
+  background: linear-gradient(to bottom, var(--accent), transparent 30%, transparent 70%, var(--accent));
+  opacity: 0;
+  transition: opacity 0.4s ease;
 }
 
-.custom-scrollbar::-webkit-scrollbar-thumb {
-  background: rgba(255, 255, 255, 0.1);
+.book-card:hover::before { opacity: 1; }
+
+.book-card:hover {
+  transform: translateY(-3px) perspective(800px) rotateX(1deg);
+  box-shadow:
+    0 12px 40px rgba(0,0,0,0.1),
+    0 4px 12px rgba(0,0,0,0.05),
+    inset 0 0 0 1px rgba(56, 189, 248, 0.1);
+}
+
+/* 兼容之前的玻璃卡片 */
+.glass-card {
+  background: var(--card-bg);
+  border: 1px solid var(--card-border);
+  backdrop-filter: blur(18px);
+  border-radius: 8px;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.03);
+  position: relative;
+}
+
+.dark .glass-card {
+  box-shadow: 0 4px 30px rgba(0,0,0,0.3);
+}
+
+/* =========================================
+   动效工具类
+   ========================================= */
+.animate-fade-up { animation: fade-up 0.7s cubic-bezier(0.23, 1, 0.32, 1) forwards; }
+.animate-page-turn { animation: page-turn 0.6s cubic-bezier(0.23, 1, 0.32, 1) forwards; }
+.animate-ink-spread { animation: ink-spread 0.8s ease forwards; }
+.animate-chapter-reveal { animation: chapter-reveal 0.5s ease forwards; }
+
+.delay-100 { animation-delay: 0.1s; }
+.delay-200 { animation-delay: 0.2s; }
+.delay-300 { animation-delay: 0.3s; }
+.delay-400 { animation-delay: 0.4s; }
+.delay-500 { animation-delay: 0.5s; }
+
+/* =========================================
+   医学蓝发光
+   ========================================= */
+.glow-accent {
+  box-shadow: 0 0 25px rgba(56, 189, 248, 0.2), 0 0 60px rgba(56, 189, 248, 0.08);
+}
+
+/* =========================================
+   Custom Scrollbar
+   ========================================= */
+::-webkit-scrollbar       { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb {
+  background: var(--accent);
+  opacity: 0.25;
   border-radius: 4px;
 }
+::-webkit-scrollbar-thumb:hover { background: var(--accent-light); }
 
+.custom-scrollbar::-webkit-scrollbar       { width: 4px; }
+.custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: rgba(56, 189, 248, 0.25);
+  border-radius: 4px;
+}
 .custom-scrollbar:hover::-webkit-scrollbar-thumb {
-  background: rgba(99, 102, 241, 0.4); /* medical-indigo */
+  background: rgba(56, 189, 248, 0.5);
 }
 
-/* Base styles for better typography smoothing */
-body {
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  background-color: var(--background);
-  color: var(--text-primary);
-}
+/* =========================================
+   代码块完美渲染 (Enhanced Code Blocks)
+   支持复制/下载/语言标识
+   ========================================= */
 
-/* KaTeX overrides */
-.katex-display {
-  overflow-x: auto;
-  overflow-y: hidden;
-  padding: 1rem 0;
-}
-
-.katex {
-  color: var(--text-primary) !important;
-}
-
-/* Code block overrides */
-pre > code {
-  display: block;
-}
-
+/* --- Base figure (used when CodeBlockWrapper wraps it) --- */
 [data-rehype-pretty-code-figure] {
-  margin: 1.5rem 0;
+  margin: 0; /* wrapper takes over margin */
+  overflow: hidden;
+  background: var(--code-bg);
+}
+
+/* Hide original figcaption since CodeBlockWrapper provides toolbar */
+.cb-feishu [data-rehype-pretty-code-figure] figcaption {
+  display: none;
+}
+
+/* Standalone figure (no wrapper) — keep old styles */
+:not(.cb-feishu) > [data-rehype-pretty-code-figure] {
+  margin: 2rem 0;
+  border-radius: 8px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+  border: 1px solid var(--card-border);
+}
+:not(.cb-feishu) > [data-rehype-pretty-code-figure] figcaption {
+  display: flex;
+  align-items: center;
+  padding: 0.5rem 1rem;
+  font-family: var(--font-sans);
+  font-size: 0.75rem;
+  color: var(--text-tertiary);
+  border-bottom: 1px solid rgba(128, 128, 128, 0.1);
+  background: rgba(128, 128, 128, 0.03);
+}
+:not(.cb-feishu) > [data-rehype-pretty-code-figure] figcaption::before {
+  content: '';
+  display: inline-block;
+  width: 10px; height: 10px;
+  border-radius: 50%;
+  background: #ff5f56;
+  box-shadow: 16px 0 0 #ffbd2e, 32px 0 0 #27c93f;
+  margin-right: 48px;
 }
 
 [data-rehype-pretty-code-figure] pre {
-  background: var(--code-bg) !important;
-  border: 1px solid var(--card-border);
-  border-radius: 0.75rem;
-  padding: 1rem 1.25rem;
+  padding: 1rem 0;
   overflow-x: auto;
+  font-family: var(--font-mono);
+  font-size: 0.85rem;
+  line-height: 1.6;
+  background: transparent !important;
 }
 
 [data-rehype-pretty-code-figure] code {
-  font-size: 0.875rem;
-  line-height: 1.7;
+  display: grid;
+  min-width: 100%;
 }
 
-/* Scrollbar styling */
-::-webkit-scrollbar {
-  width: 6px;
-  height: 6px;
+[data-rehype-pretty-code-figure] .line {
+  padding: 0 1rem;
+  border-left: 3px solid transparent;
 }
 
-::-webkit-scrollbar-track {
+[data-rehype-pretty-code-figure] .line:hover {
+  background-color: rgba(56, 189, 248, 0.05);
+}
+
+[data-rehype-pretty-code-figure] .line--highlighted {
+  background-color: rgba(56, 189, 248, 0.08);
+  border-left-color: var(--accent);
+}
+
+/* --- CodeBlockWrapper — 飞书 (Feishu) inspired styles --- */
+
+/* ── Container ── */
+.cb-feishu {
+  margin: 1.5rem 0;
+  border-radius: 8px;
+  overflow: visible;
+  border: 1px solid var(--card-border);
+  background: var(--code-bg);
+  box-shadow: 0 1px 8px rgba(0, 0, 0, 0.05);
+  transition: box-shadow 0.3s ease;
+  position: relative;
+}
+.cb-feishu:hover {
+  box-shadow: 0 3px 16px rgba(0, 0, 0, 0.1);
+}
+.dark .cb-feishu {
+  box-shadow: 0 3px 16px rgba(0, 0, 0, 0.3);
+}
+
+/* ── Toolbar ── */
+.cb-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 5px 12px;
+  border-bottom: 1px solid rgba(128, 128, 128, 0.1);
+  background: rgba(128, 128, 128, 0.03);
+  min-height: 32px;
+  user-select: none;
+}
+.cb-toolbar-left {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.cb-toolbar-right {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+}
+
+/* ── Mac Dots (interactive buttons) ── */
+.cb-dots {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+}
+.cb-dot {
+  width: 11px; height: 11px;
+  border-radius: 50%;
+  border: none;
+  cursor: pointer;
+  position: relative;
+  transition: all 0.15s ease;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.cb-dot::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 7px;
+  font-weight: 800;
+  line-height: 1;
+  opacity: 0;
+  transition: opacity 0.15s;
+  color: rgba(0,0,0,0.6);
+}
+.cb-dots:hover .cb-dot::after {
+  opacity: 1;
+}
+.cb-dot-red {
+  background: #ff5f56;
+}
+.cb-dot-red::after {
+  content: '×';
+  font-size: 9px;
+}
+.cb-dot-red:hover {
+  background: #ff3b30;
+  transform: scale(1.15);
+}
+.cb-dot-yellow {
+  background: #ffbd2e;
+}
+.cb-dot-yellow::after {
+  content: '−';
+  font-size: 9px;
+}
+.cb-dot-yellow:hover {
+  background: #ffab00;
+  transform: scale(1.15);
+}
+.cb-dot-green {
+  background: #27c93f;
+}
+.cb-dot-green::after {
+  content: '+';
+  font-size: 9px;
+}
+.cb-dot-green:hover {
+  background: #1db934;
+  transform: scale(1.15);
+}
+
+/* ── Title ── */
+.cb-title {
+  font-family: var(--font-sans);
+  font-size: 11.5px;
+  font-weight: 500;
+  color: var(--text-tertiary);
+  letter-spacing: 0.01em;
+}
+
+/* ── Language Selector ── */
+.cb-lang-selector {
+  position: relative;
+}
+.cb-lang-trigger {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  padding: 2px 8px;
+  border-radius: 4px;
+  border: 1px solid transparent;
   background: transparent;
+  color: var(--text-tertiary);
+  font-family: var(--font-sans);
+  font-size: 11px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  white-space: nowrap;
+}
+.cb-lang-trigger:hover {
+  color: var(--accent);
+  background: rgba(14, 165, 233, 0.06);
+  border-color: rgba(14, 165, 233, 0.15);
 }
 
-::-webkit-scrollbar-thumb {
-  background: rgba(99, 102, 241, 0.3);
-  border-radius: 3px;
+/* Dropdown */
+.cb-lang-dropdown {
+  position: absolute;
+  top: calc(100% + 4px);
+  right: 0;
+  width: 200px;
+  max-height: 320px;
+  background: var(--bg-primary);
+  border: 1px solid var(--card-border);
+  border-radius: 8px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12);
+  z-index: 100;
+  overflow: hidden;
+  animation: cb-dropdown-in 0.15s ease;
+}
+.dark .cb-lang-dropdown {
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+}
+@keyframes cb-dropdown-in {
+  from { opacity: 0; transform: translateY(-4px); }
+  to { opacity: 1; transform: translateY(0); }
 }
 
-::-webkit-scrollbar-thumb:hover {
-  background: rgba(99, 102, 241, 0.5);
+.cb-lang-search {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 10px;
+  border-bottom: 1px solid var(--rule-color);
 }
+.cb-lang-search-input {
+  flex: 1;
+  border: none;
+  background: transparent;
+  font-family: var(--font-sans);
+  font-size: 12px;
+  color: var(--text-primary);
+  outline: none;
+}
+.cb-lang-search-input::placeholder {
+  color: var(--text-tertiary);
+}
+
+.cb-lang-list {
+  overflow-y: auto;
+  max-height: 260px;
+  padding: 4px 0;
+}
+.cb-lang-option {
+  display: block;
+  width: 100%;
+  text-align: left;
+  padding: 6px 14px;
+  border: none;
+  background: transparent;
+  color: var(--text-secondary);
+  font-family: var(--font-sans);
+  font-size: 12px;
+  cursor: pointer;
+  transition: all 0.1s ease;
+}
+.cb-lang-option:hover {
+  background: rgba(14, 165, 233, 0.06);
+  color: var(--accent);
+}
+.cb-lang-active {
+  color: var(--accent) !important;
+  font-weight: 600;
+}
+.cb-lang-empty {
+  padding: 12px 14px;
+  text-align: center;
+  color: var(--text-tertiary);
+  font-size: 12px;
+  font-family: var(--font-sans);
+}
+
+/* ── Action Buttons (copy, download) ── */
+.cb-action-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px; height: 28px;
+  border-radius: 5px;
+  border: 1px solid transparent;
+  background: transparent;
+  color: var(--text-tertiary);
+  cursor: pointer;
+  transition: all 0.15s ease;
+  padding: 0;
+}
+.cb-action-btn:hover {
+  color: var(--accent);
+  background: rgba(14, 165, 233, 0.08);
+  border-color: rgba(14, 165, 233, 0.15);
+}
+.cb-action-success {
+  color: #22c55e !important;
+}
+
+/* ── Code Area ── */
+.cb-code-area {
+  position: relative;
+  overflow-x: auto;
+}
+
+/* True minimize: completely hide code area */
+.cb-minimized .cb-code-area {
+  display: none;
+}
+
+/* ── Line number count badge in toolbar ── */
+.cb-line-count {
+  font-family: var(--font-sans);
+  font-size: 10px;
+  color: var(--text-tertiary);
+  opacity: 0.5;
+  user-select: none;
+}
+
+/* ── LINE NUMBERS via CSS counters ── */
+/* Reset counter on code element */
+.cb-feishu [data-rehype-pretty-code-figure] code {
+  counter-reset: cb-line;
+  display: block !important;
+}
+
+/* Each .line gets a line number */
+.cb-feishu [data-rehype-pretty-code-figure] .line {
+  counter-increment: cb-line;
+  display: block !important;
+  padding: 0 1rem 0 0 !important;
+  border-left: none !important;
+  position: relative;
+  padding-left: 5em !important;
+}
+
+/* Line number pseudo-element — absolutely positioned in the gutter */
+.cb-feishu [data-rehype-pretty-code-figure] .line::before {
+  content: counter(cb-line);
+  position: absolute;
+  left: 0;
+  width: 3.2em;
+  text-align: right;
+  color: var(--text-tertiary);
+  opacity: 0.3;
+  font-size: 0.78em;
+  font-family: var(--font-mono);
+  user-select: none;
+  pointer-events: none;
+  line-height: inherit;
+  transition: opacity 0.15s, color 0.15s;
+}
+
+/* Gutter border — a thin line separating numbers from code */
+.cb-feishu [data-rehype-pretty-code-figure] .line::after {
+  content: '';
+  position: absolute;
+  left: 3.6em;
+  top: 0;
+  bottom: 0;
+  width: 1px;
+  background: rgba(128, 128, 128, 0.06);
+  pointer-events: none;
+}
+
+/* Hover highlight on line number */
+.cb-feishu [data-rehype-pretty-code-figure] .line:hover::before {
+  opacity: 0.7;
+  color: var(--accent);
+}
+
+/* Line hover bg */
+.cb-feishu [data-rehype-pretty-code-figure] .line:hover {
+  background-color: rgba(56, 189, 248, 0.04);
+}
+
+/* =========================================
+   MDX Content Typography (书籍 + 医疗)
+   ========================================= */
+.mdx-content {
+  font-family: var(--font-serif); /* 正文使用思源宋体，非常有书香气 */
+}
+
+.mdx-content h2, .mdx-content h3, .mdx-content h4 {
+  font-family: var(--font-sans); /* 标题使用无衬线体，显得现代专业（比如 Inter/思源黑体） */
+  color: var(--text-primary);
+  font-weight: 600;
+}
+
+.mdx-content h2 {
+  font-size: 1.75rem;
+  margin-top: 3.5rem;
+  margin-bottom: 1.25rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid var(--rule-color);
+}
+
+.mdx-content h3 {
+  font-size: 1.25rem;
+  margin-top: 2rem;
+  margin-bottom: 1rem;
+  color: var(--accent); /* 三级标题稍微有点医学生物色 */
+}
+
+.mdx-content p {
+  margin-bottom: 1.25rem;
+  color: var(--text-secondary);
+  line-height: 1.8;
+  font-size: 1.05rem; /* 正文字号略微放大以利于宋体阅读 */
+  letter-spacing: 0.02em; /* 稍微拉开间距，更像排版 */
+}
+
+.mdx-content strong {
+  color: var(--text-primary);
+  font-weight: 700;
+  font-family: var(--font-sans); /* 强调用黑体，避免宋体加粗发糊 */
+}
+
+/* 链接样式 */
+.mdx-content a {
+  color: var(--accent);
+  text-decoration: underline;
+  text-decoration-color: rgba(14, 165, 233, 0.3);
+  text-underline-offset: 4px;
+  transition: all 0.25s ease;
+}
+
+.mdx-content a:hover {
+  color: var(--accent-light);
+  text-decoration-color: var(--accent);
+  background: rgba(14, 165, 233, 0.05); /* Hover 时稍微有点医学蓝底色 */
+  border-radius: 2px;
+}
+
+.mdx-content ul, .mdx-content ol {
+  padding-left: 1.5rem;
+  margin-bottom: 1.5rem;
+  color: var(--text-secondary);
+  font-size: 1.05rem;
+  line-height: 1.8;
+}
+
+.mdx-content li {
+  margin-bottom: 0.6rem;
+  position: relative;
+}
+
+/* 书简风表格 */
+.mdx-content table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 2.5rem 0;
+  font-family: var(--font-sans); /* 表格用无衬线体更干净清晰 */
+  font-size: 0.875rem;
+}
+
+.mdx-content thead {
+  border-bottom: 2px solid var(--accent);
+}
+
+.mdx-content th {
+  text-align: left;
+  padding: 1rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  background: rgba(14, 165, 233, 0.05); /* 表头浅色背景 */
+}
+
+.mdx-content td {
+  padding: 1rem;
+  border-bottom: 1px solid var(--rule-color);
+  color: var(--text-secondary);
+  line-height: 1.5;
+}
+
+.mdx-content tr:last-child td { border-bottom: none; }
+
+/* 内联代码 */
+.mdx-content :not(pre) > code {
+  font-family: var(--font-mono);
+  font-size: 0.85em;
+  background: rgba(128, 128, 128, 0.1);
+  color: var(--accent);
+  border-radius: 4px;
+  padding: 0.2em 0.4em;
+  word-break: break-word;
+}
+
+/* 引用块设计（类似医案批注） */
+.mdx-content blockquote {
+  border-left: 4px solid var(--accent);
+  padding: 1rem 1.5rem;
+  background: linear-gradient(to right, rgba(14, 165, 233, 0.05), transparent);
+  margin: 2rem 0;
+  border-radius: 0 6px 6px 0;
+  color: var(--text-secondary);
+}
+
+.mdx-content blockquote p {
+  margin-bottom: 0;
+  font-style: italic; /* 宋体的斜体实际上往往被渲染成楷体或常规变体 */
+}
+
+/* KaTeX Overrides */
+.katex-display {
+  overflow-x: auto;
+  overflow-y: hidden;
+  padding: 1.5rem 0;
+  margin: 1.5rem 0;
+  background: rgba(14, 165, 233, 0.02); /* 给公式加上淡淡的医学蓝底色 */
+  border-radius: 8px;
+}
+.katex { color: var(--text-primary) !important; }
