@@ -1,0 +1,74 @@
+---
+title: "AI 药物发现全生命周期 (AIDD)"
+description: "深度剖析图神经网络、生成对抗网络与强化学习在靶点发现、分子生成、成药性预测中的重磅应用。"
+date: "2026-03-14"
+category: "AI大制药时代"
+order: 2
+tags: ["AIDD", "GNN", "GAN", "英矽智能"]
+---
+
+## 从靶点到临床：AIDD 产业链重塑
+
+现代药物发现的传统流程（Target-to-Hit-to-Lead）历时漫长、耗资巨大且失败率极高。人工智能正在干预新药研发的每一个环节。
+
+### 代表性成就：Pharma.AI 平台
+
+英矽智能（Insilico Medicine）凭借其 **Pharma.AI** 平台，成功将全球首款由 AI 发现靶点并设计分子的特发性肺纤维化（IPF）候选药物推进至临床 II 期。这种端到端的闭环模式标志着 AIDD 从"单点辅助"向"系统引擎"跨越。
+
+## 靶点发现：知识图谱与多组学融合
+
+疾病的生物学靶点往往隐藏在海量的组学数据、文献和临床试验记录中。
+
+<Callout type="tip">
+  PandaOmics 系统通过构建千亿级知识图谱，结合自然语言处理（NLP）挖掘文献中的隐性关联，并通过转录组学数据的差异表达分析（Differential Expression Analysis），智能推荐出具有高成药潜力的全新靶点。
+</Callout>
+
+## 分子生成：生成对抗网络 (GAN)
+
+一旦锁定靶点，接下来的核心是如何从 $10^{60}$ 的浩瀚化学空间中"设计"出对应的分子。
+
+**Chemistry42** 平台的核心正是生成对抗网络（GAN）与强化学习的最佳实践：
+
+1. **生成器 (Generator)：** 负责生成大量全新的化学分子结构（如 SMILES 表达式）。
+2. **判别器 (Discriminator)：** 负责判断生成的分子是否符合理想的化学物理属性（ADMET、药代动力学、毒性等）。
+
+$$ \min_G \max_D V(D, G) = \mathbb{E}_{x \sim p_{data}(x)}[\log D(x)] + \mathbb{E}_{z \sim p_z(z)}[\log(1 - D(G(z)))] $$
+
+强化学习（Reinforcement Learning）这把"手术刀"进一步通过奖励函数（Reward Function）引导模型，针对特异性活性、血脑屏障穿透率等指标进行极速微调优化。
+
+## 属性预测：图神经网络 (GNN)
+
+分子不是一维的文本，而是客观存在的三维图（Graph）。图神经网络（GNN）将原子视作节点（Node），化学键视作边（Edge）。
+
+<MermaidChart>
+graph TD
+    A[原子 Node: C, O, N] --> B(分子图构建);
+    C[化学键 Edge: 单/双/芳香] --> B;
+    B --> D[图卷积网络 GCN / GAT];
+    D --> E{聚合邻居信息 Message Passing};
+    E --> F[预测 ADMET 属性];
+    E --> G[预测激酶结合亲和力];
+</MermaidChart>
+
+## 深入实验演示
+
+为了理解分子的特征提取，我们可以通过基于指纹（Fingerprint）的简单机器学习模型来演示活性预测的基建。
+
+<PythonRunner>
+import numpy as np
+
+# 假设我们从 GNN 提取到了一个分子的 10 维嵌入向量
+molecule_embedding = np.array([0.5, -0.2, 0.8, 0.1, -0.9, 0.3, 0.4, -0.1, 0.7, 0.0])
+target_pocket = np.array([0.6, -0.1, 0.7, 0.2, -0.8, 0.4, 0.5, -0.2, 0.6, 0.1])
+
+# 余弦相似度计算亲和力
+dot_product = np.dot(molecule_embedding, target_pocket)
+norm_mol = np.linalg.norm(molecule_embedding)
+norm_target = np.linalg.norm(target_pocket)
+affinity_score = dot_product / (norm_mol * norm_target)
+
+print("提取的分子特征向量：", molecule_embedding)
+print(f"该分子与靶点的亲和力结合得分: {affinity_score:.4f}")
+if affinity_score > 0.85:
+    print("🎯 高潜力 Hit 分子，建议进入下一步 Lead Optimization！")
+</PythonRunner>

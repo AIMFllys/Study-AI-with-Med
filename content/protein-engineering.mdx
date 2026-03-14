@@ -1,0 +1,93 @@
+---
+title: "蛋白质结构解析与生命分子生成"
+description: "从 AlphaFold 3 的条件扩散模型到百图生科 xTrimoPGLM 的千亿参数蛋白质语言模型，深度剖析生成式生物学的底层原理。"
+date: "2026-03-14"
+category: "生命大模型"
+order: 1
+tags: ["蛋白质折叠", "扩散模型", "语言模型", "AlphaFold"]
+references:
+  - id: "alphafold3"
+    text: "Abramson, J. et al. (2024). Accurate structure prediction of biomolecular interactions with AlphaFold 3. Nature, 630, 493-500."
+    url: "https://doi.org/10.1038/s41586-024-07487-w"
+  - id: "xtrimopglm"
+    text: "Chen, B. et al. (2024). xTrimoPGLM: Unified 100B-Parameter Pretrained Transformer for Deciphering the Language of Protein. arXiv:2401.06199."
+    url: "https://arxiv.org/abs/2401.06199"
+  - id: "boltz1"
+    text: "Wohlwend, J. et al. (2024). Boltz-1: Democratizing Biomolecular Interaction Modeling. bioRxiv."
+    url: "https://github.com/jwohlwend/boltz"
+  - id: "esm2"
+    text: "Lin, Z. et al. (2023). Evolutionary-scale prediction of atomic-level protein structure with a language model. Science, 379(6637)."
+    url: "https://doi.org/10.1126/science.ade2574"
+---
+
+## 核心成就概览
+
+生命科学的奥秘在很大程度上隐藏在蛋白质及其他生物大分子的**三维空间构象**之中。蛋白质的结构直接决定了其在细胞中的功能以及与药物分子的结合机制。
+
+### AlphaFold 3：从单链到全分子复合体
+
+谷歌 DeepMind 与 Isomorphic Labs 联合推出的 **AlphaFold 3** 模型 <Citation id="alphafold3" />，将生物学的微观世界带入了"高清晰度"时代。该模型能够以极高精度同时预测整个分子复合体的三维结构，包括：
+
+- 蛋白质与 **DNA/RNA** 的相互作用
+- 蛋白质与**配体（小分子药物）**的结合
+- **翻译后修饰**体系
+
+### 百图生科 xTrimoPGLM：千亿级蛋白质语言模型
+
+百图生科推出的 **xTrimoPGLM** 是全球首个参数量达到千亿级别的蛋白质语言模型 <Citation id="xtrimopglm" />。在多项生命科学基准测试中，其性能全面超越了 ESM-2 <Citation id="esm2" /> 以及 ProGen2 等业界领先模型。
+
+## 底层原理：条件扩散模型
+
+AlphaFold 3 最核心的创新在于引入了**条件扩散模型（Conditional Diffusion Model）** <Citation id="alphafold3" />。
+
+扩散模型的前向加噪过程可以表示为：
+
+$$q(x_t | x_{t-1}) = \mathcal{N}(x_t; \sqrt{1 - \beta_t} x_{t-1}, \beta_t \mathbf{I})$$
+
+其中 $\beta_t$ 是噪声调度参数。模型通过学习逆过程，从完全随机的"原子噪声云"中逐步"雕刻"出精确的分子结构。
+
+### 去噪流程图
+
+<MermaidChart>
+graph TD
+    A["🎲 原子噪声云 (随机坐标)"] --> B["🔍 Pairformer 条件编码"]
+    B --> C["🔄 逐步去噪 (多时间步迭代)"]
+    C --> D["🧬 精确三维分子结构"]
+    B --> E["📋 Token级注意力"]
+    E --> F["⚛️ 原子级注意力"]
+    F --> C
+</MermaidChart>
+
+## 底层原理：因果语言建模
+
+xTrimoPGLM 的原理建立在**大规模因果语言建模（Causal Language Modeling）**之上 <Citation id="xtrimopglm" />。
+
+蛋白质可以被视为由 20 种氨基酸"字母"书写而成的"文章"。模型通过预测序列中下一个被遮挡的氨基酸，深刻理解了氨基酸排列背后的"语法结构"与"生物学语义"。
+
+## 动手实验：氨基酸频率分析
+
+<PythonRunner>
+from collections import Counter
+
+# 人类血红蛋白 alpha 链 (示例序列)
+sequence = "MVLSPADKTNVKAAWGKVGAHAGEYGAEALERMFLSFPTTKTYFPHFDLSH"
+freq = Counter(sequence)
+
+print("=== 氨基酸频率分析 ===")
+for aa, count in sorted(freq.items(), key=lambda x: -x[1])[:10]:
+    bar = "█" * count
+    print(f"  {aa}: {bar} ({count})")
+
+print(f"\n序列长度: {len(sequence)} 个氨基酸")
+print(f"不同氨基酸种类: {len(freq)} 种")
+</PythonRunner>
+
+## 核心开源项目
+
+<GitHubCard repo="jwohlwend/boltz" description="业界首个在预测精度上逼近 AlphaFold 3 的完全开源生物分子基础模型。MIT 协议。" />
+
+<GitHubCard repo="biomap-research/xTrimoPGLM" description="百图生科开源的千亿级参数蛋白质语言模型，提供 7 个不同参数量的版本。" />
+
+<GitHubCard repo="google-deepmind/alphafold3" description="AlphaFold 3 官方代码实现，支持 Docker 与 Singularity 部署（模型权重限非商业用途）。" />
+
+<ReferenceList />
