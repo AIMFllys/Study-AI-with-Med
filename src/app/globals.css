@@ -20,7 +20,6 @@
   --font-body:      'Inter', 'LXGW WenKai', system-ui, sans-serif;
   --font-sans:      'Inter', system-ui, -apple-system, sans-serif;
   --font-mono:      'JetBrains Mono', 'Fira Code', 'Consolas', monospace;
-  --font-inter:     'Inter', system-ui, -apple-system, sans-serif;
 
   /* 书页 & 医学动效 */
   --animate-pulse-slow:   pulse 5s cubic-bezier(0.4, 0, 0.6, 1) infinite;
@@ -793,3 +792,14 @@ body {
   border-radius: 8px;
 }
 .katex { color: var(--text-primary) !important; }
+
+/* TOC Top button */
+.toc-top-btn:hover {
+  color: var(--accent) !important;
+  border-color: var(--accent) !important;
+}
+
+/* No-scrollbar utility */
+.no-scrollbar::-webkit-scrollbar { display: none; }
+.no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+

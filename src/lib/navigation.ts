@@ -10,11 +10,7 @@ const HIDDEN_SLUGS = new Set(['protein-engineering']);
  * Slugs that are planned sections but not yet clickable.
  * They render as non-interactive labels in the sidebar.
  */
-const DISABLED_SLUGS: Record<string, string> = {
-  'ai-drug-discovery': 'AI+药物发现',
-  'medical-llms': 'AI+医疗大模型',
-  'agentic-ai-clinical': 'AI+临床智能体',
-};
+const DISABLED_SLUGS: Record<string, string> = {};
 
 /**
  * Build a tree-shaped navigation structure from flat content metadata

@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useState, useCallback, useRef } from 'react';
+import { useScrollSpy, useScrollToHeading } from '@/hooks/useScrollSpy';
 import type { HeadingItem } from '@/types/mdx';
 
 interface TableOfContentsProps {
@@ -11,44 +12,11 @@ const CN_NUMBERS = ['一', '二', '三', '四', '五', '六', '七', '八', '九
   '十一', '十二', '十三', '十四', '十五', '十六', '十七', '十八', '十九', '二十'];
 
 export default function TableOfContents({ headings }: TableOfContentsProps) {
-  const [activeId, setActiveId] = useState<string>('');
-  const [readProgress, setReadProgress] = useState(0);
+  const { activeId, readProgress } = useScrollSpy(headings);
+  const scrollToHeading = useScrollToHeading();
   const navRef = useRef<HTMLElement>(null);
   const itemRefs = useRef<Map<string, HTMLLIElement>>(new Map());
   const [indicatorStyle, setIndicatorStyle] = useState<{ top: number; height: number }>({ top: 0, height: 0 });
-
-  /* ── Scroll Spy ── */
-  useEffect(() => {
-    const handleScroll = () => {
-      const scrollTop = window.scrollY;
-      const docHeight = document.documentElement.scrollHeight - window.innerHeight;
-      setReadProgress(docHeight > 0 ? Math.min(scrollTop / docHeight, 1) : 0);
-    };
-
-    const observer = new IntersectionObserver(
-      (entries) => {
-        for (const entry of entries) {
-          if (entry.isIntersecting) {
-            setActiveId(entry.target.id);
-          }
-        }
-      },
-      { rootMargin: '-80px 0px -70% 0px', threshold: 0 }
-    );
-
-    headings.forEach(({ id }) => {
-      const el = document.getElementById(id);
-      if (el) observer.observe(el);
-    });
-
-    window.addEventListener('scroll', handleScroll, { passive: true });
-    handleScroll();
-
-    return () => {
-      observer.disconnect();
-      window.removeEventListener('scroll', handleScroll);
-    };
-  }, [headings]);
 
   /* ── Calculate indicator position based on actual DOM ── */
   useEffect(() => {
@@ -79,15 +47,6 @@ export default function TableOfContents({ headings }: TableOfContentsProps) {
     }
   }, [activeId]);
 
-  /* ── Smooth scroll to heading ── */
-  const scrollToHeading = useCallback((id: string) => {
-    const el = document.getElementById(id);
-    if (el) {
-      el.scrollIntoView({ behavior: 'smooth', block: 'start' });
-      window.history.pushState(null, '', `#${id}`);
-    }
-  }, []);
-
   /* ── Ref callback for list items ── */
   const setItemRef = useCallback((id: string, el: HTMLLIElement | null) => {
     if (el) {
@@ -102,8 +61,6 @@ export default function TableOfContents({ headings }: TableOfContentsProps) {
   // Build h2 index for numbering (一, 二, 三...)
   let h2Counter = 0;
   const h2IndexMap = new Map<string, number>();
-  // And build sub-numbering for h3 under each h2
-  let currentH2Id = '';
   let h3Counter = 0;
   const h3IndexMap = new Map<string, number>();
 
@@ -111,7 +68,6 @@ export default function TableOfContents({ headings }: TableOfContentsProps) {
     if (h.level === 2) {
       h2IndexMap.set(h.id, h2Counter);
       h2Counter++;
-      currentH2Id = h.id;
       h3Counter = 0;
     } else if (h.level === 3) {
       h3Counter++;
@@ -288,20 +244,12 @@ export default function TableOfContents({ headings }: TableOfContentsProps) {
           </p>
           <button
             onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
-            className="text-[9px] font-sans tracking-wider uppercase px-2 py-1 rounded-sm transition-all duration-200"
+            className="toc-top-btn text-[9px] font-sans tracking-wider uppercase px-2 py-1 rounded-sm transition-all duration-200"
             style={{
               color: 'var(--text-tertiary)',
               border: '1px solid var(--rule-color)',
               opacity: readProgress > 0.1 ? 1 : 0,
               transform: readProgress > 0.1 ? 'none' : 'translateY(4px)',
-            }}
-            onMouseEnter={(e) => {
-              (e.currentTarget as HTMLElement).style.color = 'var(--accent)';
-              (e.currentTarget as HTMLElement).style.borderColor = 'var(--accent)';
-            }}
-            onMouseLeave={(e) => {
-              (e.currentTarget as HTMLElement).style.color = 'var(--text-tertiary)';
-              (e.currentTarget as HTMLElement).style.borderColor = 'var(--rule-color)';
             }}
           >
             ↑ Top

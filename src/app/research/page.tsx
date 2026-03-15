@@ -1,13 +1,8 @@
 import { MDXRemote } from 'next-mdx-remote/rsc';
-import { getIndexContent } from '@/lib/mdx';
+import { getIndexContent, sharedMdxOptions } from '@/lib/mdx';
 import { getMdxComponents } from '@/components/mdx';
 import { ReferenceList } from '@/components/mdx/Citation';
 import TableOfContents from '@/components/layout/TableOfContents';
-import remarkGfm from 'remark-gfm';
-import remarkMath from 'remark-math';
-import rehypeSlug from 'rehype-slug';
-import rehypeKatex from 'rehype-katex';
-import rehypePrettyCode from 'rehype-pretty-code';
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
@@ -72,25 +67,7 @@ export default function ResearchIndex() {
           <MDXRemote
             source={data.source}
             components={components}
-            options={{
-              mdxOptions: {
-                remarkPlugins: [remarkGfm, remarkMath],
-                rehypePlugins: [
-                  rehypeSlug,
-                  rehypeKatex as any,
-                  [
-                    rehypePrettyCode as any,
-                    {
-                      theme: {
-                        dark: 'github-dark-dimmed',
-                        light: 'vitesse-light',
-                      },
-                      keepBackground: false,
-                    },
-                  ],
-                ],
-              },
-            }}
+            options={{ mdxOptions: sharedMdxOptions }}
           />
         </div>
         <ReferenceList references={data.frontmatter.references || []} />

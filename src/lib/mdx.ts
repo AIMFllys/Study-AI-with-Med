@@ -1,7 +1,34 @@
 import fs from 'fs';
 import path from 'path';
 import matter from 'gray-matter';
+import remarkGfm from 'remark-gfm';
+import remarkMath from 'remark-math';
+import rehypeSlug from 'rehype-slug';
+import rehypeKatex from 'rehype-katex';
+import rehypePrettyCode from 'rehype-pretty-code';
 import type { ContentMeta, HeadingItem } from '@/types/mdx';
+
+/**
+ * Shared MDX compilation options.
+ * Single source of truth for all remark/rehype plugin chains.
+ */
+export const sharedMdxOptions = {
+  remarkPlugins: [remarkGfm, remarkMath],
+  rehypePlugins: [
+    rehypeSlug,
+    rehypeKatex as any,
+    [
+      rehypePrettyCode as any,
+      {
+        theme: {
+          dark: 'github-dark-dimmed',
+          light: 'vitesse-light',
+        },
+        keepBackground: false,
+      },
+    ],
+  ],
+};
 
 const CONTENT_DIR = path.join(process.cwd(), 'content');
 

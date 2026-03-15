@@ -1,0 +1,130 @@
+---
+title: "计算机视觉赋能精准医学影像"
+description: "从达摩院 PANDA 的平扫CT早癌筛查到数坤科技 CT-FFR 的无创心功能评估——深度剖析 3D CNN、视觉Transformer 与计算流体力学如何突破人类视觉极限。"
+date: "2026-03-15"
+category: "精准影像与病理"
+order: 4
+tags: ["医学影像", "3D CNN", "CT-FFR", "PANDA"]
+references:
+  - id: "panda"
+    text: "China's PANDA AI Saves Lives by Spotting Hidden Pancreatic Tumors. Hyperight, 2026."
+    url: "https://hyperight.com/china-panda-ai-detects-pancreatic-cancer-2026/"
+  - id: "shukun"
+    text: "心血管AI进入精准诊断评估时代, 数坤科技冠脉CTA AI再获NMPA三类证. 亿欧, 2023."
+    url: "https://www.iyiou.com/news/202302231041814"
+  - id: "uii"
+    text: "联影智能：从技术创新到临床价值，领跑医疗AI. 联影智能官网."
+    url: "https://www.uii-ai.com/article/445.html"
+  - id: "deepwise"
+    text: "深睿医疗入选2025年人工智能医疗器械创新任务揭榜挂帅榜单. 潮新闻."
+    url: "https://tidenews.com.cn/tmh_news.html?id=694cb2ea5dfbbd0001b479fe"
+---
+
+## 核心成就概览
+
+医学影像是 AI 在医疗领域中**最早实现大规模落地**、技术最为成熟且获取注册证最多的细分赛道。当前的医学影像 AI 已从单纯减轻医生阅片工作量的初级阶段，全面升级为能够发现隐匿性疾病、进行功能学评估以及主导多学科会诊（MDT）的核心力量。
+
+## 达摩院 PANDA：重新定义早癌筛查
+
+阿里巴巴达摩院的 **PANDA 模型** 在极大程度上重新定义了癌症的早期筛查范式 <Citation id="panda" />。
+
+胰腺癌因其发病隐匿、恶性程度极高而被医学界称为"**癌王**"。传统筛查必须依赖高辐射剂量的增强 CT，不适合作为常规体检手段。PANDA 系统彻底打破了这一痛点：
+
+<Callout type="tip">
+  PANDA 系统专门分析常规体检中的**平扫 CT**（Non-contrast CT），自投入临床使用以来，已成功在常规扫描中精准识别出约 **24 例**被人类高级放射科医生遗漏的致命性胰腺肿瘤，其中 14 例处于完全可治疗的超早期阶段。
+</Callout>
+
+凭借这项能将每次常规腹部扫描转化为高精度癌症筛查的技术，PANDA 在 **2025年4月** 荣获了美国 **FDA 颁发的"突破性医疗器械"（Breakthrough Device）** 地位。
+
+沿着同一技术路径，达摩院还推出了：
+- **GRAPE 模型**：筛查早期胃癌，敏感度高达 85.1%
+- **iAorta 模型**：针对大血管疾病的早筛
+
+## 数坤科技 CT-FFR：无创替代有创
+
+**数坤科技（Shukun Tech）** 稳居全球心血管 AI 领导者地位 <Citation id="shukun" />。其冠脉 CTA AI 产品（CoronaryDoc）是**全球唯一同时获得中国 NMPA 三类证及欧盟 MDR CE 认证**的冠脉影像辅助诊断产品。
+
+更具颠覆性的是 **Shukun-FFR 系统**，能在 **3 分钟**内全自动输出一份包含"形态学狭窄判断 + 功能学缺血评估"的结构化心脏诊断报告。
+
+<MermaidChart>
+graph TD
+    A["🫀 患者心脏 CT 扫描"] --> B["🔬 3D U-Net 图像分割"]
+    B --> C["🏗️ 冠脉三维重建"]
+    C --> D["⚡ CFD 流体力学仿真"]
+    D --> E["📊 FFR 数值输出"]
+    E --> F["✅ 无创替代有创导管检查"]
+</MermaidChart>
+
+## 联影智能与深睿医疗
+
+**联影智能** 依托其「元智」医疗大模型，将 AI 深度嵌入临床专科痛点 <Citation id="uii" />：
+- **前列腺癌 AI**：国内首个，基于多序列 MRI 智能勾画可疑癌灶轮廓
+- **缺血性卒中 CT 评估**：秒级脑缺血 ASPECTS 定量评分
+
+**深睿医疗** 独创"影像+文本"双 AI 引擎 <Citation id="deepwise" />，成功中标工信部与国家药监局"2025年人工智能医疗器械创新任务揭榜挂帅"项目，攻关**肺癌多学科会诊智能辅助诊断系统**。
+
+## 底层原理：3D CNN 超微感知与 CFD 融合
+
+### 为什么 AI 能看到人类看不到的东西？
+
+在未注射造影剂的平扫 CT 中，早期胰腺肿瘤与周围正常组织的密度几乎完全一致——**相当于在白色雪地里找白兔**。
+
+然而 AI 的底层机制并非单纯"看图"，而是对三维数字矩阵进行数学运算：
+
+1. **3D 卷积神经网络**在极微观的像素级别上计算三维空间中密度的微小梯度变化
+2. 捕捉纹理的不连续性与器官边缘的几何微形变
+3. 识别人类视觉系统无法感知的**亚毫米级灰度扰动**
+
+### CT-FFR 的物理学跨界
+
+传统 FFR 测量需要有创手术——将导丝穿入心脏冠脉测量血压差。AI 系统实现了以下跨越：
+
+1. **图像分割**：3D U-Net变体将 CT 断层图像一层层堆叠，重建立体冠脉树
+2. **物理赋值**：赋予数字模型真实的血管弹性、血液黏度等物理属性
+3. **CFD 仿真**：应用 **Navier-Stokes 方程** 模拟血液湍流与压力损耗
+4. **FFR 推导**：纯数学计算出原本只有切开血管才能测量的数值
+
+$$\rho \left(\frac{\partial \mathbf{u}}{\partial t} + \mathbf{u} \cdot \nabla \mathbf{u}\right) = -\nabla p + \mu \nabla^2 \mathbf{u} + \mathbf{f}$$
+
+其中 $\rho$ 为血液密度，$\mathbf{u}$ 为速度场，$p$ 为压力，$\mu$ 为黏度系数。
+
+## 动手实验：模拟 CT 密度检测
+
+<PythonRunner code={`import numpy as np
+
+# 模拟一个 8x8 的 CT 图像切片（灰度值 0-255）
+np.random.seed(42)
+normal_tissue = np.random.normal(loc=120, scale=5, size=(8, 8)).astype(int)
+
+# 在 (3,4) 位置植入一个微小的肿瘤 —— 密度仅比正常高 3
+normal_tissue[3, 4] = 123
+
+print("=== 模拟 CT 切片灰度矩阵 ===")
+for row in normal_tissue:
+    print("  ".join("%3d" % v for v in row))
+
+# 人类肉眼几乎无法区分 120 和 123
+# AI 通过 3D 梯度计算发现异常
+gradient = np.gradient(normal_tissue.astype(float))
+magnitude = np.sqrt(gradient[0]**2 + gradient[1]**2)
+
+# 找到梯度最大的位置
+max_pos = np.unravel_index(np.argmax(magnitude), magnitude.shape)
+print("\\n🔍 AI 梯度分析结果：")
+print("  梯度最大位置: 行%d, 列%d" % max_pos)
+print("  该位置灰度值: %d" % normal_tissue[max_pos])
+print("  梯度幅值: %.2f" % magnitude[max_pos])
+
+if max_pos == (3, 4):
+    print("\\n🎯 成功！AI 精准定位到密度仅高出 3 的微小异常区域！")
+    print("  这就是 PANDA 模型'雪地找白兔'的底层逻辑。")
+else:
+    print("\\n📊 梯度分析完成，最大变化点在:", max_pos)`} />
+
+## 核心开源项目
+
+<GitHubCard repo="OpenHeartDevelopers/CemrgApp" description="基于 MITK 的开源交互式心血管研究医学成像平台，内置丰富的图像处理与计算机视觉工具。" />
+
+<GitHubCard repo="JosephBrunet/cardiotensor" description="专注于微观心脏成像的 Python 包，精确量化并可视化心肌细胞在三维空间中的排列方向。" />
+
+<ReferenceList />

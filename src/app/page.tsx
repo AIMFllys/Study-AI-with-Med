@@ -12,6 +12,7 @@ const chapters = [
     slug: 'protein-prediction',
     hasContent: true,
     tags: ['扩散模型', 'MSA', 'pLDDT'],
+    href: '/research/protein-prediction/industry-overview',
   },
   {
     number: 'II',
@@ -19,8 +20,9 @@ const chapters = [
     subtitle: '全生命周期智能加速',
     desc: '图神经网络分子建模，GAN 化学空间探索，英矽智能 Pharma.AI 端到端实践',
     slug: 'ai-drug-discovery',
-    hasContent: false,
+    hasContent: true,
     tags: ['GNN', 'AIDD', 'GAN'],
+    href: '/research/ai-drug-discovery',
   },
   {
     number: 'III',
@@ -28,17 +30,29 @@ const chapters = [
     subtitle: '多模态临床语言智能',
     desc: 'Med-Gemini 原生多模态联合编码，混元医疗 RAG 知识图谱对齐，幻觉抑制机制',
     slug: 'medical-llms',
-    hasContent: false,
+    hasContent: true,
     tags: ['多模态', 'RAG', 'LLM'],
+    href: '/research/medical-llms',
   },
   {
     number: 'IV',
+    title: 'AI+精准医学影像',
+    subtitle: '超微结构感知与机会性筛查',
+    desc: '达摩院 PANDA 平扫CT早癌筛查，数坤 CT-FFR 无创功能学评估，3D CNN 与流体力学融合',
+    slug: 'medical-imaging',
+    hasContent: true,
+    tags: ['3D CNN', 'CT-FFR', 'ViT'],
+    href: '/research/medical-imaging',
+  },
+  {
+    number: 'V',
     title: 'AI+临床智能体',
     subtitle: '自主工作流与决策闭环',
-    desc: 'ReAct 推理框架，Tool-Use 工具调用，Agentic AI 如何像医生一样规划与执行',
+    desc: 'ReAct 推理框架，Tool-Use 工具调用，多智能体协作的临床全栈自治生态',
     slug: 'agentic-ai-clinical',
-    hasContent: false,
-    tags: ['Agent', 'ReAct', 'Planning'],
+    hasContent: true,
+    tags: ['Agent', 'ReAct', 'Multi-Agent'],
+    href: '/research/agentic-ai-clinical',
   },
 ];
 
@@ -72,7 +86,7 @@ function ChapterCard({ chapter, index }: { chapter: typeof chapters[0]; index: n
       }}
     >
       {chapter.hasContent ? (
-        <Link href={`/research/${chapter.slug}/industry-overview`} className="block no-underline">
+        <Link href={chapter.href || `/research/${chapter.slug}`} className="block no-underline">
           <CardInner chapter={chapter} />
         </Link>
       ) : (
@@ -355,7 +369,7 @@ export default function Home() {
             {/* 章节导览 */}
             <div className="text-center">
               <p className="font-sans text-[10px] tracking-[0.25em] uppercase text-[var(--text-tertiary)] mb-1">目录</p>
-              <p className="font-sans text-[10px] text-[var(--text-tertiary)]">4 个研究方向</p>
+              <p className="font-sans text-[10px] text-[var(--text-tertiary)]">5 个研究方向</p>
             </div>
           </div>
         </div>
@@ -370,10 +384,11 @@ export default function Home() {
         className="border-y border-[var(--rule-color)] py-6"
         style={{ background: 'var(--bg-secondary)' }}
       >
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-16 grid grid-cols-3 gap-4 sm:gap-6">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-16 grid grid-cols-4 gap-4 sm:gap-6">
           {[
-            { num: '4', label: '研究方向' },
-            { num: '2+', label: '已完成章节' },
+            { num: '5', label: '研究方向' },
+            { num: '5', label: '已完成章节' },
+            { num: '20+', label: '开源项目追踪' },
             { num: '∞', label: '可运行代码实验' },
           ].map((stat, i) => (
             <div
@@ -424,6 +439,15 @@ export default function Home() {
         </div>
       </section>
 
+      {/* ── 五大方向深度概览 ── */}
+      <OverviewSection />
+
+      {/* ── 未来前景四大体系 ── */}
+      <FutureProspectsSection />
+
+      {/* ── 开源生态亮点 ── */}
+      <OpenSourceSection />
+
       {/* ── 关于这个项目：书籍封底风格 ── */}
       <section
         className="border-t border-[var(--rule-color)] py-20"
@@ -438,10 +462,10 @@ export default function Home() {
           </h2>
           <p className="font-body text-base text-[var(--text-secondary)] leading-relaxed max-w-2xl mx-auto mb-10">
             这是<strong className="text-[var(--text-primary)]">羽升（YuSheng）</strong>
-            在探索 AI 赋能医学方向过程中的学习记录。旨在通过深度拆解每一项突破性技术背后的底层算法原理，构建可交互、可验证的知识体系。内容全部开源，欢迎共建。
+            在探索 AI 赋能医学方向过程中的学习记录。基于全球与中国核心 AI 赋能医学成就及底层原理的深度分析，旨在通过系统性拆解每一项突破性技术背后的算法原理，构建可交互、可验证的知识体系。中国 AI 医疗产业规模已突破 7000 亿元，超过 95% 的临床医师认同 AI 的辅助价值。内容全部开源，欢迎共建。
           </p>
           <div className="flex flex-wrap justify-center gap-3">
-            {['Next.js 16', 'React 19', 'MDX', 'LaTeX', 'Mermaid', 'Pyodide WASM'].map((tech) => (
+            {['Next.js 16', 'React 19', 'MDX', 'LaTeX', 'Mermaid', 'Pyodide WASM', 'Shiki', 'KaTeX'].map((tech) => (
               <span
                 key={tech}
                 className="font-sans text-xs px-4 py-2 rounded-sm border border-[var(--card-border)] text-[var(--text-tertiary)] tracking-wider"
@@ -453,6 +477,305 @@ export default function Home() {
         </div>
       </section>
     </div>
+  );
+}
+
+/* ── 五大方向深度概览 Section ── */
+const overviewData = [
+  {
+    icon: '🧬',
+    title: '蛋白质结构解析与分子生成',
+    highlight: 'AlphaFold 3 + xTrimoPGLM',
+    stat: '千亿级参数',
+    detail: 'AlphaFold 3 引入条件扩散模型从"原子噪声云"中雕刻精确分子结构，百图生科 xTrimoPGLM 成为全球首个千亿级蛋白质语言模型，全面超越 ESM-2。',
+    slug: 'protein-prediction/industry-overview',
+  },
+  {
+    icon: '💊',
+    title: 'AI 重构新药全生命周期',
+    highlight: '英矽智能 Pharma.AI',
+    stat: '8个月提名候选药',
+    detail: '英矽智能与施维雅达成 8.88 亿美元合作，仅 8 个月提名临床前候选药物；率先展示量子计算辅助药物生成算法 QFASG。',
+    slug: 'ai-drug-discovery',
+  },
+  {
+    icon: '🧠',
+    title: '多模态医疗大模型',
+    highlight: 'Med-Gemini + 混元医疗',
+    stat: '31语言对30个第一',
+    detail: 'Med-Gemini 原生多模态架构实现跨模态因果推理；腾讯 Hunyuan-MT 在 WMT2025 全面碾压 GPT-4 等顶尖模型。',
+    slug: 'medical-llms',
+  },
+  {
+    icon: '📡',
+    title: '精准医学影像与数字病理',
+    highlight: 'PANDA + 数坤 CT-FFR',
+    stat: '24例遗漏肿瘤被发现',
+    detail: '达摩院 PANDA 从平扫 CT 中精准发现人类遗漏的胰腺癌，获 FDA 突破性器械认定；数坤科技 3 分钟输出无创心功能报告。',
+    slug: 'medical-imaging',
+  },
+  {
+    icon: '🤖',
+    title: '临床智能体自治协作',
+    highlight: '多智能体 + ReAct',
+    stat: '手术Copilot级应用',
+    detail: '从 SurgBox 手术室副驾到 PsyDraw 儿童心理多模态评估，Agentic AI 成为连接基础模型与临床场景的终极桥梁。',
+    slug: 'agentic-ai-clinical',
+  },
+];
+
+function OverviewSection() {
+  const ref = useRef<HTMLDivElement>(null);
+  const visible = useIntersection(ref as React.RefObject<HTMLElement>);
+
+  return (
+    <section
+      ref={ref}
+      className="border-t border-[var(--rule-color)] py-16 sm:py-24"
+      style={{ background: 'var(--bg-primary)' }}
+    >
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-16">
+        {/* Section header */}
+        <div className="text-center mb-16">
+          <p className="font-sans text-[10px] tracking-[0.3em] uppercase text-[var(--accent)] mb-4 opacity-70">
+            Research Landscape
+          </p>
+          <h2 className="font-serif text-4xl font-bold text-[var(--text-primary)] mb-4">
+            五大方向深度概览
+          </h2>
+          <div className="flex items-center justify-center gap-4">
+            <div className="h-px w-12 bg-[var(--accent)] opacity-40" />
+            <span className="font-serif italic text-[var(--text-tertiary)] text-sm">
+              Core Achievements & Breakthroughs
+            </span>
+            <div className="h-px w-12 bg-[var(--accent)] opacity-40" />
+          </div>
+        </div>
+
+        {/* Cards */}
+        <div className="space-y-5">
+          {overviewData.map((item, i) => (
+            <Link
+              key={item.slug}
+              href={`/research/${item.slug}`}
+              className="no-underline block group"
+            >
+              <div
+                className="relative overflow-hidden rounded-sm border border-[var(--card-border)] hover:border-[var(--accent)] bg-[var(--card-bg)] transition-all duration-500 hover:shadow-[0_8px_32px_rgba(0,0,0,0.1),0_0_0_1px_rgba(14,165,233,0.1)]"
+                style={{
+                  opacity: visible ? 1 : 0,
+                  transform: visible ? 'none' : 'translateY(24px)',
+                  transition: `opacity 0.6s ease ${i * 0.1}s, transform 0.6s cubic-bezier(0.23,1,0.32,1) ${i * 0.1}s, border-color 0.3s, box-shadow 0.3s`,
+                }}
+              >
+                <div className="absolute top-0 left-0 right-0 h-[1px] bg-gradient-to-r from-transparent via-[var(--accent)] to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+                <div className="p-6 sm:p-8 flex flex-col sm:flex-row gap-5 sm:gap-8 items-start">
+                  {/* Icon & stat */}
+                  <div className="flex sm:flex-col items-center gap-3 sm:gap-2 sm:min-w-[100px] sm:text-center shrink-0">
+                    <span className="text-3xl">{item.icon}</span>
+                    <span
+                      className="font-sans text-[10px] tracking-widest uppercase px-2.5 py-1 rounded-sm border border-[var(--accent)]/20 text-[var(--accent)] whitespace-nowrap"
+                      style={{ background: 'rgba(14,165,233,0.06)' }}
+                    >
+                      {item.stat}
+                    </span>
+                  </div>
+                  {/* Content */}
+                  <div className="flex-1 min-w-0">
+                    <h3 className="font-serif font-bold text-lg text-[var(--text-primary)] group-hover:text-[var(--accent)] transition-colors duration-300 mb-1">
+                      {item.title}
+                    </h3>
+                    <p className="font-sans text-xs tracking-wider text-[var(--accent)] opacity-70 mb-3">
+                      {item.highlight}
+                    </p>
+                    <p className="font-body text-sm leading-relaxed text-[var(--text-secondary)]">
+                      {item.detail}
+                    </p>
+                  </div>
+                  {/* Arrow */}
+                  <div className="hidden sm:flex items-center self-center text-[var(--accent)] opacity-0 group-hover:opacity-100 transition-all duration-300 translate-x-0 group-hover:translate-x-1">
+                    <span className="text-lg">→</span>
+                  </div>
+                </div>
+              </div>
+            </Link>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+/* ── 未来前景四大体系 Section ── */
+const futureDirections = [
+  {
+    num: '01',
+    title: '微观生命物质逆向生成',
+    tech: '扩散模型 + 流匹配',
+    desc: '从"盲盒试错"到"指哪打哪"——AI 直接在致病蛋白表面锁定分子缝隙，瞬间生成定制药物或 mRNA 纳米颗粒，药物筛选从数月骤降至分钟级。',
+  },
+  {
+    num: '02',
+    title: '高维复杂网络药理学',
+    tech: 'GNN + 量子计算',
+    desc: '突破"单靶点-单药物"困境，在数千万节点的生物网络中精准锁定核心枢纽节点，从头设计多靶点化合物，从"破坏元件"到"修复整个网络系统"。',
+  },
+  {
+    num: '03',
+    title: '机会性截胡筛查',
+    tech: '3D ViT + 超微感知',
+    desc: '普通低剂量 CT 即可在一瞬间排查骨折、肺结节、冠脉钙化、骨质疏松甚至神经退行性病变前兆——真正实现"治未病"理念。',
+  },
+  {
+    num: '04',
+    title: '临床全栈自治协作',
+    tech: 'LLM + Multi-Agent',
+    desc: '虚拟医院由高度细化的数字专家共同承担：影像 Agent、基因 Agent、文献 Agent 联合上报证据链，主治 Agent 综合输出个性化 MDT 治疗方案。',
+  },
+];
+
+function FutureProspectsSection() {
+  const ref = useRef<HTMLDivElement>(null);
+  const visible = useIntersection(ref as React.RefObject<HTMLElement>);
+
+  return (
+    <section
+      ref={ref}
+      className="border-t border-[var(--rule-color)] py-16 sm:py-24"
+      style={{ background: 'var(--bg-secondary)' }}
+    >
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-16">
+        <div className="text-center mb-16">
+          <p className="font-sans text-[10px] tracking-[0.3em] uppercase text-[var(--accent)] mb-4 opacity-70">
+            Future Prospects
+          </p>
+          <h2 className="font-serif text-4xl font-bold text-[var(--text-primary)] mb-4">
+            未来最具前景的四大体系
+          </h2>
+          <p className="font-body text-sm text-[var(--text-secondary)] max-w-2xl mx-auto">
+            从算法底层核心原理出发，未来 5-10 年内最有可能彻底颠覆传统医学范式的核心方向
+          </p>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          {futureDirections.map((dir, i) => (
+            <div
+              key={dir.num}
+              className="group relative overflow-hidden rounded-sm border border-[var(--card-border)] bg-[var(--card-bg)] p-8 transition-all duration-500 hover:border-[var(--accent)] hover:shadow-[0_8px_32px_rgba(0,0,0,0.1)]"
+              style={{
+                opacity: visible ? 1 : 0,
+                transform: visible ? 'none' : 'translateY(24px)',
+                transition: `opacity 0.6s ease ${i * 0.1}s, transform 0.6s cubic-bezier(0.23,1,0.32,1) ${i * 0.1}s, border-color 0.3s, box-shadow 0.3s`,
+              }}
+            >
+              {/* Number overlay */}
+              <span
+                className="absolute top-4 right-6 font-serif text-6xl font-black leading-none opacity-[0.04] group-hover:opacity-[0.08] transition-opacity duration-500"
+                style={{ color: 'var(--accent)' }}
+              >
+                {dir.num}
+              </span>
+
+              <div className="relative">
+                <span
+                  className="inline-block font-sans text-[10px] tracking-widest uppercase px-2.5 py-1 rounded-sm mb-4"
+                  style={{
+                    background: 'rgba(14,165,233,0.08)',
+                    color: 'var(--accent)',
+                    border: '1px solid rgba(14,165,233,0.15)',
+                  }}
+                >
+                  {dir.tech}
+                </span>
+                <h3 className="font-serif font-bold text-lg text-[var(--text-primary)] mb-3 group-hover:text-[var(--accent)] transition-colors duration-300">
+                  {dir.title}
+                </h3>
+                <div className="h-px bg-gradient-to-r from-[var(--accent)] to-transparent opacity-15 mb-4" />
+                <p className="font-body text-sm leading-relaxed text-[var(--text-secondary)]">
+                  {dir.desc}
+                </p>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+/* ── 开源生态亮点 Section ── */
+const openSourceProjects = [
+  { name: 'Boltz-1/Boltz-2', desc: '逼近 AlphaFold 3 的完全开源生物分子基础模型，MIT 协议', url: 'https://github.com/jwohlwend/boltz' },
+  { name: 'xTrimoPGLM', desc: '千亿级蛋白质语言模型，7 个不同参数量版本', url: 'https://github.com/biomap-research/xTrimoPGLM' },
+  { name: 'GENTRL', desc: '生成式张量强化学习药物分子从头设计框架', url: 'https://github.com/insilicomedicine/GENTRL' },
+  { name: 'MedGemma', desc: 'Google 开源医疗多模态模型 4B/27B + MedSigLIP 编码器', url: 'https://github.com/google/medgemma' },
+  { name: 'OpenMEDLab', desc: '全球首个医学多模态基础模型开源平台', url: 'https://github.com/openmedlab' },
+  { name: 'MedLLMsPracticalGuide', desc: '业界最详尽的医疗大模型实战与资源仓库', url: 'https://github.com/AI-in-Health/MedLLMsPracticalGuide' },
+  { name: 'CemrgApp', desc: '心血管研究交互式医学成像平台', url: 'https://github.com/OpenHeartDevelopers/CemrgApp' },
+  { name: 'DORA', desc: 'AI 驱动的多智能体文献梳理与研究报告工具', url: 'https://github.com/insilicomedicine/DORA' },
+];
+
+function OpenSourceSection() {
+  const ref = useRef<HTMLDivElement>(null);
+  const visible = useIntersection(ref as React.RefObject<HTMLElement>);
+
+  return (
+    <section
+      ref={ref}
+      className="border-t border-[var(--rule-color)] py-16 sm:py-24"
+      style={{ background: 'var(--bg-primary)' }}
+    >
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-16">
+        <div className="text-center mb-16">
+          <p className="font-sans text-[10px] tracking-[0.3em] uppercase text-[var(--accent)] mb-4 opacity-70">
+            Open Source Ecosystem
+          </p>
+          <h2 className="font-serif text-4xl font-bold text-[var(--text-primary)] mb-4">
+            开源生态亮点
+          </h2>
+          <div className="flex items-center justify-center gap-4">
+            <div className="h-px w-12 bg-[var(--accent)] opacity-40" />
+            <span className="font-serif italic text-[var(--text-tertiary)] text-sm">
+              Democratizing AI for Medicine
+            </span>
+            <div className="h-px w-12 bg-[var(--accent)] opacity-40" />
+          </div>
+        </div>
+
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+          {openSourceProjects.map((proj, i) => (
+            <a
+              key={proj.name}
+              href={proj.url}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="no-underline group block"
+            >
+              <div
+                className="relative h-full overflow-hidden rounded-sm border border-[var(--card-border)] bg-[var(--card-bg)] p-5 transition-all duration-500 hover:border-[var(--accent)] hover:shadow-[0_4px_20px_rgba(0,0,0,0.08)]"
+                style={{
+                  opacity: visible ? 1 : 0,
+                  transform: visible ? 'none' : 'translateY(16px)',
+                  transition: `opacity 0.5s ease ${i * 0.06}s, transform 0.5s ease ${i * 0.06}s, border-color 0.3s, box-shadow 0.3s`,
+                }}
+              >
+                <div className="flex items-center gap-2 mb-3">
+                  <svg className="w-4 h-4 text-[var(--text-tertiary)] group-hover:text-[var(--accent)] transition-colors duration-300" fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z" />
+                  </svg>
+                  <h4 className="font-sans text-sm font-semibold text-[var(--text-primary)] group-hover:text-[var(--accent)] transition-colors duration-300 truncate">
+                    {proj.name}
+                  </h4>
+                </div>
+                <p className="font-body text-xs leading-relaxed text-[var(--text-secondary)]">
+                  {proj.desc}
+                </p>
+              </div>
+            </a>
+          ))}
+        </div>
+      </div>
+    </section>
   );
 }
 

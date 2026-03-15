@@ -1,14 +1,9 @@
 import { MDXRemote } from 'next-mdx-remote/rsc';
-import { getContentBySlug, getAllContentSlugs } from '@/lib/mdx';
+import { getContentBySlug, getAllContentSlugs, sharedMdxOptions } from '@/lib/mdx';
 import { getMdxComponents } from '@/components/mdx';
 import { ReferenceList } from '@/components/mdx/Citation';
 import TableOfContents from '@/components/layout/TableOfContents';
 import MobileTocFloat from '@/components/layout/MobileTocFloat';
-import remarkGfm from 'remark-gfm';
-import remarkMath from 'remark-math';
-import rehypeSlug from 'rehype-slug';
-import rehypeKatex from 'rehype-katex';
-import rehypePrettyCode from 'rehype-pretty-code';
 import { notFound } from 'next/navigation';
 import type { Metadata } from 'next';
 
@@ -106,25 +101,7 @@ export default async function ResearchPage({
           <MDXRemote
             source={data.source}
             components={components}
-            options={{
-              mdxOptions: {
-                remarkPlugins: [remarkGfm, remarkMath],
-                rehypePlugins: [
-                  rehypeSlug,
-                  rehypeKatex as any,
-                  [
-                    rehypePrettyCode as any,
-                    {
-                      theme: {
-                        dark: 'github-dark-dimmed',
-                        light: 'vitesse-light',
-                      },
-                      keepBackground: false,
-                    },
-                  ],
-                ],
-              },
-            }}
+            options={{ mdxOptions: sharedMdxOptions }}
           />
         </div>
         <ReferenceList references={data.frontmatter.references || []} />

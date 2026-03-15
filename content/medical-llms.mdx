@@ -53,7 +53,7 @@ graph LR
 knowledge_base = dict()
 knowledge_base["甲状腺结节"] = "根据TI-RADS分类，4类及以上结节恶性风险较高，建议进行细针穿刺活检(FNA)。"
 knowledge_base["心房颤动"] = "房颤患者的卒中风险通过 CHA2DS2-VASc 评分评估，评分>=2时强推荐抗凝治疗。"
-knowledge_base["二甲双胍"] = "2型糖尿病的一线首选口服降糖药，但若患者 eGFR &lt; 30 mL/min/1.73m2，应禁用。"
+knowledge_base["二甲双胍"] = "2型糖尿病的一线首选口服降糖药，但若患者 eGFR < 30 mL/min/1.73m2，应禁用。"
 
 def mock_med_rag(patient_query):
     print("🔍 收到患者主诉：'%s'" % patient_query)
@@ -74,4 +74,48 @@ def mock_med_rag(patient_query):
 
 # 运行模拟
 output = mock_med_rag("我体检确诊了心房颤动，医生让我吃抗凝药，这合理吗？")
-print("\n" + output)`} />
+print("\\n" + output)`} />
+
+## MedGemma 开源家族
+
+Google 发布了迄今最强大的开源医疗模型家族 **MedGemma**，专为医疗 AI 开发者设计：
+
+| 模型 | 参数量 | 核心能力 |
+|------|--------|----------|
+| MedGemma 4B | 40 亿 | 轻量级多模态，适合端侧部署 |
+| MedGemma 27B | 270 亿 | 高性能多模态推理 |
+| MedSigLIP | - | 专业医学影像与文本联合编码器 |
+
+MedGemma 将医学影像切分为数百个小图块，转化为与文本同等地位的"**视觉 Token**"，使模型能直接计算"咳嗽"文本 Token 与 X 光阴影像素图块之间的因果关系。
+
+## 腾讯混元：翻译与 OCR 的碾压级表现
+
+### Hunyuan-MT：31 语言对中 30 个第一
+
+腾讯 **Hunyuan-MT-7B** 在 **WMT2025** 通用机器翻译任务中取得了前所未有的成绩：
+
+<Callout type="info">
+  在 31 个语言对中的 **30 个**排名第一。COMET-XXL 评估得分全面碾压 Google-Translator、DeepSeek-V3、Claude-Sonnet-4 以及 GPT-4 等全球顶尖大模型——包括爱沙尼亚语、马拉地语等低资源语言。
+</Callout>
+
+### HunyuanOCR：医疗文档数字化的先决条件
+
+复杂医疗文档（纸质化验单、模糊影像报告）的数字化是临床大模型落地的先决条件。腾讯开源的 **HunyuanOCR**：
+
+- 准确率 **70.92%**，压倒性击败 BaiduOCR（61.9%）及 Qwen3VL 等通用视觉语言模型
+- 保持极低的字符编辑距离
+- 专为多语言文档解析设计
+
+### MedKGEval：大模型医疗知识审核
+
+<Callout type="warning">
+  大语言模型的"**幻觉**"在医疗领域关乎人命。MedKGEval 依托 CPubMedKG 和 CMeKG 等高质量中文医疗知识图谱，通过实体级、关系级和子图级的测试任务，精确评估各类医疗大模型的**医学推理准确度**。
+</Callout>
+
+## 核心开源项目
+
+<GitHubCard repo="AI-in-Health/MedLLMsPracticalGuide" description="业界最详尽的医疗大模型实战与资源仓库，汇聚了全球主流医疗开源模型的预训练代码与权重。" />
+
+<GitHubCard repo="openmedlab" description="全球首个针对医学多模态基础模型的开源大平台，开源了涵盖 10 余种医学模态的真实世界预训练数据集。" />
+
+<GitHubCard repo="ZihengZZH/MedKGEval" description="依托中文医疗知识图谱，评估大语言模型医疗知识覆盖率与逻辑一致性的基准测试集。" />

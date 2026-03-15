@@ -1,7 +1,8 @@
 'use client';
 
-import { useState, useEffect, useCallback } from 'react';
+import { useState } from 'react';
 import { List, X, ChevronUp } from 'lucide-react';
+import { useScrollSpy, useScrollToHeading, useBodyScrollLock } from '@/hooks/useScrollSpy';
 import type { HeadingItem } from '@/types/mdx';
 
 interface MobileTocFloatProps {
@@ -10,64 +11,19 @@ interface MobileTocFloatProps {
 
 /**
  * Floating TOC button + drawer for mobile.
- * Shows above the bottom tab bar, opens a full-height overlay with headings.
+ * Shows above the bottom tab bar, opens a side panel with headings.
  * Hidden on desktop (xl:hidden as desktop uses the sidebar TOC).
  */
 export default function MobileTocFloat({ headings }: MobileTocFloatProps) {
   const [open, setOpen] = useState(false);
-  const [activeId, setActiveId] = useState<string>('');
-  const [readProgress, setReadProgress] = useState(0);
+  const { activeId, readProgress } = useScrollSpy(headings);
+  const scrollToHeading = useScrollToHeading();
+  useBodyScrollLock(open);
 
-  /* ── Scroll spy ── */
-  useEffect(() => {
-    const handleScroll = () => {
-      const scrollTop = window.scrollY;
-      const docHeight = document.documentElement.scrollHeight - window.innerHeight;
-      setReadProgress(docHeight > 0 ? Math.min(scrollTop / docHeight, 1) : 0);
-    };
-
-    const observer = new IntersectionObserver(
-      (entries) => {
-        for (const entry of entries) {
-          if (entry.isIntersecting) setActiveId(entry.target.id);
-        }
-      },
-      { rootMargin: '-80px 0px -70% 0px', threshold: 0 }
-    );
-
-    headings.forEach(({ id }) => {
-      const el = document.getElementById(id);
-      if (el) observer.observe(el);
-    });
-
-    window.addEventListener('scroll', handleScroll, { passive: true });
-    handleScroll();
-    return () => {
-      observer.disconnect();
-      window.removeEventListener('scroll', handleScroll);
-    };
-  }, [headings]);
-
-  /* Lock body scroll when drawer open */
-  useEffect(() => {
-    if (open) {
-      document.body.style.overflow = 'hidden';
-    } else {
-      document.body.style.overflow = '';
-    }
-    return () => { document.body.style.overflow = ''; };
-  }, [open]);
-
-  const scrollToHeading = useCallback((id: string) => {
+  const handleHeadingClick = (id: string) => {
     setOpen(false);
-    setTimeout(() => {
-      const el = document.getElementById(id);
-      if (el) {
-        el.scrollIntoView({ behavior: 'smooth', block: 'start' });
-        window.history.pushState(null, '', `#${id}`);
-      }
-    }, 300);
-  }, []);
+    setTimeout(() => scrollToHeading(id), 300);
+  };
 
   if (headings.length === 0) return null;
 
@@ -116,7 +72,7 @@ export default function MobileTocFloat({ headings }: MobileTocFloatProps) {
         <>
           {/* Backdrop */}
           <div
-            className="fixed inset-0 z-35 xl:hidden"
+            className="fixed inset-0 xl:hidden"
             style={{
               background: 'rgba(0,0,0,0.4)',
               backdropFilter: 'blur(4px)',
@@ -172,7 +128,7 @@ export default function MobileTocFloat({ headings }: MobileTocFloatProps) {
                   return (
                     <li key={heading.id} className={heading.level === 3 ? 'ml-3' : ''}>
                       <button
-                        onClick={() => scrollToHeading(heading.id)}
+                        onClick={() => handleHeadingClick(heading.id)}
                         className="w-full text-left block py-2 pl-3 pr-1 text-[13px] font-sans leading-snug transition-all duration-300 rounded-sm"
                         style={{
                           color: isActive ? 'var(--accent)' : 'var(--text-secondary)',

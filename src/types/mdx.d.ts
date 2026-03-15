@@ -21,12 +21,6 @@ export interface HeadingItem {
   level: number;
 }
 
-export interface ContentData {
-  meta: ContentMeta;
-  headings: HeadingItem[];
-  content: string; // raw MDX source
-}
-
 export interface NavItem {
   slug: string;
   title: string;
@@ -35,3 +29,4 @@ export interface NavItem {
   children?: NavItem[];
   disabled?: boolean;
 }
+
