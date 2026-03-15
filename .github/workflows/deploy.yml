@@ -33,6 +33,10 @@ jobs:
             git reset --hard origin/main
             git clean -fd
 
+            # 清理旧的构建产物（防止缓存残留导致版本回退）
+            echo "🧹 清理旧构建..."
+            rm -rf .next
+
             # 安装依赖
             echo "📦 安装依赖..."
             npm ci
@@ -41,13 +45,15 @@ jobs:
             echo "🔨 编译中..."
             npm run build
 
-            # 重启 PM2 服务
+            # 复制静态资源到 standalone 目录（standalone 模式必需）
+            echo "📁 准备 standalone 产物..."
+            cp -r .next/static .next/standalone/.next/static
+            cp -r public .next/standalone/public 2>/dev/null || true
+
+            # 重启 PM2 服务（使用 standalone server.js 入口）
             echo "🔄 重启服务..."
-            if pm2 describe medicine > /dev/null 2>&1; then
-              pm2 restart medicine
-            else
-              pm2 start npm --name "medicine" -- start
-            fi
+            pm2 delete medicine 2>/dev/null || true
+            PORT=3000 pm2 start .next/standalone/server.js --name "medicine" --cwd /www/wwwroot/ai-med.husteread.icu
             pm2 save
 
             echo "===== ✅ 部署完成！ ====="
