@@ -263,8 +263,7 @@ $$\Delta\Delta G = \Delta G_{\text{mutant}} - \Delta G_{\text{wild-type}}$$
 
 ## 动手实验：模型输出置信度解析
 
-<PythonRunner>
-# 模拟 Boltz-2 输出的完整预测结果
+<PythonRunner code={`# 模拟 Boltz-2 输出的完整预测结果
 confidence_score = 0.852
 ptm_score = 0.789
 iptm_score = 0.831
@@ -312,8 +311,7 @@ if confidence_score >= 0.8:
 elif confidence_score >= 0.6:
     print("综合评估: 中等置信度 - 建议结合实验验证 (如 SPR / ITC)")
 else:
-    print("综合评估: 低置信度 - 结构可能存在高无序区域")
-</PythonRunner>
+    print("综合评估: 低置信度 - 结构可能存在高无序区域")`} />
 
 ---
 
@@ -411,8 +409,7 @@ graph TB
 
 ## 动手实验：氨基酸频率 vs. 疏水性分析
 
-<PythonRunner>
-from collections import Counter
+<PythonRunner code={`from collections import Counter
 
 # Kyte-Doolittle 疏水性指数 (经典标准)
 HYDROPATHY = dict(
@@ -451,21 +448,20 @@ for name, seq in [("A 链", insulin_a), ("B 链", insulin_b)]:
     print()
 
 print("提示：胰岛素的 A/B 链通过两对二硫键 (Cys-Cys) 交联，")
-print("   AI 蛋白质模型需要正确捕获这种共价交互才能准确预测其三维结构。")
-</PythonRunner>
+print("   AI 蛋白质模型需要正确捕获这种共价交互才能准确预测其三维结构。")`} />
 
 ---
 
 ## 核心开源项目速览
 
-<GitHubCard repo="jwohlwend/boltz" description="Boltz-1/2：完全开源（MIT）的生物分子基础模型，Boltz-2 新增结合亲和力预测，速度比 FEP 快 1000 倍。" />
+<GitHubCard repo="jwohlwend/boltz" description="Boltz-1/2：完全开源（MIT）的生物分子复合物预测模型，支持全原子级相互作用。" />
 
-<GitHubCard repo="google-deepmind/alphafold3" description="AlphaFold 3 官方实现，2024 诺贝尔化学奖模型，支持蛋白质/DNA/RNA/配体联合预测。" />
-
-<GitHubCard repo="facebookresearch/esm" description="Meta AI ESM 系列蛋白质语言模型。ESMFold 已预测 6.17 亿结构。从 8M 到 15B 多种规模。" />
-
-<GitHubCard repo="RosettaCommons/RFdiffusion" description="Baker 实验室开发的扩散式蛋白质设计工具，RFdiffusion3 是迄今最强大的通用蛋白质工程工具。" />
+<GitHubCard repo="facebookresearch/esm" description="Meta AI ESM 系列蛋白质语言模型。ESMFold 已预测 6.17 亿结构。支持从 8M 到 15B 多种规模。" />
 
 <GitHubCard repo="dauparas/ProteinMPNN" description="给定蛋白质骨架结构，快速生成可折叠氨基酸序列。常与 RFdiffusion 组合使用。" />
+
+<GitHubCard repo="biomap-research/xTrimoPGLM" description="百图生科开源的千亿级参数蛋白质语言模型，专为解码生命蛋白质语言设计。" />
+
+<GitHubCard repo="google-deepmind/alphafold3" description="AlphaFold 3 官方代码实现与环境配置，支持 Docker 部署（权重限非商业用途）。" />
 
 <ReferenceList />

@@ -3,10 +3,12 @@
 import React, { useState, useCallback } from 'react';
 
 interface PythonRunnerProps {
-  children: React.ReactNode;
+  children?: React.ReactNode;
+  code?: string;
 }
 
 function extractText(children: React.ReactNode): string {
+  if (!children) return '';
   if (typeof children === 'string') return children;
   if (typeof children === 'number') return String(children);
   if (Array.isArray(children)) return children.map(extractText).join('');
@@ -44,12 +46,12 @@ async function loadPyodideFromCDN() {
   return pyodide;
 }
 
-export default function PythonRunner({ children }: PythonRunnerProps) {
+export default function PythonRunner({ children, code: codeProp }: PythonRunnerProps) {
   const [output, setOutput] = useState<string>('');
   const [isRunning, setIsRunning] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
-  const code = extractText(children).trim();
+  const code = (codeProp || extractText(children)).trim();
 
   const runCode = useCallback(async () => {
     setIsRunning(true);

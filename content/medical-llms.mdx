@@ -49,30 +49,29 @@ graph LR
 
 在下面这个精简环境里，我们模拟一段 RAG 如何介入大模型诊断的流程：
 
-<PythonRunner>
-# 极简 RAG (检索增强生成) 演示
-knowledge_base = {
-    "甲状腺结节": "根据TI-RADS分类，4类及以上结节恶性风险较高，建议进行细针穿刺活检(FNA)。",
-    "心房颤动": "房颤患者的卒中风险通过 CHA2DS2-VASc 评分评估，评分>=2时强推荐抗凝治疗。",
-    "二甲双胍": "2型糖尿病的一线首选口服降糖药，但若患者 eGFR < 30 mL/min/1.73m2，应禁用。"
-}
+<PythonRunner code={`# 极简 RAG (检索增强生成) 演示
+knowledge_base = dict()
+knowledge_base["甲状腺结节"] = "根据TI-RADS分类，4类及以上结节恶性风险较高，建议进行细针穿刺活检(FNA)。"
+knowledge_base["心房颤动"] = "房颤患者的卒中风险通过 CHA2DS2-VASc 评分评估，评分>=2时强推荐抗凝治疗。"
+knowledge_base["二甲双胍"] = "2型糖尿病的一线首选口服降糖药，但若患者 eGFR &lt; 30 mL/min/1.73m2，应禁用。"
 
 def mock_med_rag(patient_query):
-    print(f"🔍 收到患者主诉：'{patient_query}'")
+    print("🔍 收到患者主诉：'%s'" % patient_query)
     # 模拟向量检索匹配
     matched_knowledge = None
+    matched_keyword = None
     for keyword, info in knowledge_base.items():
         if keyword in patient_query:
             matched_knowledge = info
-            print(f"📚 命中权威数据库 [{keyword}]: {info}")
+            matched_keyword = keyword
+            print("📚 命中权威数据库 [%s]: %s" % (keyword, info))
             break
             
     if not matched_knowledge:
          return "🤖 大模型：建议您立即联系专科医生..."
          
-    return f"🤖 分析结论：基于最新指南，考虑到患者情况（{keyword}），{matched_knowledge} 请谨遵医嘱并结合线下随访。"
+    return "🤖 分析结论：基于最新指南，考虑到患者情况（%s），%s 请谨遵医嘱并结合线下随访。" % (matched_keyword, matched_knowledge)
 
 # 运行模拟
 output = mock_med_rag("我体检确诊了心房颤动，医生让我吃抗凝药，这合理吗？")
-print("\n" + output)
-</PythonRunner>
+print("\n" + output)`} />

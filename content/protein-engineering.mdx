@@ -66,8 +66,7 @@ xTrimoPGLM 的原理建立在**大规模因果语言建模（Causal Language Mod
 
 ## 动手实验：氨基酸频率分析
 
-<PythonRunner>
-from collections import Counter
+<PythonRunner code={`from collections import Counter
 
 # 人类血红蛋白 alpha 链 (示例序列)
 sequence = "MVLSPADKTNVKAAWGKVGAHAGEYGAEALERMFLSFPTTKTYFPHFDLSH"
@@ -76,11 +75,10 @@ freq = Counter(sequence)
 print("=== 氨基酸频率分析 ===")
 for aa, count in sorted(freq.items(), key=lambda x: -x[1])[:10]:
     bar = "█" * count
-    print(f"  {aa}: {bar} ({count})")
+    print("  %s: %s (%d)" % (aa, bar, count))
 
-print(f"\n序列长度: {len(sequence)} 个氨基酸")
-print(f"不同氨基酸种类: {len(freq)} 种")
-</PythonRunner>
+print("\n序列长度: %d 个氨基酸" % len(sequence))
+print("不同氨基酸种类: %d 种" % len(freq))`} />
 
 ## 核心开源项目
 

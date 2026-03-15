@@ -49,23 +49,22 @@ sequenceDiagram
 
 我们要实现的不再是一个简单的对话模型，而是一个能调用 `check_lab_results()` 的智能体演示。
 
-<PythonRunner>
-class MedicalAgent:
+<PythonRunner code={`class MedicalAgent:
     def __init__(self):
         # 模拟可用的外部工具
-        self.lab_db = {"potassium": 5.8, "sodium": 138, "creatinine": 1.9}
+        self.lab_db = dict(potassium=5.8, sodium=138, creatinine=1.9)
         
     def check_lab_results(self, test_name):
-        print(f"[Action 工具调用]: 查询 {test_name} 结果...")
+        print("[Action 工具调用]: 查询 %s 结果..." % test_name)
         return self.lab_db.get(test_name, "未查到结果")
         
     def run(self, prompt):
-        print(f"👨‍⚕️ 医生指令: {prompt}\n")
+        print("👨‍⚕️ 医生指令: %s\n" % prompt)
         
         # 思考与规划
         print("🤖 [Thought]: 医生问患者血钾情况，我需要调用实验室工具。")
         val = self.check_lab_results("potassium")
-        print(f"🔬 [Observation]: 血钾={val} mmol/L")
+        print("🔬 [Observation]: 血钾=%s mmol/L" % val)
         
         # 二次推理
         print("🤖 [Thought]: 血钾5.8偏高（>5.5），可能有高钾血症风险，需立刻提醒。")
@@ -74,8 +73,7 @@ class MedicalAgent:
         print("\n✅ [Final Answer]: 患者最新血钾值为 5.8 mmol/L，属于高钾状态，建议结合心电图复查，并注意避免使用引发高钾的药物。")
 
 agent = MedicalAgent()
-agent.run("帮我看看33床张大妈的血钾危不危险？")
-</PythonRunner>
+agent.run("帮我看看33床张大妈的血钾危不危险？")`} />
 
 ## 结语
 
