@@ -77,18 +77,28 @@ export function buildNavigationTree(): NavItem[] {
 
 function formatGroupTitle(key: string): string {
   const titles: Record<string, string> = {
-    'protein-prediction': 'AI+蛋白质预测',
-    experiments: '开源项目实验',
-    'deep-dive': '深入理论分析',
+    'ai-protein': 'AI+蛋白质预测',
+    'ai-drug': 'AI+药物发现',
+    'ai-llm': 'AI+医疗大模型',
+    'ai-imaging': 'AI+精准影像',
+    'ai-agent': 'AI+临床智能体',
+    knowledge: '知识点分析',
+    notes: '个人笔记区',
+    forum: '微论坛',
   };
   return titles[key] || key.replace(/-/g, ' ').replace(/\b\w/g, (c) => c.toUpperCase());
 }
 
 function getGroupOrder(key: string): number {
   const orders: Record<string, number> = {
-    'protein-prediction': 1,
-    experiments: 80,
-    'deep-dive': 90,
+    'ai-protein': 1,
+    'ai-drug': 2,
+    'ai-llm': 3,
+    'ai-imaging': 4,
+    'ai-agent': 5,
+    knowledge: 10,
+    notes: 80,
+    forum: 90,
   };
   return orders[key] ?? 50;
 }
