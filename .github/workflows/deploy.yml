@@ -1,0 +1,43 @@
+name: 🚀 Deploy to Production
+
+# 当 push 到 main 分支时自动触发
+on:
+  push:
+    branches: [main]
+
+jobs:
+  deploy:
+    name: 部署到宝塔服务器
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: 🔑 SSH 连接服务器并部署
+        uses: appleboy/ssh-action@v1.2.0
+        with:
+          host: ${{ secrets.SERVER_HOST }}
+          username: ${{ secrets.SERVER_USER }}
+          key: ${{ secrets.SERVER_SSH_KEY }}
+          port: ${{ secrets.SERVER_PORT }}
+          script: |
+            echo "===== 🚀 开始自动化部署 ====="
+            
+            # 进入项目目录
+            cd /www/wwwroot/ai-med.husteread.icu
+            
+            # 拉取最新代码
+            echo "📥 拉取最新代码..."
+            git pull origin main
+            
+            # 安装依赖
+            echo "📦 安装依赖..."
+            npm install --production=false
+            
+            # 编译生产版本
+            echo "🔨 编译中..."
+            npm run build
+            
+            # 重启 Node 项目（PM2 方式）
+            echo "🔄 重启服务..."
+            pm2 restart study-ai-med || pm2 start .next/standalone/server.js --name study-ai-med -- -p 5986
+            
+            echo "===== ✅ 部署完成！ ====="
