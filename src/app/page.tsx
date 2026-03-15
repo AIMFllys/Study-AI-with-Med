@@ -9,50 +9,50 @@ const chapters = [
     title: 'AI+蛋白质预测',
     subtitle: '结构预测与生命分子生成',
     desc: 'AlphaFold 3 条件扩散模型，Boltz-1 开源复现，xTrimoPGLM 千亿参数蛋白质语言模型',
-    slug: 'ai-protein',
+    slug: 'ai-analysis/ai-protein',
     hasContent: true,
     tags: ['扩散模型', 'MSA', 'pLDDT'],
-    href: '/research/ai-protein/intro',
+    href: '/research/ai-analysis/ai-protein/intro',
   },
   {
     number: 'II',
     title: 'AI+药物发现',
     subtitle: '全生命周期智能加速',
     desc: '图神经网络分子建模，GAN 化学空间探索，英矽智能 Pharma.AI 端到端实践',
-    slug: 'ai-drug',
+    slug: 'ai-analysis/ai-drug',
     hasContent: true,
     tags: ['GNN', 'AIDD', 'GAN'],
-    href: '/research/ai-drug/intro',
+    href: '/research/ai-analysis/ai-drug/intro',
   },
   {
     number: 'III',
     title: 'AI+医疗大模型',
     subtitle: '多模态临床语言智能',
     desc: 'Med-Gemini 原生多模态联合编码，混元医疗 RAG 知识图谱对齐，幻觉抑制机制',
-    slug: 'ai-llm',
+    slug: 'ai-analysis/ai-llm',
     hasContent: true,
     tags: ['多模态', 'RAG', 'LLM'],
-    href: '/research/ai-llm/intro',
+    href: '/research/ai-analysis/ai-llm/intro',
   },
   {
     number: 'IV',
     title: 'AI+精准医学影像',
     subtitle: '超微结构感知与机会性筛查',
     desc: '达摩院 PANDA 平扫CT早癌筛查，数坤 CT-FFR 无创功能学评估，3D CNN 与流体力学融合',
-    slug: 'ai-imaging',
+    slug: 'ai-analysis/ai-imaging',
     hasContent: true,
     tags: ['3D CNN', 'CT-FFR', 'ViT'],
-    href: '/research/ai-imaging/intro',
+    href: '/research/ai-analysis/ai-imaging/intro',
   },
   {
     number: 'V',
     title: 'AI+临床智能体',
     subtitle: '自主工作流与决策闭环',
     desc: 'ReAct 推理框架，Tool-Use 工具调用，多智能体协作的临床全栈自治生态',
-    slug: 'ai-agent',
+    slug: 'ai-analysis/ai-agent',
     hasContent: true,
     tags: ['Agent', 'ReAct', 'Multi-Agent'],
-    href: '/research/ai-agent/intro',
+    href: '/research/ai-analysis/ai-agent/intro',
   },
 ];
 
@@ -357,6 +357,57 @@ export default function Home() {
                 GitHub
               </a>
             </div>
+
+            {/* 🔥 论文推荐 CTA — 发光横幅 */}
+            <div
+              className="mt-8"
+              style={{ animation: 'fade-up 0.6s ease 1.4s both' }}
+            >
+              <Link
+                href="/research/ai-report/qingnang-medical-ai"
+                className="no-underline group/paper block relative overflow-hidden rounded-lg p-[1px]"
+                style={{
+                  background: 'linear-gradient(135deg, #0ea5e9, #22d3ee, #0ea5e9, #7dd3fc)',
+                  backgroundSize: '300% 300%',
+                  animation: 'glow-border-shift 4s ease-in-out infinite',
+                }}
+              >
+                {/* Glow shadow layer */}
+                <div
+                  className="absolute inset-0 rounded-lg opacity-40 blur-xl -z-10"
+                  style={{
+                    background: 'linear-gradient(135deg, #0ea5e9, #22d3ee)',
+                    animation: 'glow-pulse 2.5s ease-in-out infinite',
+                  }}
+                />
+                <div
+                  className="relative rounded-[7px] px-5 py-4 flex items-center gap-4 transition-all duration-300"
+                  style={{
+                    background: 'var(--bg-primary)',
+                  }}
+                >
+                  {/* Icon */}
+                  <span className="text-2xl shrink-0 group-hover/paper:scale-110 transition-transform duration-300">📄</span>
+                  {/* Text */}
+                  <div className="flex-1 min-w-0">
+                    <p className="font-sans text-[10px] tracking-[0.2em] uppercase mb-1" style={{ color: 'var(--accent)', opacity: 0.8 }}>
+                      笔者分析 · Author&apos;s Analysis
+                    </p>
+                    <p className="font-serif text-sm font-semibold leading-snug" style={{ color: 'var(--text-primary)' }}>
+                      AI赋能医疗更有前途的实例是——
+                      <span style={{ color: 'var(--accent)' }}> 点击查看论文 →</span>
+                    </p>
+                  </div>
+                  {/* Arrow */}
+                  <span
+                    className="hidden sm:block text-lg transition-all duration-300 group-hover/paper:translate-x-1"
+                    style={{ color: 'var(--accent)' }}
+                  >
+                    →
+                  </span>
+                </div>
+              </Link>
+            </div>
           </div>
 
           {/* 右：装饰性书本图形 */}
@@ -488,7 +539,7 @@ const overviewData = [
     highlight: 'AlphaFold 3 + xTrimoPGLM',
     stat: '千亿级参数',
     detail: 'AlphaFold 3 引入条件扩散模型从"原子噪声云"中雕刻精确分子结构，百图生科 xTrimoPGLM 成为全球首个千亿级蛋白质语言模型，全面超越 ESM-2。',
-    slug: 'ai-protein/intro',
+    slug: 'ai-analysis/ai-protein/intro',
     disabled: false,
   },
   {
@@ -497,7 +548,7 @@ const overviewData = [
     highlight: '英矽智能 Pharma.AI',
     stat: '8个月提名候选药',
     detail: '英矽智能与施维雅达成 8.88 亿美元合作，仅 8 个月提名临床前候选药物；率先展示量子计算辅助药物生成算法 QFASG。',
-    slug: 'ai-drug/intro',
+    slug: 'ai-analysis/ai-drug/intro',
     disabled: false,
   },
   {
@@ -506,7 +557,7 @@ const overviewData = [
     highlight: 'Med-Gemini + 混元医疗',
     stat: '31语言对30个第一',
     detail: 'Med-Gemini 原生多模态架构实现跨模态因果推理；腾讯 Hunyuan-MT 在 WMT2025 全面碾压 GPT-4 等顶尖模型。',
-    slug: 'ai-llm/intro',
+    slug: 'ai-analysis/ai-llm/intro',
     disabled: false,
   },
   {
@@ -515,7 +566,7 @@ const overviewData = [
     highlight: 'PANDA + 数坤 CT-FFR',
     stat: '24例遗漏肿瘤被发现',
     detail: '达摩院 PANDA 从平扫 CT 中精准发现人类遗漏的胰腺癌，获 FDA 突破性器械认定；数坤科技 3 分钟输出无创心功能报告。',
-    slug: 'ai-imaging/intro',
+    slug: 'ai-analysis/ai-imaging/intro',
     disabled: false,
   },
   {
@@ -524,7 +575,7 @@ const overviewData = [
     highlight: '多智能体 + ReAct',
     stat: '手术Copilot级应用',
     detail: '从 SurgBox 手术室副驾到 PsyDraw 儿童心理多模态评估，Agentic AI 成为连接基础模型与临床场景的终极桥梁。',
-    slug: 'ai-agent/intro',
+    slug: 'ai-analysis/ai-agent/intro',
     disabled: false,
   },
 ];

@@ -16,8 +16,8 @@ export default function Sidebar({ items }: SidebarProps) {
   return (
     /* Desktop Sidebar only — mobile navigation is handled by MobileSidebarChips */
     <aside
-      className="hidden lg:flex flex-col w-64 flex-shrink-0 sticky top-14 h-[calc(100vh-3.5rem)]
-        overflow-y-auto custom-scrollbar py-8 pr-1"
+      className="hidden lg:flex flex-col w-[280px] flex-shrink-0 sticky top-14 h-[calc(100vh-3.5rem)]
+        overflow-y-auto custom-scrollbar py-8 pr-2"
       style={{
         borderRight: '1px solid var(--rule-color)',
         background: 'var(--bg-secondary)',
@@ -26,7 +26,7 @@ export default function Sidebar({ items }: SidebarProps) {
       {/* 章节标注 */}
       <div className="px-5 mb-6">
         <p
-          className="font-sans text-[9px] tracking-[0.3em] uppercase mb-1"
+          className="font-sans text-[10px] tracking-[0.3em] uppercase mb-1"
           style={{ color: 'var(--accent)', opacity: 0.6 }}
         >
           Contents
@@ -34,12 +34,12 @@ export default function Sidebar({ items }: SidebarProps) {
         <div className="h-px" style={{ background: 'var(--rule-color)' }} />
       </div>
 
-      <nav className="px-4 flex-1">
+      <nav className="px-3 flex-1">
         <OverviewLink pathname={pathname} />
-        <div className="h-px my-4 mx-1" style={{ background: 'var(--rule-color)' }} />
+        <div className="h-px my-4 mx-2" style={{ background: 'var(--rule-color)' }} />
         <div className="space-y-0.5">
           {items.map((item) => (
-            <SidebarItem key={item.slug} item={item} pathname={pathname} />
+            <SidebarItem key={item.slug} item={item} pathname={pathname} depth={0} />
           ))}
         </div>
       </nav>
@@ -59,7 +59,6 @@ export function MobileSidebarChips({ items }: SidebarProps) {
   const pathname = usePathname();
   const [readProgress, setReadProgress] = useState(0);
 
-  /* Sync reading progress */
   useEffect(() => {
     const handleScroll = () => {
       const scrollTop = window.scrollY;
@@ -70,6 +69,15 @@ export function MobileSidebarChips({ items }: SidebarProps) {
     handleScroll();
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
+
+  /* Flatten tree to get top-level chips for mobile */
+  const getChipItems = (navItems: NavItem[]): NavItem[] => {
+    const chips: NavItem[] = [];
+    for (const item of navItems) {
+      chips.push(item);
+    }
+    return chips;
+  };
 
   return (
     <div
@@ -84,13 +92,13 @@ export function MobileSidebarChips({ items }: SidebarProps) {
     >
       <div className="flex items-center gap-1 px-3 py-2 whitespace-nowrap">
         <MobileOverviewChip pathname={pathname} />
-        {items.map((item) => (
+        {getChipItems(items).map((item) => (
           <MobileChip key={item.slug} item={item} pathname={pathname} />
         ))}
       </div>
       {/* Progress Bar */}
       <div className="h-[2px] w-full bg-transparent overflow-hidden">
-        <div 
+        <div
           className="h-full bg-gradient-to-r from-[var(--accent)] to-[var(--accent-light)] transition-all duration-200 ease-out"
           style={{ width: `${readProgress * 100}%` }}
         />
@@ -121,6 +129,12 @@ function MobileOverviewChip({ pathname }: { pathname: string }) {
 function MobileChip({ item, pathname }: { item: NavItem; pathname: string }) {
   const isActive = pathname.startsWith(`/research/${item.slug}`);
 
+  /* Find first leaf child as default href */
+  const getFirstLeafHref = (node: NavItem): string => {
+    if (!node.children || node.children.length === 0) return `/research/${node.slug}`;
+    return getFirstLeafHref(node.children[0]);
+  };
+
   if (item.disabled) {
     return (
       <span
@@ -137,28 +151,10 @@ function MobileChip({ item, pathname }: { item: NavItem; pathname: string }) {
     );
   }
 
-  if (item.children) {
-    const firstChild = item.children[0];
-    const href = firstChild ? `/research/${firstChild.slug}` : `/research/${item.slug}`;
-    return (
-      <Link
-        href={href}
-        className="no-underline flex items-center gap-1 px-3 py-1.5 rounded-full text-[11px] font-sans transition-all duration-200 shrink-0"
-        style={{
-          color: isActive ? 'var(--accent)' : 'var(--text-secondary)',
-          background: isActive ? 'rgba(14,165,233,0.1)' : 'rgba(128,128,128,0.06)',
-          border: `1px solid ${isActive ? 'rgba(14,165,233,0.3)' : 'var(--card-border)'}`,
-          fontWeight: isActive ? 500 : 400,
-        }}
-      >
-        {item.title}
-      </Link>
-    );
-  }
-
+  const href = getFirstLeafHref(item);
   return (
     <Link
-      href={`/research/${item.slug}`}
+      href={href}
       className="no-underline flex items-center gap-1 px-3 py-1.5 rounded-full text-[11px] font-sans transition-all duration-200 shrink-0"
       style={{
         color: isActive ? 'var(--accent)' : 'var(--text-secondary)',
@@ -179,7 +175,7 @@ function OverviewLink({ pathname }: { pathname: string }) {
   return (
     <Link
       href="/research"
-      className="no-underline flex items-center gap-2.5 px-3 py-2 rounded-sm text-[13px] font-sans transition-all duration-200 mb-1"
+      className="no-underline flex items-center gap-2.5 px-3 py-2.5 rounded-md text-[13px] font-sans transition-all duration-200 mb-1"
       style={{
         color: isActive ? 'var(--accent)' : 'var(--text-secondary)',
         background: isActive ? 'rgba(14,165,233,0.08)' : 'transparent',
@@ -193,26 +189,39 @@ function OverviewLink({ pathname }: { pathname: string }) {
   );
 }
 
-function SidebarItem({ item, pathname }: { item: NavItem; pathname: string }) {
-  const [isOpen, setIsOpen] = useState(
-    item.children ? pathname.startsWith(`/research/${item.slug}`) : false
-  );
-  const isActive = pathname === `/research/${item.slug}`;
+/* ── 递归渲染的核心组件 ── */
+function SidebarItem({ item, pathname, depth }: { item: NavItem; pathname: string; depth: number }) {
+  /* 检查任意后代是否激活 */
+  const isDescendantActive = (navItem: NavItem): boolean => {
+    if (pathname === `/research/${navItem.slug}`) return true;
+    if (navItem.children) {
+      return navItem.children.some(isDescendantActive);
+    }
+    return false;
+  };
 
-  /* 禁用占位项 */
+  const isActive = pathname === `/research/${item.slug}`;
+  const groupActive = isDescendantActive(item);
+
+  /* 默认展开最外层（depth=0），或者当子项被激活时 */
+  const [isOpen, setIsOpen] = useState(groupActive || depth === 0);
+
+  useEffect(() => {
+    if (groupActive) setIsOpen(true);
+  }, [groupActive]);
+
+  /* 深度自适应样式配置 */
+  const fontSize = depth === 0 ? 'text-[13px]' : depth === 1 ? 'text-[12.5px]' : 'text-[12px]';
+
+  /* ── 禁用项 ── */
   if (item.disabled) {
     return (
       <div
-        className="flex items-center justify-between px-3 py-2 rounded-sm text-[13px] font-sans select-none"
-        style={{
-          color: 'var(--text-tertiary)',
-          opacity: 0.45,
-          cursor: 'not-allowed',
-          borderLeft: '2px solid transparent',
-        }}
+        className={`flex items-center justify-between px-2 py-2 rounded-md font-sans select-none ${fontSize}`}
+        style={{ color: 'var(--text-tertiary)', opacity: 0.45, cursor: 'not-allowed' }}
       >
-        <div className="flex items-center gap-2.5">
-          <span style={{ color: 'var(--accent)', opacity: 0.3, fontSize: 11, fontFamily: 'var(--font-serif)', fontStyle: 'italic' }}>§</span>
+        <div className="flex items-center gap-2">
+          <DepthIcon depth={depth} active={false} />
           <span>{item.title}</span>
         </div>
         <span
@@ -225,95 +234,117 @@ function SidebarItem({ item, pathname }: { item: NavItem; pathname: string }) {
     );
   }
 
-  /* 有子项：折叠分组 */
-  if (item.children) {
-    const groupActive = pathname.startsWith(`/research/${item.slug}`);
+  /* ── 有子项：可折叠分组 ── */
+  if (item.children && item.children.length > 0) {
     return (
       <div>
         <button
           onClick={() => setIsOpen(!isOpen)}
-          className="w-full flex items-center justify-between px-3 py-2 rounded-sm text-[13px] font-sans transition-all duration-200 group"
+          className={`w-full flex items-center justify-between px-2 py-2 rounded-md font-sans transition-all duration-200 group ${fontSize}`}
           style={{
             color: groupActive ? 'var(--text-primary)' : 'var(--text-secondary)',
-            background: groupActive ? 'rgba(14,165,233,0.05)' : 'transparent',
-            borderLeft: groupActive ? '2px solid rgba(14,165,233,0.4)' : '2px solid transparent',
-            fontWeight: groupActive ? 500 : 400,
+            background: depth === 0 && groupActive ? 'rgba(14,165,233,0.04)' : 'transparent',
+            fontWeight: depth === 0 ? 600 : groupActive ? 500 : 400,
           }}
         >
-          <div className="flex items-center gap-2.5">
-            <span
-              style={{
-                color: 'var(--accent)',
-                opacity: groupActive ? 0.7 : 0.3,
-                fontSize: 11,
-                fontFamily: 'var(--font-serif)',
-                fontStyle: 'italic',
-              }}
-            >§</span>
-            <span>{item.title}</span>
+          <div className="flex items-center gap-2 min-w-0">
+            <DepthIcon depth={depth} active={groupActive} open={isOpen} isGroup />
+            <span className="truncate">{item.title}</span>
           </div>
           <ChevronDown
-            className={`w-3.5 h-3.5 transition-transform duration-300 ${isOpen ? 'rotate-180' : ''}`}
-            style={{ color: 'var(--text-tertiary)', opacity: 0.6 }}
+            className={`w-3.5 h-3.5 shrink-0 transition-transform duration-300 ${isOpen ? 'rotate-180' : ''}`}
+            style={{ color: 'var(--text-tertiary)', opacity: groupActive ? 0.7 : 0.3 }}
           />
         </button>
 
-        {isOpen && (
-          <div
-            className="ml-[1.85rem] mt-0.5 mb-1 space-y-0.5 pl-3 py-1 relative"
-            style={{ borderLeft: '1px solid var(--rule-color)' }}
-          >
+        {/* 子节点递归渲染，带左侧连接线动画 */}
+        <div
+          className={`grid transition-all duration-300 ease-in-out ${
+            isOpen ? 'grid-rows-[1fr] opacity-100' : 'grid-rows-[0fr] opacity-0'
+          }`}
+        >
+          <div className="overflow-hidden">
             <div
-              className="absolute left-0 top-0 bottom-0 w-px transition-opacity duration-300"
-              style={{ background: 'linear-gradient(to bottom, var(--accent), transparent)', opacity: 0.4 }}
-            />
-            {item.children.map((child, i) => {
-              const childActive = pathname === `/research/${child.slug}`;
-              return (
-                <Link
-                  key={child.slug}
-                  href={`/research/${child.slug}`}
-                  className="no-underline flex items-start gap-2 px-2 py-1.5 rounded-sm text-[12px] font-sans transition-all duration-200"
-                  style={{
-                    color: childActive ? 'var(--accent)' : 'var(--text-secondary)',
-                    background: childActive ? 'rgba(14,165,233,0.08)' : 'transparent',
-                    animationDelay: `${i * 0.05}s`,
-                    animation: 'chapter-reveal 0.25s ease both',
-                  }}
-                >
-                  <span
-                    className="font-serif italic mt-0.5 shrink-0 text-[10px]"
-                    style={{
-                      color: 'var(--accent)',
-                      opacity: childActive ? 0.8 : 0.3,
-                    }}
-                  >
-                    {i + 1}.
-                  </span>
-                  <span className="leading-snug">{child.title}</span>
-                </Link>
-              );
-            })}
+              className="flex flex-col space-y-0.5 relative ml-[14px] pl-3 pt-0.5 pb-0.5"
+              style={{ borderLeft: `1.5px solid ${groupActive ? 'rgba(14,165,233,0.35)' : 'var(--rule-color)'}` }}
+            >
+              {item.children.map((child, i) => (
+                <SidebarItem key={child.slug} item={child} pathname={pathname} depth={depth + 1} />
+              ))}
+            </div>
           </div>
-        )}
+        </div>
       </div>
     );
   }
 
-  /* 普通叶子节点 */
+  /* ── 叶子节点（具体内容文章） ── */
   return (
     <Link
       href={`/research/${item.slug}`}
-      className="no-underline flex items-center gap-2.5 px-3 py-2 rounded-sm text-[13px] font-sans transition-all duration-200"
+      className={`no-underline flex items-center gap-2 px-2 py-1.5 rounded-md font-sans transition-all duration-200 relative group ${fontSize}`}
       style={{
         color: isActive ? 'var(--accent)' : 'var(--text-secondary)',
         background: isActive ? 'rgba(14,165,233,0.08)' : 'transparent',
-        borderLeft: isActive ? '2px solid var(--accent)' : '2px solid transparent',
         fontWeight: isActive ? 500 : 400,
       }}
     >
-      <span style={{ color: 'var(--accent)', opacity: isActive ? 0.8 : 0.3, fontSize: 11, fontFamily: 'var(--font-serif)', fontStyle: 'italic' }}>§</span>
-      {item.title}
+      {/* Active indicator dot on the tree line */}
+      {isActive && (
+        <div
+          className="absolute -left-[14.5px] top-1/2 -translate-y-1/2 w-[7px] h-[7px] rounded-full"
+          style={{ background: 'var(--accent)', boxShadow: '0 0 6px rgba(14,165,233,0.4)' }}
+        />
+      )}
+      <DepthIcon depth={depth} active={isActive} />
+      <span className="truncate leading-snug">{item.title}</span>
     </Link>
+  );
+}
+
+/* ── 深度自适应图标 ── */
+function DepthIcon({ depth, active, open, isGroup }: { depth: number; active: boolean; open?: boolean; isGroup?: boolean }) {
+  const accentOpacity = active ? 0.8 : 0.3;
+  const accentColor = 'var(--accent)';
+
+  if (depth === 0) {
+    if (isGroup) {
+      return (
+        <span
+          className="shrink-0 text-[10px] transition-transform duration-200"
+          style={{ color: accentColor, opacity: accentOpacity }}
+        >
+          {open ? '▾' : '▸'}
+        </span>
+      );
+    }
+    return (
+      <span
+        className="shrink-0 font-serif italic text-[11px]"
+        style={{ color: accentColor, opacity: accentOpacity }}
+      >
+        §
+      </span>
+    );
+  }
+
+  if (isGroup) {
+    return (
+      <span
+        className="shrink-0 text-[9px] transition-transform duration-200"
+        style={{ color: accentColor, opacity: accentOpacity }}
+      >
+        {open ? '▿' : '▹'}
+      </span>
+    );
+  }
+
+  return (
+    <span
+      className="shrink-0 text-[8px]"
+      style={{ color: accentColor, opacity: active ? 1 : 0.25 }}
+    >
+      {active ? '●' : '○'}
+    </span>
   );
 }

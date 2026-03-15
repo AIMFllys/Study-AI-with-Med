@@ -7,81 +7,79 @@ import type { NavItem } from '@/types/mdx';
 const HIDDEN_SLUGS = new Set<string>([]);
 
 /**
- * Slugs that are planned sections but not yet clickable.
- * They render as non-interactive labels in the sidebar.
- */
-const DISABLED_SLUGS: Record<string, string> = {};
-
-/**
- * Build a tree-shaped navigation structure from flat content metadata
+ * Build a dynamic, recursive tree-shaped navigation structure from flat content metadata.
+ * Supports N-level deep directories.
  */
 export function buildNavigationTree(): NavItem[] {
   const allMeta = getAllContentMeta().filter(
     (m) => m.slug !== '' && !HIDDEN_SLUGS.has(m.slug)
   );
 
-  // Group by top-level category (first path segment or root)
   const rootItems: NavItem[] = [];
-  const groups: Record<string, NavItem[]> = {};
 
   for (const meta of allMeta) {
     const segments = meta.slug.split('/');
+    let currentLevel = rootItems;
+    let currentPath = '';
 
-    if (segments.length === 1) {
-      if (DISABLED_SLUGS[meta.slug]) {
-        // Disabled placeholder: shown but not clickable
-        rootItems.push({
-          slug: meta.slug,
-          title: DISABLED_SLUGS[meta.slug],
-          category: meta.category,
-          order: meta.order ?? 99,
-          disabled: true,
-        });
-      } else {
-        // Normal top-level item
-        rootItems.push({
-          slug: meta.slug,
-          title: meta.title,
-          category: meta.category,
-          order: meta.order ?? 99,
-        });
+    for (let i = 0; i < segments.length; i++) {
+      const segment = segments[i];
+      currentPath = currentPath ? `${currentPath}/${segment}` : segment;
+      const isLeaf = i === segments.length - 1;
+
+      let existingNode = currentLevel.find((node) => node.slug === currentPath);
+
+      if (!existingNode) {
+        if (isLeaf) {
+          // File Node
+          existingNode = {
+            slug: meta.slug,
+            title: meta.title,
+            category: meta.category,
+            order: meta.order ?? 99,
+          };
+        } else {
+          // Directory Node (Group)
+          existingNode = {
+            slug: currentPath,
+            title: formatGroupTitle(segment),
+            order: getGroupOrder(segment),
+            children: [],
+          };
+        }
+        currentLevel.push(existingNode);
       }
-    } else {
-      // Nested item
-      const groupKey = segments[0];
-      if (!groups[groupKey]) {
-        groups[groupKey] = [];
+
+      if (existingNode.children) {
+        currentLevel = existingNode.children;
       }
-      groups[groupKey].push({
-        slug: meta.slug,
-        title: meta.title,
-        category: meta.category,
-        order: meta.order ?? 99,
-      });
     }
   }
 
-  // Convert groups into parent NavItems with children
-  const groupItems: NavItem[] = Object.entries(groups).map(
-    ([key, children]) => ({
-      slug: key,
-      title: formatGroupTitle(key),
-      order: getGroupOrder(key),
-      children: children.sort((a, b) => a.order - b.order),
-    })
-  );
+  // Recursively sort the tree by order
+  const sortTree = (items: NavItem[]) => {
+    items.sort((a, b) => (a.order ?? 99) - (b.order ?? 99));
+    for (const item of items) {
+      if (item.children) {
+        sortTree(item.children);
+      }
+    }
+  };
 
-  // Merge root items and group items, sort by order
-  return [...rootItems, ...groupItems].sort((a, b) => a.order - b.order);
+  sortTree(rootItems);
+  return rootItems;
 }
 
 function formatGroupTitle(key: string): string {
   const titles: Record<string, string> = {
+    'ai-analysis': 'AI+X 多维分析',
     'ai-protein': 'AI+蛋白质预测',
     'ai-drug': 'AI+药物发现',
     'ai-llm': 'AI+医疗大模型',
     'ai-imaging': 'AI+精准影像',
     'ai-agent': 'AI+临床智能体',
+    'ai-report': 'AI医疗报告论文',
+    'tools': '工具与部署指南',
     knowledge: '知识点分析',
     notes: '个人笔记区',
     forum: '微论坛',
@@ -91,11 +89,14 @@ function formatGroupTitle(key: string): string {
 
 function getGroupOrder(key: string): number {
   const orders: Record<string, number> = {
+    'ai-analysis': 1,
     'ai-protein': 1,
     'ai-drug': 2,
     'ai-llm': 3,
     'ai-imaging': 4,
     'ai-agent': 5,
+    'ai-report': 6,
+    'tools': 90, // Display tools category lower intuitively
     knowledge: 10,
     notes: 80,
     forum: 90,
