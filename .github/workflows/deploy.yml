@@ -27,20 +27,27 @@ jobs:
             # 进入项目目录
             cd /www/wwwroot/ai-med.husteread.icu
 
-            # 拉取最新代码
+            # 强制同步远程代码（丢弃服务器上的本地修改）
             echo "📥 拉取最新代码..."
-            git pull origin main
+            git fetch origin main
+            git reset --hard origin/main
+            git clean -fd
 
             # 安装依赖
             echo "📦 安装依赖..."
-            npm install
+            npm ci
 
             # 编译生产版本
             echo "🔨 编译中..."
             npm run build
 
-            # 重启宝塔 Node 项目
+            # 重启 PM2 服务
             echo "🔄 重启服务..."
-            /etc/init.d/bt restart_node ai_med_husteread_icu 2>/dev/null || true
+            if pm2 describe medicine > /dev/null 2>&1; then
+              pm2 restart medicine
+            else
+              pm2 start npm --name "medicine" -- start
+            fi
+            pm2 save
 
             echo "===== ✅ 部署完成！ ====="
