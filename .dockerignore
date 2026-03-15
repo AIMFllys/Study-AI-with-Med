@@ -1,0 +1,14 @@
+node_modules
+.next
+out
+build
+.env*.local
+npm-debug.log*
+.DS_Store
+*.log
+.git
+.gitignore
+.agent
+.gemini
+tmp
+c:/tmp
