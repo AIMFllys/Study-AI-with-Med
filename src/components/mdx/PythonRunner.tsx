@@ -1,6 +1,8 @@
 'use client';
 
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useEffect, useRef } from 'react';
+import { Copy, Check, Download, Play, Loader2 } from 'lucide-react';
+import { loadPyodideFromCDN } from '@/lib/pyodide';
 
 interface PythonRunnerProps {
   children?: React.ReactNode;
@@ -18,40 +20,44 @@ function extractText(children: React.ReactNode): string {
   return '';
 }
 
-// Load Pyodide from CDN (avoids Next.js server-side bundling issues)
-async function loadPyodideFromCDN() {
-  // If already loaded, return the instance on window
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const win = window as any;
-  if (win.__pyodide_ready) return win.__pyodide_instance;
-
-  // Inject the CDN script tag if not present
-  if (!document.getElementById('pyodide-cdn')) {
-    await new Promise<void>((resolve, reject) => {
-      const script = document.createElement('script');
-      script.id = 'pyodide-cdn';
-      script.src = 'https://cdn.jsdelivr.net/pyodide/v0.27.5/full/pyodide.js';
-      script.onload = () => resolve();
-      script.onerror = () => reject(new Error('Failed to load Pyodide CDN script'));
-      document.head.appendChild(script);
-    });
-  }
-
-  // loadPyodide is now globally available
-  const pyodide = await win.loadPyodide({
-    indexURL: 'https://cdn.jsdelivr.net/pyodide/v0.27.5/full/',
-  });
-  win.__pyodide_ready = true;
-  win.__pyodide_instance = pyodide;
-  return pyodide;
-}
-
 export default function PythonRunner({ children, code: codeProp }: PythonRunnerProps) {
   const [output, setOutput] = useState<string>('');
   const [isRunning, setIsRunning] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [copied, setCopied] = useState(false);
+  const [totalLines, setTotalLines] = useState(0);
+
+  const lineNumRef = useRef<HTMLDivElement>(null);
+  const codeRef = useRef<HTMLPreElement>(null);
 
   const code = (codeProp || extractText(children)).trim();
+
+  // Count lines and render line numbers
+  useEffect(() => {
+    const lines = code.split('\n');
+    setTotalLines(lines.length);
+
+    if (lineNumRef.current) {
+      lineNumRef.current.innerHTML = '';
+      for (let i = 1; i <= lines.length; i++) {
+        const numEl = document.createElement('div');
+        numEl.className = 'cb-ln';
+        numEl.textContent = String(i);
+        lineNumRef.current.appendChild(numEl);
+      }
+    }
+  }, [code]);
+
+  // Sync scroll between line numbers and code
+  useEffect(() => {
+    const pre = codeRef.current;
+    const gutter = lineNumRef.current;
+    if (!pre || !gutter) return;
+
+    const syncScroll = () => { gutter.scrollTop = pre.scrollTop; };
+    pre.addEventListener('scroll', syncScroll);
+    return () => pre.removeEventListener('scroll', syncScroll);
+  }, [totalLines]);
 
   const runCode = useCallback(async () => {
     setIsRunning(true);
@@ -88,45 +94,162 @@ export default function PythonRunner({ children, code: codeProp }: PythonRunnerP
     }
   }, [code]);
 
+  const handleCopy = useCallback(async () => {
+    try {
+      await navigator.clipboard.writeText(code);
+    } catch {
+      const ta = document.createElement('textarea');
+      ta.value = code;
+      ta.style.cssText = 'position:fixed;opacity:0';
+      document.body.appendChild(ta);
+      ta.select();
+      document.execCommand('copy');
+      document.body.removeChild(ta);
+    }
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
+  }, [code]);
+
+  const handleDownload = useCallback(() => {
+    const blob = new Blob([code], { type: 'text/plain;charset=utf-8' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'code.py';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  }, [code]);
+
   return (
-    <div className="my-8 rounded-2xl overflow-hidden border border-white/10 bg-black/30 backdrop-blur-md shadow-xl">
-      {/* Header */}
-      <div className="flex items-center justify-between px-5 py-3 bg-white/5 border-b border-white/10">
-        <div className="flex items-center gap-3">
-          <div className="flex gap-1.5">
-            <span className="w-3 h-3 rounded-full bg-rose-500/70"></span>
-            <span className="w-3 h-3 rounded-full bg-amber-400/70"></span>
-            <span className="w-3 h-3 rounded-full bg-emerald-400/70"></span>
+    <div className="cb-feishu">
+      {/* ── Toolbar (matching CodeBlockWrapper style) ── */}
+      <div className="cb-toolbar">
+        <div className="cb-toolbar-left">
+          <div className="cb-dots">
+            <span className="cb-dot cb-dot-red" style={{ cursor: 'default' }} />
+            <span className="cb-dot cb-dot-yellow" style={{ cursor: 'default' }} />
+            <span className="cb-dot cb-dot-green" style={{ cursor: 'default' }} />
           </div>
-          <span className="text-xs font-semibold text-medical-slate/80 uppercase tracking-widest ml-1">
-            🐍 Python · Pyodide WASM
-          </span>
+          <span className="cb-title">🐍 Python · Pyodide WASM</span>
+          {totalLines > 0 && <span className="cb-line-count">{totalLines} 行</span>}
         </div>
-        <button
-          onClick={runCode}
-          disabled={isRunning}
-          className="group flex items-center gap-2 px-4 py-1.5 text-xs font-bold rounded-xl bg-emerald-500/15 text-emerald-300 hover:bg-emerald-500/25 border border-emerald-500/25 hover:border-emerald-400/40 transition-all disabled:opacity-40 disabled:cursor-not-allowed hover:shadow-[0_0_16px_rgba(52,211,153,0.2)]"
-        >
-          <span className={isRunning ? 'animate-spin' : 'group-hover:scale-110 transition-transform'}>
-            {isRunning ? '⏳' : '▶'}
-          </span>
-          {isLoading ? '加载中...' : isRunning ? '运行中...' : '运行'}
-        </button>
+        <div className="cb-toolbar-right">
+          {/* ▶ Run button — LEFT of language selector */}
+          <button
+            onClick={runCode}
+            disabled={isRunning}
+            className="cb-run-btn"
+            title="运行 Python 代码"
+          >
+            {isRunning ? (
+              <Loader2 className="w-3.5 h-3.5 animate-spin" />
+            ) : (
+              <Play className="w-3.5 h-3.5" />
+            )}
+            <span>{isLoading ? '加载中' : isRunning ? '运行中' : '运行'}</span>
+          </button>
+          {/* Language badge */}
+          <span className="cb-lang-badge">Python</span>
+          {/* Download */}
+          <button onClick={handleDownload} className="cb-action-btn" title="下载文件">
+            <Download className="w-3.5 h-3.5" />
+          </button>
+          {/* Copy */}
+          <button
+            onClick={handleCopy}
+            className={`cb-action-btn ${copied ? 'cb-action-success' : ''}`}
+            title="复制代码"
+          >
+            {copied ? <Check className="w-3.5 h-3.5" /> : <Copy className="w-3.5 h-3.5" />}
+          </button>
+        </div>
       </div>
 
-      {/* Code */}
-      <pre className="p-5 text-[13.5px] leading-relaxed overflow-x-auto">
-        <code className="text-slate-300 font-mono">{code}</code>
-      </pre>
+      {/* ── Code body: gutter + code ── */}
+      <div className="cb-body">
+        <div className="cb-gutter" ref={lineNumRef} aria-hidden="true" />
+        <div className="cb-code-area">
+          <pre
+            ref={codeRef}
+            style={{
+              padding: '1rem 0',
+              overflow: 'auto',
+              fontFamily: 'var(--font-mono)',
+              fontSize: '0.85rem',
+              lineHeight: '1.6',
+              background: 'transparent',
+              margin: 0,
+            }}
+          >
+            <code style={{ display: 'grid', minWidth: '100%' }}>
+              {code.split('\n').map((line, i) => (
+                <span
+                  key={i}
+                  data-line=""
+                  style={{
+                    padding: '0 1rem',
+                    display: 'block',
+                    color: 'var(--text-secondary)',
+                  }}
+                >
+                  {line || '\u200B'}
+                </span>
+              ))}
+            </code>
+          </pre>
+        </div>
+      </div>
 
-      {/* Output */}
+      {/* ── Output panel ── */}
       {output && (
-        <div className="border-t border-white/10 bg-black/40">
-          <div className="flex items-center gap-2 px-5 py-2 border-b border-white/5">
-            <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
-            <span className="text-[10px] font-bold text-medical-slate/50 uppercase tracking-widest">Output</span>
+        <div style={{ borderTop: '1px solid rgba(128,128,128,0.1)' }}>
+          <div
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: '6px',
+              padding: '6px 12px',
+              borderBottom: '1px solid rgba(128,128,128,0.05)',
+              background: 'rgba(0,0,0,0.03)',
+            }}
+          >
+            <span
+              style={{
+                width: '6px',
+                height: '6px',
+                borderRadius: '50%',
+                background: '#22c55e',
+                animation: 'pulse 2s infinite',
+              }}
+            />
+            <span
+              style={{
+                fontSize: '10px',
+                fontWeight: 700,
+                color: 'var(--text-tertiary)',
+                textTransform: 'uppercase',
+                letterSpacing: '0.1em',
+              }}
+            >
+              Output
+            </span>
           </div>
-          <pre className="px-5 py-4 text-sm text-emerald-300 whitespace-pre-wrap font-mono leading-relaxed">{output}</pre>
+          <pre
+            style={{
+              padding: '12px 16px',
+              fontSize: '0.85rem',
+              color: '#22c55e',
+              whiteSpace: 'pre-wrap',
+              fontFamily: 'var(--font-mono)',
+              lineHeight: '1.6',
+              margin: 0,
+              background: 'rgba(0,0,0,0.02)',
+            }}
+          >
+            {output}
+          </pre>
         </div>
       )}
     </div>

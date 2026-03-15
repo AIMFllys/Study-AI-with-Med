@@ -1,7 +1,8 @@
 'use client';
 
 import { useState, useRef, useCallback, useEffect } from 'react';
-import { Copy, Check, Download, ChevronDown, Search } from 'lucide-react';
+import { Copy, Check, Download, ChevronDown, Search, Play, Loader2 } from 'lucide-react';
+import { loadPyodideFromCDN } from '@/lib/pyodide';
 
 /* ── Language definitions ── */
 const COMMON_LANGUAGES = [
@@ -69,6 +70,9 @@ export default function CodeBlockWrapper({ children, ...props }: CodeBlockWrappe
   const [langSearch, setLangSearch] = useState('');
   const [detectedLang, setDetectedLang] = useState<string>('');
   const [totalLines, setTotalLines] = useState(0);
+  const [pyOutput, setPyOutput] = useState<string>('');
+  const [pyRunning, setPyRunning] = useState(false);
+  const [pyLoading, setPyLoading] = useState(false);
 
   const wrapperRef = useRef<HTMLDivElement>(null);
   const dropdownRef = useRef<HTMLDivElement>(null);
@@ -190,6 +194,45 @@ export default function CodeBlockWrapper({ children, ...props }: CodeBlockWrappe
     URL.revokeObjectURL(url);
   }, [getCodeText, detectedLang, title]);
 
+  const isPython = ['python', 'py'].includes(detectedLang.toLowerCase());
+
+  const handleRunPython = useCallback(async () => {
+    if (!isPython) return;
+    setPyRunning(true);
+    setPyLoading(true);
+    setPyOutput('正在加载 Python 运行时 (Pyodide)...');
+
+    try {
+      const pyodide = await loadPyodideFromCDN();
+      setPyLoading(false);
+
+      let stdout = '';
+      pyodide.setStdout({
+        batched: (text: string) => {
+          stdout += text + '\n';
+          setPyOutput(stdout.trim());
+        },
+      });
+      pyodide.setStderr({
+        batched: (text: string) => {
+          stdout += text + '\n';
+          setPyOutput(stdout.trim());
+        },
+      });
+
+      setPyOutput('运行中...');
+      const codeText = getCodeText();
+      await pyodide.runPythonAsync(codeText);
+      if (!stdout.trim()) setPyOutput('✓ 运行完成（无输出）');
+    } catch (err: unknown) {
+      const msg = err instanceof Error ? err.message : String(err);
+      setPyOutput(`❌ Error:\n${msg}`);
+    } finally {
+      setPyRunning(false);
+      setPyLoading(false);
+    }
+  }, [isPython, getCodeText]);
+
   const filteredLangs = COMMON_LANGUAGES.filter(l =>
     l.label.toLowerCase().includes(langSearch.toLowerCase()) ||
     l.key.toLowerCase().includes(langSearch.toLowerCase())
@@ -212,6 +255,22 @@ export default function CodeBlockWrapper({ children, ...props }: CodeBlockWrappe
           {totalLines > 0 && <span className="cb-line-count">{totalLines} 行</span>}
         </div>
         <div className="cb-toolbar-right">
+          {/* ▶ Run button — LEFT of language selector (Python only) */}
+          {isPython && (
+            <button
+              onClick={handleRunPython}
+              disabled={pyRunning}
+              className="cb-run-btn"
+              title="运行 Python 代码"
+            >
+              {pyRunning ? (
+                <Loader2 className="w-3.5 h-3.5 animate-spin" />
+              ) : (
+                <Play className="w-3.5 h-3.5" />
+              )}
+              <span>{pyLoading ? '加载中' : pyRunning ? '运行中' : '运行'}</span>
+            </button>
+          )}
           <div className="cb-lang-selector" ref={dropdownRef}>
             <button className="cb-lang-trigger" onClick={() => setShowLangDropdown(!showLangDropdown)}>
               <span>{displayLang}</span>
@@ -255,6 +314,57 @@ export default function CodeBlockWrapper({ children, ...props }: CodeBlockWrappe
           <div className="cb-code-area" ref={codeAreaRef}>
             {children}
           </div>
+        </div>
+      )}
+
+      {/* ── Python Output panel ── */}
+      {isPython && pyOutput && (
+        <div style={{ borderTop: '1px solid rgba(128,128,128,0.1)' }}>
+          <div
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: '6px',
+              padding: '6px 12px',
+              borderBottom: '1px solid rgba(128,128,128,0.05)',
+              background: 'rgba(0,0,0,0.03)',
+            }}
+          >
+            <span
+              style={{
+                width: '6px',
+                height: '6px',
+                borderRadius: '50%',
+                background: '#22c55e',
+                animation: 'pulse 2s infinite',
+              }}
+            />
+            <span
+              style={{
+                fontSize: '10px',
+                fontWeight: 700,
+                color: 'var(--text-tertiary)',
+                textTransform: 'uppercase' as const,
+                letterSpacing: '0.1em',
+              }}
+            >
+              Output
+            </span>
+          </div>
+          <pre
+            style={{
+              padding: '12px 16px',
+              fontSize: '0.85rem',
+              color: '#22c55e',
+              whiteSpace: 'pre-wrap',
+              fontFamily: 'var(--font-mono)',
+              lineHeight: '1.6',
+              margin: 0,
+              background: 'rgba(0,0,0,0.02)',
+            }}
+          >
+            {pyOutput}
+          </pre>
         </div>
       )}
     </div>
