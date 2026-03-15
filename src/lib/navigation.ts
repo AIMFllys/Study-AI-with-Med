@@ -4,7 +4,7 @@ import type { NavItem } from '@/types/mdx';
 /**
  * Slugs that are hidden from sidebar navigation (superseded by group structure).
  */
-const HIDDEN_SLUGS = new Set(['protein-engineering']);
+const HIDDEN_SLUGS = new Set<string>([]);
 
 /**
  * Slugs that are planned sections but not yet clickable.

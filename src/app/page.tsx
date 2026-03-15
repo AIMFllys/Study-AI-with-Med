@@ -12,7 +12,7 @@ const chapters = [
     slug: 'protein-prediction',
     hasContent: true,
     tags: ['扩散模型', 'MSA', 'pLDDT'],
-    href: '/research/protein-prediction/industry-overview',
+    href: '/research/protein-prediction/boltz-deployment-guide',
   },
   {
     number: 'II',
@@ -488,7 +488,8 @@ const overviewData = [
     highlight: 'AlphaFold 3 + xTrimoPGLM',
     stat: '千亿级参数',
     detail: 'AlphaFold 3 引入条件扩散模型从"原子噪声云"中雕刻精确分子结构，百图生科 xTrimoPGLM 成为全球首个千亿级蛋白质语言模型，全面超越 ESM-2。',
-    slug: 'protein-prediction/industry-overview',
+    slug: 'protein-prediction/boltz-deployment-guide',
+    disabled: false,
   },
   {
     icon: '💊',
@@ -497,6 +498,7 @@ const overviewData = [
     stat: '8个月提名候选药',
     detail: '英矽智能与施维雅达成 8.88 亿美元合作，仅 8 个月提名临床前候选药物；率先展示量子计算辅助药物生成算法 QFASG。',
     slug: 'ai-drug-discovery',
+    disabled: false,
   },
   {
     icon: '🧠',
@@ -505,6 +507,7 @@ const overviewData = [
     stat: '31语言对30个第一',
     detail: 'Med-Gemini 原生多模态架构实现跨模态因果推理；腾讯 Hunyuan-MT 在 WMT2025 全面碾压 GPT-4 等顶尖模型。',
     slug: 'medical-llms',
+    disabled: false,
   },
   {
     icon: '📡',
@@ -513,6 +516,7 @@ const overviewData = [
     stat: '24例遗漏肿瘤被发现',
     detail: '达摩院 PANDA 从平扫 CT 中精准发现人类遗漏的胰腺癌，获 FDA 突破性器械认定；数坤科技 3 分钟输出无创心功能报告。',
     slug: 'medical-imaging',
+    disabled: false,
   },
   {
     icon: '🤖',
@@ -521,6 +525,7 @@ const overviewData = [
     stat: '手术Copilot级应用',
     detail: '从 SurgBox 手术室副驾到 PsyDraw 儿童心理多模态评估，Agentic AI 成为连接基础模型与临床场景的终极桥梁。',
     slug: 'agentic-ai-clinical',
+    disabled: false,
   },
 ];
 
@@ -554,21 +559,23 @@ function OverviewSection() {
 
         {/* Cards */}
         <div className="space-y-5">
-          {overviewData.map((item, i) => (
-            <Link
-              key={item.slug}
-              href={`/research/${item.slug}`}
-              className="no-underline block group"
-            >
+          {overviewData.map((item, i) => {
+            const cardContent = (
               <div
-                className="relative overflow-hidden rounded-sm border border-[var(--card-border)] hover:border-[var(--accent)] bg-[var(--card-bg)] transition-all duration-500 hover:shadow-[0_8px_32px_rgba(0,0,0,0.1),0_0_0_1px_rgba(14,165,233,0.1)]"
+                className={`relative overflow-hidden rounded-sm border bg-[var(--card-bg)] transition-all duration-500 ${
+                  item.disabled
+                    ? 'border-[var(--card-border)] opacity-65'
+                    : 'border-[var(--card-border)] hover:border-[var(--accent)] hover:shadow-[0_8px_32px_rgba(0,0,0,0.1),0_0_0_1px_rgba(14,165,233,0.1)]'
+                }`}
                 style={{
-                  opacity: visible ? 1 : 0,
+                  opacity: visible ? (item.disabled ? 0.65 : 1) : 0,
                   transform: visible ? 'none' : 'translateY(24px)',
                   transition: `opacity 0.6s ease ${i * 0.1}s, transform 0.6s cubic-bezier(0.23,1,0.32,1) ${i * 0.1}s, border-color 0.3s, box-shadow 0.3s`,
                 }}
               >
-                <div className="absolute top-0 left-0 right-0 h-[1px] bg-gradient-to-r from-transparent via-[var(--accent)] to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+                {!item.disabled && (
+                  <div className="absolute top-0 left-0 right-0 h-[1px] bg-gradient-to-r from-transparent via-[var(--accent)] to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+                )}
                 <div className="p-6 sm:p-8 flex flex-col sm:flex-row gap-5 sm:gap-8 items-start">
                   {/* Icon & stat */}
                   <div className="flex sm:flex-col items-center gap-3 sm:gap-2 sm:min-w-[100px] sm:text-center shrink-0">
@@ -582,9 +589,18 @@ function OverviewSection() {
                   </div>
                   {/* Content */}
                   <div className="flex-1 min-w-0">
-                    <h3 className="font-serif font-bold text-lg text-[var(--text-primary)] group-hover:text-[var(--accent)] transition-colors duration-300 mb-1">
-                      {item.title}
-                    </h3>
+                    <div className="flex items-center gap-3 mb-1">
+                      <h3 className={`font-serif font-bold text-lg transition-colors duration-300 ${
+                        item.disabled ? 'text-[var(--text-secondary)]' : 'text-[var(--text-primary)] group-hover:text-[var(--accent)]'
+                      }`}>
+                        {item.title}
+                      </h3>
+                      {item.disabled && (
+                        <span className="text-[9px] font-sans tracking-[0.18em] uppercase px-2 py-0.5 rounded-sm border border-[var(--card-border)] text-[var(--text-tertiary)]">
+                          即将上线
+                        </span>
+                      )}
+                    </div>
                     <p className="font-sans text-xs tracking-wider text-[var(--accent)] opacity-70 mb-3">
                       {item.highlight}
                     </p>
@@ -593,13 +609,29 @@ function OverviewSection() {
                     </p>
                   </div>
                   {/* Arrow */}
-                  <div className="hidden sm:flex items-center self-center text-[var(--accent)] opacity-0 group-hover:opacity-100 transition-all duration-300 translate-x-0 group-hover:translate-x-1">
-                    <span className="text-lg">→</span>
-                  </div>
+                  {!item.disabled && (
+                    <div className="hidden sm:flex items-center self-center text-[var(--accent)] opacity-0 group-hover:opacity-100 transition-all duration-300 translate-x-0 group-hover:translate-x-1">
+                      <span className="text-lg">→</span>
+                    </div>
+                  )}
                 </div>
               </div>
-            </Link>
-          ))}
+            );
+
+            return item.disabled ? (
+              <div key={item.slug} className="cursor-default">
+                {cardContent}
+              </div>
+            ) : (
+              <Link
+                key={item.slug}
+                href={`/research/${item.slug}`}
+                className="no-underline block group"
+              >
+                {cardContent}
+              </Link>
+            );
+          })}
         </div>
       </div>
     </section>
