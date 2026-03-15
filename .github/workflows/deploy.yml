@@ -50,15 +50,14 @@ jobs:
             echo "🔨 编译中..."
             npm run build
 
-            # 杀掉占用 3000 端口的所有旧进程
+            # 杀掉占用 2987 端口的所有旧进程
             echo "🔄 释放端口并重启..."
-            fuser -k 3000/tcp 2>/dev/null || true
+            fuser -k 2987/tcp 2>/dev/null || true
             sleep 2
 
-            # 通过宝塔的 Node 项目管理器重启（它会自动用 next start 启动）
-            # 如果宝塔 Node 项目管理器未自动拉起，手动用 pm2 启动
+            # 用 PM2 启动 Next.js（端口 2987）
             cd /www/wwwroot/ai-med.husteread.icu
-            PORT=3000 pm2 start npm --name "medicine" -- start
+            PORT=2987 pm2 start npm --name "medicine" -- start
             pm2 save
 
             echo "===== ✅ 部署完成！ ====="
