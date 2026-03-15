@@ -37,6 +37,11 @@ jobs:
             echo "🧹 清理旧构建..."
             rm -rf .next
 
+            # 彻底清除 PM2 残留进程（避免端口冲突）
+            echo "🗑️ 清除 PM2 残留..."
+            pm2 delete medicine 2>/dev/null || true
+            pm2 save --force 2>/dev/null || true
+
             # 安装依赖
             echo "📦 安装依赖..."
             npm ci
@@ -45,15 +50,15 @@ jobs:
             echo "🔨 编译中..."
             npm run build
 
-            # 复制静态资源到 standalone 目录（standalone 模式必需）
-            echo "📁 准备 standalone 产物..."
-            cp -r .next/static .next/standalone/.next/static
-            cp -r public .next/standalone/public 2>/dev/null || true
+            # 杀掉占用 3000 端口的所有旧进程
+            echo "🔄 释放端口并重启..."
+            fuser -k 3000/tcp 2>/dev/null || true
+            sleep 2
 
-            # 重启 PM2 服务（使用 standalone server.js 入口）
-            echo "🔄 重启服务..."
-            pm2 delete medicine 2>/dev/null || true
-            PORT=3000 pm2 start .next/standalone/server.js --name "medicine" --cwd /www/wwwroot/ai-med.husteread.icu
+            # 通过宝塔的 Node 项目管理器重启（它会自动用 next start 启动）
+            # 如果宝塔 Node 项目管理器未自动拉起，手动用 pm2 启动
+            cd /www/wwwroot/ai-med.husteread.icu
+            PORT=3000 pm2 start npm --name "medicine" -- start
             pm2 save
 
             echo "===== ✅ 部署完成！ ====="
