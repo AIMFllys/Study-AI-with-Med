@@ -1,21 +1,14 @@
 import Callout from './Callout';
-import MermaidChart from './MermaidChart';
-import PythonRunner from './PythonRunner';
 import Citation, { ReferenceList } from './Citation';
 import GitHubCard from './GitHubCard';
 import DataTable from './DataTable';
 import InteractiveHTML from './InteractiveHTML';
-import CodeBlockWrapper from './CodeBlockWrapper';
+import { CodeFigure, MermaidChart, PythonRunner } from './lazy';
 import type { MDXComponents } from 'mdx/types';
-import type { ComponentPropsWithoutRef } from 'react';
 
-type FigureProps = ComponentPropsWithoutRef<'figure'> & {
-  'data-rehype-pretty-code-figure'?: string;
-  'data-language'?: string;
-  'data-title'?: string;
-};
+type References = { id: string; text: string; url?: string }[];
 
-export function getMdxComponents(references?: { id: string; text: string; url?: string }[]): MDXComponents {
+export function getMdxComponents(references?: References): MDXComponents {
   return {
     // Override default HTML elements for styling
     h1: (props) => <h1 className="text-4xl md:text-5xl font-extrabold mt-12 mb-8 bg-gradient-to-br from-white to-white/60 bg-clip-text text-transparent tracking-tight" {...props} />,
@@ -48,21 +41,8 @@ export function getMdxComponents(references?: { id: string; text: string; url?: 
     td: (props) => <td className="px-4 py-3 text-medical-slate border-t border-white/5" {...props} />,
     hr: () => <hr className="my-8 border-white/10" />,
 
-    // Wrap code figures with our enhanced CodeBlockWrapper
-    figure: (props: FigureProps) => {
-      // Only wrap rehype-pretty-code figures
-      if (props['data-rehype-pretty-code-figure'] !== undefined) {
-        return (
-          <CodeBlockWrapper
-            data-language={props['data-language']}
-            data-title={props['data-title']}
-          >
-            <figure {...props} />
-          </CodeBlockWrapper>
-        );
-      }
-      return <figure {...props} />;
-    },
+    // Wrap code figures with our enhanced CodeBlockWrapper only when pretty-code emits one.
+    figure: CodeFigure,
 
     // Custom MDX components
     Callout,
