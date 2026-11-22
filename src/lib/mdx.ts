@@ -1,6 +1,7 @@
 import fs from 'fs';
 import path from 'path';
 import matter from 'gray-matter';
+import GithubSlugger from 'github-slugger';
 import remarkGfm from 'remark-gfm';
 import remarkMath from 'remark-math';
 import rehypeSlug from 'rehype-slug';
@@ -163,16 +164,13 @@ export function getAllContentMeta(): ContentMeta[] {
 function extractHeadings(content: string): HeadingItem[] {
   const headingRegex = /^(#{2,3})\s+(.+)$/gm;
   const headings: HeadingItem[] = [];
+  const slugger = new GithubSlugger();
   let match;
 
   while ((match = headingRegex.exec(content)) !== null) {
     const level = match[1].length;
     const text = match[2].trim();
-    const id = text
-      .toLowerCase()
-      .replace(/[^\w\s\u4e00-\u9fff-]/g, '')
-      .replace(/\s+/g, '-');
-    headings.push({ id, text, level });
+    headings.push({ id: slugger.slug(text), text, level });
   }
 
   return headings;
