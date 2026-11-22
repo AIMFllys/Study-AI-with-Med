@@ -262,7 +262,7 @@ export default function Home() {
             >
               <div className="h-px w-10 bg-[var(--accent)] opacity-60" />
               <span className="font-sans text-[10px] tracking-[0.25em] uppercase text-[var(--accent)] opacity-80">
-                YuSheng's Research Journal · 2026
+                YuSheng&apos;s Research Journal · 2026
               </span>
             </div>
 
