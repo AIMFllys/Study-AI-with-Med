@@ -1,5 +1,5 @@
 import { MDXRemote } from 'next-mdx-remote/rsc';
-import { getIndexContent, sharedMdxOptions } from '@/lib/mdx';
+import { getIndexContent, sharedMdxRemoteOptions } from '@/lib/mdx';
 import { getMdxComponents } from '@/components/mdx';
 import { ReferenceList } from '@/components/mdx/Citation';
 import TableOfContents from '@/components/layout/TableOfContents';
@@ -67,7 +67,7 @@ export default function ResearchIndex() {
           <MDXRemote
             source={data.source}
             components={components}
-            options={{ mdxOptions: sharedMdxOptions }}
+            options={sharedMdxRemoteOptions}
           />
         </div>
         <ReferenceList references={data.frontmatter.references || []} />

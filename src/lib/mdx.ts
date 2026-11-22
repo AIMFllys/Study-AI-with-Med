@@ -6,19 +6,22 @@ import remarkMath from 'remark-math';
 import rehypeSlug from 'rehype-slug';
 import rehypeKatex from 'rehype-katex';
 import rehypePrettyCode from 'rehype-pretty-code';
+import type { MDXRemoteProps } from 'next-mdx-remote/rsc';
 import type { ContentMeta, HeadingItem } from '@/types/mdx';
+
+type MdxOptions = NonNullable<NonNullable<MDXRemoteProps['options']>['mdxOptions']>;
 
 /**
  * Shared MDX compilation options.
  * Single source of truth for all remark/rehype plugin chains.
  */
-export const sharedMdxOptions = {
+export const sharedMdxOptions: MdxOptions = {
   remarkPlugins: [remarkGfm, remarkMath],
   rehypePlugins: [
     rehypeSlug,
-    rehypeKatex as any,
+    rehypeKatex,
     [
-      rehypePrettyCode as any,
+      rehypePrettyCode,
       {
         theme: {
           dark: 'github-dark-dimmed',
@@ -28,6 +31,13 @@ export const sharedMdxOptions = {
       },
     ],
   ],
+};
+
+// Repo-controlled MDX may pass code to components; keep dangerous-expression checks enabled.
+export const sharedMdxRemoteOptions = {
+  mdxOptions: sharedMdxOptions,
+  blockJS: false,
+  blockDangerousJS: true,
 };
 
 const CONTENT_DIR = path.join(process.cwd(), 'content');

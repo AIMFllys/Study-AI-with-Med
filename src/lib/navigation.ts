@@ -79,6 +79,7 @@ function formatGroupTitle(key: string): string {
     'ai-imaging': 'AI+精准影像',
     'ai-agent': 'AI+临床智能体',
     'ai-report': 'AI医疗报告论文',
+    'ai-news': '医疗 AI 每周动态',
     'tools': '工具与部署指南',
     knowledge: '知识点分析',
     notes: '个人笔记区',
@@ -96,6 +97,7 @@ function getGroupOrder(key: string): number {
     'ai-imaging': 4,
     'ai-agent': 5,
     'ai-report': 6,
+    'ai-news': 7,
     'tools': 90, // Display tools category lower intuitively
     knowledge: 10,
     notes: 80,

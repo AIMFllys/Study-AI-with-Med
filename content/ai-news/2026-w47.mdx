@@ -1,0 +1,98 @@
+---
+title: "医疗 AI 周报 2026 W47：从病理基础模型到床旁影像 AI"
+description: "2026年11月15日—23日：9条一手来源动态，覆盖肿瘤病理、中文健康评测、FDA许可公告、产品发布与融资。"
+date: "2026-11-23"
+category: "医疗 AI 每周动态"
+order: 1
+tags: ["医疗AI", "周报", "计算病理", "医疗大模型", "FDA", "融资"]
+---
+
+> **本期范围**：2026年11月15日—23日（W47 周报，含23日整理截止日）。以下日期均为来源页面的发表或公告日期，不将公告日推定为监管决定日。共收录9条已核对的一手来源，无需扩展时间窗口。[返回周报归档](/research/ai-news/index)。
+
+<Callout type="info">
+  本期将期刊论文、尚未经同行评审的预印本和企业公告分开呈现。FDA 消息依据厂商原始公告，未据此声称已独立核验 FDA 数据库中的决定日期；未列入缺少本窗口内可核实一手来源的 NMPA 动态。
+</Callout>
+
+## 一、论文与评测：从图像表征到人工复核
+
+### 1. THREADS：以分子信息监督整张病理切片表征
+
+**日期：2026-11-20｜类型：期刊研究，Nature Cancer**
+
+[论文原文：A multimodal foundation model for molecular and morphologic data in oncology](https://www.nature.com/articles/s43018-026-01252-w) 提出 **THREADS**，通过对齐组织形态与基因组或转录组信息学习全切片表征。作者使用超过 **47,000 张 H&E 染色组织切片**预训练，并在 **107 项肿瘤任务**上评估，涵盖分型、分级、肿瘤微环境、治疗反应及生存分析。
+
+**证据边界**：原文报告其在这些任务上优于所比较的全切片基础模型与监督基线，并提供代码和权重入口；这类任务评估不应直接解读为已证明改善患者生存。
+
+### 2. ECS：不要只靠模型自报信心分配医生复核
+
+**日期：2026-11-15｜类型：arXiv 预印本，未经同行评审**
+
+[预印本原文：Scaling large language model-assisted line-of-therapy adjudication with human-in-the-loop evidence-calibrated selection](https://arxiv.org/abs/2611.20259) 研究肿瘤真实世界数据中的**治疗线数判定**。ECS 利用已完成的临床专家判定校准置信度，优先复核证据支持较弱的病例，再把复核结果作为后续判定的参考。
+
+**结果与限制**：在 **136 名多发性骨髓瘤患者**的模拟复核中，达到 **5% 残余错误率**所需复核比例为 **44.6%**；按 LLM 自报置信度选择为 **62.2%**，随机选择为 **81.9%**。这些数字来自该研究的模拟设置，不是前瞻性临床部署结果。
+
+### 3. HealthCLBench：中文健康问答能否真正利用上下文？
+
+**日期：2026-11-18｜类型：arXiv 评测预印本，未经同行评审**
+
+[预印本原文：HealthCLBench: Evaluating Context Learning in Health Conversations through Controlled Case Clusters](https://arxiv.org/abs/2611.22362) 给出 **328 个受控病例簇、1,103 个病例、4,931 条评分标准**，覆盖医疗咨询和日常健康管理。相关病例共享背景，但改变证据、患者状态或任务目标，以检查模型是否随条件变化调整回答。
+
+**结果与限制**：原文对8个系统比较完整上下文与仅当前问题输入，病例分数增幅为 **11.83—31.76 分**。这是特定模拟病例和评分协议下的上下文利用评测，不能据此宣称真实诊疗安全性或临床有效性。
+
+## 二、监管动态：厂商披露的 FDA 许可
+
+### 4. GE HealthCare：Critical Care Suite 3.0 扩展至儿科喂养管评估
+
+**公告日期：2026-11-17｜类型：企业原始公告，FDA 510(k) clearance**
+
+[GE HealthCare 官方公告](https://www.gehealthcare.com/en-us/about/newsroom/press-releases/critical-care-suite-3-0-brings-first-on-device-ai-for-feeding-tube-detection-to-x-ray-imaging-in-adult-and-pediatric-care) 称 **Critical Care Suite 3.0** 已获得 FDA 510(k) 许可，用于自动检测 X 光影像中的喂养管，辅助评估成人及儿科患者的管端和侧孔位置。公告说明 AI 直接嵌入移动 X 光设备，不依赖互联网或云连接。
+
+**阅读重点**：这是特定影像任务的辅助软件许可公告，不等于允许 AI 自主完成置管决策；本文也不将许可表述为疗效获批。
+
+### 5. Siemens Healthineers：冠脉 CT 斑块分析与介入规划软件获许可公告
+
+**公告日期：2026-11-19｜类型：企业原始公告，FDA clearance**
+
+[Siemens Healthineers 官方公告](https://www.siemens-healthineers.com/en-us/press-room/press-releases/syngoct-coronary-cockpit-fda-clearance) 称 **Syngo.CT Coronary Cockpit** 已获 FDA 许可。该软件位于 Syngo.via 平台，使用 AI 分割、标记与可视化分析冠脉 CTA 中的斑块数量和形态，为冠心病管理及经皮冠状动脉介入治疗（PCI）规划提供辅助信息。
+
+**阅读重点**：公告描述其支持使用来自不同 CT 扫描仪的 CCTA 数据。这里记录的是厂商披露的功能和许可信息，不把厂商对工作流价值的预期当作独立患者结局证据。
+
+## 三、产品发布：从报告到收费编码
+
+### 6. RadPayorAI 正式发布，聚焦放射报告编码
+
+**日期：2026-11-18｜类型：企业产品发布公告**
+
+[RadPayor 官方公告](https://radpayor.com/radpayor-launches-radpayorai/) 宣布 **RadPayorAI** 正式发布，用于为已完成的放射报告分配 CPT 和 ICD-10 编码，并把低置信度或例外报告转交人工复核。公告称产品可由 RadPayor 及其技术合作伙伴 MedInformatix 的 RCM Services 产品线提供。
+
+**证据边界**：这是收入周期管理产品，不是疾病诊断模型。公告中的准确率和缩短收费流程时间均为企业自述，本期不将其列为独立临床验证结果。
+
+## 四、融资与产业：资金投向模型、评估与认证
+
+### 7. Knit Health 宣布 3,500 万美元 A 轮融资
+
+**日期：2026-11-16｜类型：企业官方博客**
+
+[Knit Health 官方文章：Building a World Model for Healthcare](https://www.knit.health/newsroom/building-a-world-model-for-healthcare) 宣布 **3,500 万美元 A 轮融资**，由 NEA 领投，Frist Cressey Ventures、Town Hall Ventures、SignalFire 等参与。公司介绍其医疗世界模型 **Med-BEAM**，目标是学习患者在医疗系统中的轨迹，并辅助理解后续照护选择。
+
+**证据边界**：融资与研发方向可由该公告核对；文中的性能、速度及成本优势属于公司披露，不代表独立验证，更不能据此推导因果治疗获益。
+
+### 8. TestDynamics 披露 900 万美元融资，建设影像 AI 评估层
+
+**日期：2026-11-16｜类型：企业通过 Business Wire 发布的新闻稿**
+
+[TestDynamics 原始新闻稿](https://www.businesswire.com/news/home/20261116497451/en/TestDynamics-Secures-%249M-in-funding-with-Series-A-Led-by-Healthier-Capital-and-Participation-from-Cedars-Sinai-Technology-Ventures) 披露获得 **900 万美元融资**，其中 A 轮由 Healthier Capital 领投，Cedars-Sinai Technology Ventures 战略参与。其 **Satori** 平台定位为影像 AI 的厂商中立评估与编排层，对照真实标签及其他算法持续比较表现。
+
+**阅读重点**：新闻稿称资金将用于临床验证团队、更多医疗系统部署及影像亚专科扩展；这是融资与产品定位消息，不是该平台已被独立证明优于所有替代方案的结论。
+
+### 9. Clinsight 完成融资，推进前列腺癌数字病理认证准备
+
+**日期：2026-11-16｜类型：企业原始公告**
+
+[Clinsight 官方公告](https://www.clinsight.net/news-investment-round-2026) 宣布完成由 **Trio Impact Invest** 领投的融资，另有两名投资者参与。公告说明资金将用于建立 **ISO 13485** 质量管理体系，并向公告机构提交 **ClinAI** 平台的 CE-IVDR 认证技术文件；平台面向常规前列腺活检的诊断支持与疾病进展预测。
+
+**证据边界**：这是一条融资及认证准备消息，**不是已经取得 CE-IVDR 认证**。公告未披露融资金额，本期不作估计。
+
+## 本期小结：把进展与证据等级一起记录
+
+以上9条分别涉及模型研究、上下文与人工复核评测、设备端影像软件、后台编码和产业投入。作为阅读线索，后续可持续追踪三件事：研究是否出现外部与前瞻性验证；产品许可覆盖哪些具体任务和人群；企业披露的性能能否由独立数据复现。这些是本栏目的观察问题，而非新增的临床结论。

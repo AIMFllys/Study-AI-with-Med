@@ -7,6 +7,13 @@ import DataTable from './DataTable';
 import InteractiveHTML from './InteractiveHTML';
 import CodeBlockWrapper from './CodeBlockWrapper';
 import type { MDXComponents } from 'mdx/types';
+import type { ComponentPropsWithoutRef } from 'react';
+
+type FigureProps = ComponentPropsWithoutRef<'figure'> & {
+  'data-rehype-pretty-code-figure'?: string;
+  'data-language'?: string;
+  'data-title'?: string;
+};
 
 export function getMdxComponents(references?: { id: string; text: string; url?: string }[]): MDXComponents {
   return {
@@ -26,7 +33,7 @@ export function getMdxComponents(references?: { id: string; text: string; url?: 
     a: (props) => <a className="text-medical-cyan hover:text-medical-indigo hover:bg-medical-indigo/10 px-0.5 rounded transition-all underline decoration-medical-cyan/30 underline-offset-4" target="_blank" rel="noopener noreferrer" {...props} />,
     blockquote: (props) => (
       <blockquote className="relative border-l-4 border-medical-indigo bg-gradient-to-r from-medical-indigo/10 to-transparent p-5 my-8 rounded-r-2xl" {...props}>
-        <div className="absolute top-2 left-4 text-4xl text-medical-indigo/20 font-serif">"</div>
+        <div className="absolute top-2 left-4 text-4xl text-medical-indigo/20 font-serif">&ldquo;</div>
         <div className="relative z-10 text-[15.5px] text-[var(--text-secondary)] italic leading-[1.8]">{props.children}</div>
       </blockquote>
     ),
@@ -42,7 +49,7 @@ export function getMdxComponents(references?: { id: string; text: string; url?: 
     hr: () => <hr className="my-8 border-white/10" />,
 
     // Wrap code figures with our enhanced CodeBlockWrapper
-    figure: (props: any) => {
+    figure: (props: FigureProps) => {
       // Only wrap rehype-pretty-code figures
       if (props['data-rehype-pretty-code-figure'] !== undefined) {
         return (

@@ -179,7 +179,7 @@ export default function MermaidChart({ children }: MermaidChartProps) {
         document.fonts?.ready.then(() => {
           if (containerRef.current) fitForeignObjects(containerRef.current);
         });
-      } catch (err) {
+      } catch {
         containerRef.current.innerHTML = `<pre class="text-red-400 text-sm p-4">${code}</pre>`;
       }
     };
