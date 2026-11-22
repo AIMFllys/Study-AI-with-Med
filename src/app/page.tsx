@@ -187,19 +187,26 @@ function CardInner({ chapter, dimmed }: { chapter: typeof chapters[0]; dimmed?: 
 function useTypewriter(text: string, speed = 40, startDelay = 600) {
   const [displayed, setDisplayed] = useState('');
   useEffect(() => {
+    let interval: ReturnType<typeof setInterval> | undefined;
     const timeout = setTimeout(() => {
       let i = 0;
-      const interval = setInterval(() => {
+      const id = setInterval(() => {
         if (i < text.length) {
           setDisplayed(text.slice(0, i + 1));
           i++;
         } else {
-          clearInterval(interval);
+          clearInterval(id);
+          interval = undefined;
         }
       }, speed);
-      return () => clearInterval(interval);
+      interval = id;
     }, startDelay);
-    return () => clearTimeout(timeout);
+    return () => {
+      clearTimeout(timeout);
+      if (interval !== undefined) {
+        clearInterval(interval);
+      }
+    };
   }, [text, speed, startDelay]);
   return displayed;
 }
