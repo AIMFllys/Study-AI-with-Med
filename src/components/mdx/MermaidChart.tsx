@@ -108,6 +108,34 @@ const MERMAID_CONFIGS: Record<MermaidTheme, MermaidConfig> = {
 };
 
 /**
+ * Mermaid 尺寸在渲染时按测量值写入 foreignObject，内容溢出会被裁剪；
+ * webfont 落位后实际字形可能略大于测量值，这里把 foreignObject 撑到
+ * 内容实际大小，并把位置平移回原中心，保证中英文标签完整可读。
+ */
+function fitForeignObjects(root: ParentNode) {
+  root.querySelectorAll('foreignObject').forEach((fo) => {
+    const content = fo.firstElementChild as HTMLElement | null;
+    const labelGroup = fo.parentElement;
+    if (!content || !labelGroup) return;
+    const attrW = parseFloat(fo.getAttribute('width') ?? '0');
+    const attrH = parseFloat(fo.getAttribute('height') ?? '0');
+    const needW = Math.ceil(content.scrollWidth);
+    const needH = Math.ceil(content.scrollHeight);
+    if (needW <= attrW && needH <= attrH) return;
+    fo.setAttribute('width', String(Math.max(needW, attrW)));
+    fo.setAttribute('height', String(Math.max(needH, attrH)));
+    const match = (labelGroup.getAttribute('transform') ?? '').match(
+      /translate\(\s*(-?[\d.]+)[ ,](-?[\d.]+)\s*\)/,
+    );
+    if (match) {
+      const tx = parseFloat(match[1]) - (Math.max(needW, attrW) - attrW) / 2;
+      const ty = parseFloat(match[2]) - (Math.max(needH, attrH) - attrH) / 2;
+      labelGroup.setAttribute('transform', `translate(${tx}, ${ty})`);
+    }
+  });
+}
+
+/**
  * Extract raw text from React children (MDX passes JSX nodes, not raw strings)
  */
 function extractText(children: React.ReactNode): string {
@@ -140,13 +168,17 @@ export default function MermaidChart({ children }: MermaidChartProps) {
       try {
         const { svg } = await mermaid.render(id, code);
         containerRef.current.innerHTML = svg;
-        // Make SVG responsive: remove fixed width/height, use viewBox scaling
         const svgEl = containerRef.current.querySelector('svg');
         if (svgEl) {
           svgEl.style.minWidth = '600px';
           svgEl.style.height = 'auto';
           svgEl.style.maxHeight = expanded ? 'none' : '600px';
         }
+        fitForeignObjects(containerRef.current);
+        // 字体异步加载完成后再校正一次，覆盖 webfont 替换造成的度量差
+        document.fonts?.ready.then(() => {
+          if (containerRef.current) fitForeignObjects(containerRef.current);
+        });
       } catch (err) {
         containerRef.current.innerHTML = `<pre class="text-red-400 text-sm p-4">${code}</pre>`;
       }
@@ -208,7 +240,6 @@ export default function MermaidChart({ children }: MermaidChartProps) {
           overflowX: 'auto',
           overflowY: expanded ? 'auto' : 'hidden',
           padding: '24px 16px',
-          background: resolvedTheme === 'light' ? 'rgba(2, 6, 23, 0.04)' : 'rgba(0, 0, 0, 0.15)',
           maxHeight: expanded ? 'none' : '600px',
           transition: 'max-height 0.3s ease',
         }}
