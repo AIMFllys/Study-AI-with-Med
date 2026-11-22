@@ -387,7 +387,7 @@ body {
 
 /* Mermaid 通过 foreignObject 渲染节点标签，尺寸由 mermaid 按图表字号测量；
    站点正文排版（.mdx-content p）会撑大标签导致被裁剪，这里重置回来。 */
-.mdx-content .mermaid-render-area .nodeLabel p {
+.mermaid-render-area .nodeLabel p {
   margin: 0;
   font-size: inherit;
   line-height: inherit;
