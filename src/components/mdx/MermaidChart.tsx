@@ -2,10 +2,137 @@
 
 import React, { useEffect, useRef, useState } from 'react';
 import mermaid from 'mermaid';
+import { useTheme } from 'next-themes';
 import { Maximize2, Minimize2, Copy, Check } from 'lucide-react';
 
 interface MermaidChartProps {
   children: React.ReactNode;
+}
+
+type MermaidTheme = 'light' | 'dark';
+
+type MermaidConfig = Parameters<typeof mermaid.initialize>[0];
+
+// Mermaid's built-in 'default'/'dark' themes hardcode node fills (mainBkg,
+// nodeBorder, ...), which silently ignore primaryColor-style overrides.
+// The 'base' theme derives everything from themeVariables, so the palette
+// below fully controls node, edge, label and actor colors.
+const MERMAID_FONT_FAMILY =
+  '"Inter", "Noto Sans SC", "PingFang SC", "Microsoft YaHei", sans-serif';
+
+const MERMAID_LAYOUT = {
+  startOnLoad: false,
+  theme: 'base',
+  flowchart: {
+    useMaxWidth: false,
+    htmlLabels: true,
+    padding: 16,
+  },
+  timeline: {
+    useMaxWidth: false,
+    padding: 20,
+  },
+} as const;
+
+const MERMAID_CONFIGS: Record<MermaidTheme, MermaidConfig> = {
+  dark: {
+    ...MERMAID_LAYOUT,
+    themeVariables: {
+      background: '#020617',
+      fontFamily: MERMAID_FONT_FAMILY,
+      fontSize: '16px',
+      primaryColor: '#1e293b',
+      mainBkg: '#1e293b',
+      secondBkg: '#334155',
+      primaryTextColor: '#e2e8f0',
+      nodeTextColor: '#e2e8f0',
+      textColor: '#e2e8f0',
+      titleColor: '#e2e8f0',
+      primaryBorderColor: '#38bdf8',
+      nodeBorder: '#38bdf8',
+      secondaryBorderColor: '#475569',
+      tertiaryBorderColor: '#334155',
+      lineColor: '#94a3b8',
+      arrowheadColor: '#94a3b8',
+      edgeLabelBackground: 'rgba(11, 17, 32, 0.9)',
+      clusterBkg: 'rgba(14, 165, 233, 0.08)',
+      clusterBorder: '#38bdf8',
+      actorBkg: '#1e293b',
+      actorBorder: '#38bdf8',
+      actorTextColor: '#e2e8f0',
+      signalColor: '#e2e8f0',
+      signalTextColor: '#e2e8f0',
+      labelBoxBkgColor: '#0b1120',
+      labelBoxBorderColor: '#38bdf8',
+      labelTextColor: '#e2e8f0',
+      noteBkgColor: '#44403c',
+      noteTextColor: '#fef3c7',
+      noteBorderColor: '#a16207',
+    },
+  },
+  light: {
+    ...MERMAID_LAYOUT,
+    themeVariables: {
+      background: '#f8fafc',
+      fontFamily: MERMAID_FONT_FAMILY,
+      fontSize: '16px',
+      primaryColor: '#e0f2fe',
+      mainBkg: '#e0f2fe',
+      secondBkg: '#f1f5f9',
+      primaryTextColor: '#0f172a',
+      nodeTextColor: '#0f172a',
+      textColor: '#0f172a',
+      titleColor: '#0f172a',
+      primaryBorderColor: '#0284c7',
+      nodeBorder: '#0284c7',
+      secondaryBorderColor: '#bae6fd',
+      tertiaryBorderColor: '#cbd5e1',
+      lineColor: '#64748b',
+      arrowheadColor: '#64748b',
+      edgeLabelBackground: 'rgba(255, 255, 255, 0.9)',
+      clusterBkg: 'rgba(14, 165, 233, 0.08)',
+      clusterBorder: '#38bdf8',
+      actorBkg: '#e0f2fe',
+      actorBorder: '#0284c7',
+      actorTextColor: '#0f172a',
+      signalColor: '#0f172a',
+      signalTextColor: '#0f172a',
+      labelBoxBkgColor: '#ffffff',
+      labelBoxBorderColor: '#0284c7',
+      labelTextColor: '#0f172a',
+      noteBkgColor: '#fef9c3',
+      noteTextColor: '#0f172a',
+      noteBorderColor: '#eab308',
+    },
+  },
+};
+
+/**
+ * Mermaid 尺寸在渲染时按测量值写入 foreignObject，内容溢出会被裁剪；
+ * webfont 落位后实际字形可能略大于测量值，这里把 foreignObject 撑到
+ * 内容实际大小，并把位置平移回原中心，保证中英文标签完整可读。
+ */
+function fitForeignObjects(root: ParentNode) {
+  root.querySelectorAll('foreignObject').forEach((fo) => {
+    const content = fo.firstElementChild as HTMLElement | null;
+    const labelGroup = fo.parentElement;
+    if (!content || !labelGroup) return;
+    const attrW = parseFloat(fo.getAttribute('width') ?? '0');
+    const attrH = parseFloat(fo.getAttribute('height') ?? '0');
+    const needW = Math.ceil(content.scrollWidth);
+    const needH = Math.ceil(content.scrollHeight);
+    if (needW <= attrW && needH <= attrH) return;
+    fo.setAttribute('width', String(Math.max(needW, attrW)));
+    fo.setAttribute('height', String(Math.max(needH, attrH)));
+    const match = (labelGroup.getAttribute('transform') ?? '').match(
+      /translate\(\s*(-?[\d.]+)[ ,](-?[\d.]+)\s*\)/,
+    );
+    if (match) {
+      const tx = parseFloat(match[1]) - (Math.max(needW, attrW) - attrW) / 2;
+      const ty = parseFloat(match[2]) - (Math.max(needH, attrH) - attrH) / 2;
+      labelGroup.setAttribute('transform', `translate(${tx}, ${ty})`);
+    }
+  });
 }
 
 /**
@@ -26,34 +153,14 @@ export default function MermaidChart({ children }: MermaidChartProps) {
   const code = extractText(children).trim();
   const [expanded, setExpanded] = useState(false);
   const [copied, setCopied] = useState(false);
+  const { resolvedTheme } = useTheme();
 
   useEffect(() => {
-    mermaid.initialize({
-      startOnLoad: false,
-      theme: 'dark',
-      themeVariables: {
-        primaryColor: '#0ea5e9',
-        primaryTextColor: '#e2e8f0',
-        primaryBorderColor: '#38bdf8',
-        lineColor: '#94a3b8',
-        secondaryColor: '#1e293b',
-        tertiaryColor: '#0f172a',
-        edgeLabelBackground: '#0f172a',
-        clusterBkg: 'rgba(14,165,233,0.08)',
-        clusterBorder: '#38bdf8',
-        titleColor: '#e2e8f0',
-        nodeTextColor: '#e2e8f0',
-      },
-      flowchart: {
-        useMaxWidth: false,
-        htmlLabels: true,
-        padding: 16,
-      },
-      timeline: {
-        useMaxWidth: false,
-        padding: 20,
-      },
-    });
+    // Wait for next-themes to resolve so the diagram is only rendered once,
+    // in the correct theme (avoids a dark flash on light pages).
+    if (!resolvedTheme) return;
+    const theme: MermaidTheme = resolvedTheme === 'light' ? 'light' : 'dark';
+    mermaid.initialize(MERMAID_CONFIGS[theme]);
 
     const render = async () => {
       if (!containerRef.current || !code) return;
@@ -61,20 +168,24 @@ export default function MermaidChart({ children }: MermaidChartProps) {
       try {
         const { svg } = await mermaid.render(id, code);
         containerRef.current.innerHTML = svg;
-        // Make SVG responsive: remove fixed width/height, use viewBox scaling
         const svgEl = containerRef.current.querySelector('svg');
         if (svgEl) {
           svgEl.style.minWidth = '600px';
           svgEl.style.height = 'auto';
           svgEl.style.maxHeight = expanded ? 'none' : '600px';
         }
+        fitForeignObjects(containerRef.current);
+        // 字体异步加载完成后再校正一次，覆盖 webfont 替换造成的度量差
+        document.fonts?.ready.then(() => {
+          if (containerRef.current) fitForeignObjects(containerRef.current);
+        });
       } catch {
         containerRef.current.innerHTML = `<pre class="text-red-400 text-sm p-4">${code}</pre>`;
       }
     };
 
     render();
-  }, [code, expanded]);
+  }, [code, expanded, resolvedTheme]);
 
   const handleCopy = async () => {
     try {
@@ -129,7 +240,6 @@ export default function MermaidChart({ children }: MermaidChartProps) {
           overflowX: 'auto',
           overflowY: expanded ? 'auto' : 'hidden',
           padding: '24px 16px',
-          background: 'rgba(0,0,0,0.15)',
           maxHeight: expanded ? 'none' : '600px',
           transition: 'max-height 0.3s ease',
         }}

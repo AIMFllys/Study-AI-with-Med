@@ -376,6 +376,25 @@ body {
   box-shadow: 0 3px 16px rgba(0, 0, 0, 0.3);
 }
 
+/* Mermaid 画布底色跟随站点主题（html.dark 由 next-themes 同步设置，
+   避免 SSR/水合不一致导致的内联样式不更新问题） */
+.mermaid-render-area {
+  background: rgba(14, 165, 233, 0.1);
+}
+.dark .mermaid-render-area {
+  background: rgba(0, 0, 0, 0.15);
+}
+
+/* Mermaid 通过 foreignObject 渲染节点标签，尺寸由 mermaid 按图表字号测量；
+   站点正文排版（.mdx-content p）会撑大标签导致被裁剪，这里重置回来。 */
+.mermaid-render-area .nodeLabel p {
+  margin: 0;
+  font-size: inherit;
+  line-height: inherit;
+  letter-spacing: normal;
+  color: inherit;
+}
+
 /* ── Toolbar ── */
 .cb-toolbar {
   display: flex;
