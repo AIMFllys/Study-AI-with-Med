@@ -187,19 +187,26 @@ function CardInner({ chapter, dimmed }: { chapter: typeof chapters[0]; dimmed?: 
 function useTypewriter(text: string, speed = 40, startDelay = 600) {
   const [displayed, setDisplayed] = useState('');
   useEffect(() => {
+    let interval: ReturnType<typeof setInterval> | undefined;
     const timeout = setTimeout(() => {
       let i = 0;
-      const interval = setInterval(() => {
+      const id = setInterval(() => {
         if (i < text.length) {
           setDisplayed(text.slice(0, i + 1));
           i++;
         } else {
-          clearInterval(interval);
+          clearInterval(id);
+          interval = undefined;
         }
       }, speed);
-      return () => clearInterval(interval);
+      interval = id;
     }, startDelay);
-    return () => clearTimeout(timeout);
+    return () => {
+      clearTimeout(timeout);
+      if (interval !== undefined) {
+        clearInterval(interval);
+      }
+    };
   }, [text, speed, startDelay]);
   return displayed;
 }
@@ -255,7 +262,7 @@ export default function Home() {
             >
               <div className="h-px w-10 bg-[var(--accent)] opacity-60" />
               <span className="font-sans text-[10px] tracking-[0.25em] uppercase text-[var(--accent)] opacity-80">
-                YuSheng's Research Journal · 2026
+                YuSheng&apos;s Research Journal · 2026
               </span>
             </div>
 

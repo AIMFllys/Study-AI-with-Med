@@ -23,7 +23,7 @@ export default function Footer() {
           {/* 中：装饰性引言 */}
           <div className="hidden md:block text-center">
             <p className="font-serif italic text-[var(--text-tertiary)] text-sm opacity-60">
-              "Understanding the algorithm is the first step to transcending it."
+              &ldquo;Understanding the algorithm is the first step to transcending it.&rdquo;
             </p>
           </div>
 

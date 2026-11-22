@@ -205,10 +205,12 @@ function SidebarItem({ item, pathname, depth }: { item: NavItem; pathname: strin
 
   /* 默认展开最外层（depth=0），或者当子项被激活时 */
   const [isOpen, setIsOpen] = useState(groupActive || depth === 0);
+  const [wasGroupActive, setWasGroupActive] = useState(groupActive);
 
-  useEffect(() => {
+  if (groupActive !== wasGroupActive) {
+    setWasGroupActive(groupActive);
     if (groupActive) setIsOpen(true);
-  }, [groupActive]);
+  }
 
   /* 深度自适应样式配置 */
   const fontSize = depth === 0 ? 'text-[13px]' : depth === 1 ? 'text-[12.5px]' : 'text-[12px]';
@@ -268,7 +270,7 @@ function SidebarItem({ item, pathname, depth }: { item: NavItem; pathname: strin
               className="flex flex-col space-y-0.5 relative ml-[14px] pl-3 pt-0.5 pb-0.5"
               style={{ borderLeft: `1.5px solid ${groupActive ? 'rgba(14,165,233,0.35)' : 'var(--rule-color)'}` }}
             >
-              {item.children.map((child, i) => (
+              {item.children.map((child) => (
                 <SidebarItem key={child.slug} item={child} pathname={pathname} depth={depth + 1} />
               ))}
             </div>
