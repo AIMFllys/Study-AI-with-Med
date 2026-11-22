@@ -1,0 +1,285 @@
+---
+title: "2026 年 11 月医学 AI 进展综述：从临床证据到监管落地"
+description: "截至 2026-11-23 的医学 AI 进展整理：AI 药物进入 Phase III、影像/病理基础模型突破、医疗大模型进入 EHR 工作流、临床智能体从沙盒走向受控自主，并同步梳理 FDA/EU/中国监管变化。"
+date: "2026-11-23"
+category: "AI医疗报告论文"
+order: 1
+tags: ["医学AI", "AIDD", "医疗大模型", "医学影像", "临床智能体", "监管", "2026综述"]
+references:
+  - id: "mira"
+    text: "Ferber, D. et al. (2026). Towards autonomous medical artificial intelligence agents. Nature."
+    url: "https://www.nature.com/articles/s41586-026-10675-5"
+  - id: "onprem-agent"
+    text: "On-premise medical AI agents for reliable clinical decision-making. PMC, 2026."
+    url: "https://pmc.ncbi.nlm.nih.gov/articles/PMC13668652/"
+  - id: "agentic-risk"
+    text: "Autonomous agentic artificial intelligence systems in health care: friend or foe? The Lancet Digital Health, 2026."
+    url: "https://www.thelancet.com/journals/landig/article/PIIS2589-7500(26)00096-8/fulltext"
+  - id: "mayo-cds"
+    text: "Mayo Clinic launches AI clinical decision support solution. Mayo Clinic News Network, 2026-11-03."
+    url: "https://newsnetwork.mayoclinic.org/discussion/mayo-clinic-platforms-new-clinical-decision-support-solution-provides-trusted-medical-information-to-enhance-individualized-patient-care/"
+  - id: "chatehr"
+    text: "Lessons from deploying the ChatEHR system at Stanford Medicine. Nature Medicine, 2026-08-10."
+    url: "https://www.nature.com/articles/s41591-026-04574-5"
+  - id: "kenya-llm-trial"
+    text: "Generative AI-enabled clinical decision support system in primary care: a pragmatic, cluster-randomized trial. Nature Medicine, 2026-06-26."
+    url: "https://www.nature.com/articles/s41591-026-04503-6"
+  - id: "medguard-rct"
+    text: "AI-enhanced clinical decision support reduces medication errors and adverse drug events in a multicenter teaching hospital network: A prospective randomized controlled trial. International Journal of Medical Informatics, 2026."
+    url: "https://pubmed.ncbi.nlm.nih.gov/42054932/"
+  - id: "idc-china-llm"
+    text: "IDC China: 中国医疗大模型技术评估, 2026."
+    url: "https://my.idc.com/getdoc.jsp?containerId=CHC53377725"
+  - id: "insilico-genesis"
+    text: "Insilico Medicine doses first patient in GENESIS-IPF-3, the world's first Phase III trial of a generative AI-driven innovative drug. Insilico Medicine, 2026-09-10."
+    url: "https://insilico.com/news/isn1009261-insilico-medicine-doses-first-patient-genesis-ipf-3"
+  - id: "rentosertib-nct"
+    text: "ClinicalTrials.gov: Study Evaluation Rentosertib (INS018_055) Administered Orally in Patients With Idiopathic Pulmonary Fibrosis, NCT07687459."
+    url: "https://clinicaltrials.gov/study/NCT07687459"
+  - id: "techbio3"
+    text: "TechBio 3.0 closes the drug discovery loop with multimodal AI and generative chemistry. npj Drug Discovery, 2026-10-09."
+    url: "https://www.nature.com/articles/s44386-026-00078-x"
+  - id: "ai-drugs-clinic"
+    text: "How well are AI-discovered drugs faring in the clinic? PharmaVoice, 2026-07-15."
+    url: "https://www.pharmavoice.com/news/ai-drugs-Insilico-Recursion-Pharma/825249/"
+  - id: "ai-trials-2026"
+    text: "AI-Designed Drugs in Clinical Trials, November 2026. Presenc AI."
+    url: "https://presenc.ai/research/ai-designed-drugs-in-clinical-trials-2026"
+  - id: "isomorphic-funding"
+    text: "Isomorphic Labs raises $5B as it looks to take drug candidates to clinical trials. TechCrunch, 2026-11-17."
+    url: "https://techcrunch.com/2026/11/17/isomorphic-labs-raises-5b-as-it-looks-to-take-drug-candidates-to-clinical-trials/"
+  - id: "bigpharma-ai"
+    text: "Big Pharma says AI is shrinking drug discovery timelines. Reuters via Investing.com, 2026-11-20."
+    url: "https://www.investing.com/news/stock-market-news/big-pharma-with-eye-on-anthropic-says-ai-is-shrinking-drug-discovery-timelines-5041287"
+  - id: "struct-bio-2026"
+    text: "The latest AI breakthroughs in structural biology: protein binder design and conformational state prediction. Communications Biology, 2026-05-08."
+    url: "https://www.nature.com/articles/s42003-026-10112-3"
+  - id: "evo2"
+    text: "Evo 2: DNA Foundation Model. Arc Institute."
+    url: "https://arcinstitute.org/tools/evo"
+  - id: "nnfoundation"
+    text: "nnFoundation: 3D Foundation Models for Radiology. arXiv:2609.26924, 2026."
+    url: "https://arxiv.org/abs/2609.26924"
+  - id: "holoct"
+    text: "A 3D foundation model unifying CT interpretation and segmentation. arXiv:2611.06471, 2026."
+    url: "http://arxiv.org/abs/2611.06471"
+  - id: "evlf-fm"
+    text: "A clinical multimodal vision language foundation model with fine-grain explainability. Nature Medicine, 2026-10-29."
+    url: "https://www.nature.com/articles/s41591-026-04655-5"
+  - id: "threads"
+    text: "A multimodal foundation model for molecular and morphologic data in oncology. Nature Cancer, 2026-11-20."
+    url: "https://www.nature.com/articles/s43018-026-01252-w"
+  - id: "rudolfv2"
+    text: "RudolfV 2: A State-of-the-Art Open-Weight Pathology Foundation Model. Aignostics, 2026-08-07."
+    url: "https://www.aignostics.com/blog/rudolfv-2-a-state-of-the-art-open-weight-pathology-foundation-model"
+  - id: "fda-ai-list"
+    text: "FDA AI-Enabled Medical Devices List. U.S. Food and Drug Administration."
+    url: "https://www.fda.gov/medical-devices/artificial-intelligence-enabled-medical-devices/list-artificial-intelligence-enabled-medical-devices"
+  - id: "eu-mdr-2026"
+    text: "The proposed reform of the Medical Device Regulation and its implications for AI-enabled medical devices in the EU. npj Digital Medicine, 2026-11-18."
+    url: "https://www.nature.com/articles/s41746-026-03475-8"
+---
+
+## 一句话结论
+
+截至 **2026 年 11 月 23 日**，医学 AI 的主线已经从“模型 benchmark 很强”转向四个更硬的问题：**临床证据是否成立、监管是否放行、工作流是否真的嵌进去、失败时谁负责**。最清晰的信号是：AI 药物第一次进入 Phase III，影像与病理基础模型开始把“看见”与“解释”合并，医疗大模型开始进入 EHR/CDS 工作流，而临床智能体也从沙盒演示走到受控自主的早期证据阶段。
+
+| 方向 | 2026 年下半年的关键变化 | 成熟度判断 |
+|------|------------------------|------------|
+| AI 药物发现 | Rentosertib 进入 Phase III；Generate 的 GB-0895 进入 Phase III；大药企把 AI 用到分子设计与安全性预测 | 早期临床验证期，尚无 AI 设计药获批 |
+| 蛋白质/结构生物学 | 重点从单结构预测转向构象系综、蛋白 binder 设计和核酸/基因组基础模型 | 学术突破强，湿实验闭环仍是瓶颈 |
+| 医学影像/病理 | 3D CT 基础模型、跨模态可解释 VLM、分子引导病理 WSI 模型集中出现 | 临床验证加速，仍需前瞻性研究 |
+| 医疗大模型/CDS | Mayo Clinic、Stanford ChatEHR 等进入真实工作流评估；RCT 开始给出安全性与效果边界 | 可辅助，不能替代 |
+| 临床智能体 | MIRA 在沙盒 EHR 中完成诊疗流程；本地部署 + 选择性自主成为新范式 | 证据仍多来自模拟/回顾，监管与责任未定 |
+
+<Callout type="warning">
+  本综述刻意区分三类证据：**已发表/注册的临床证据**、**公司或预印本声明**、**监管与产业动态**。看到“AI 设计药进入临床”时，优先查 ClinicalTrials.gov、FDA/NMPA/EU 数据库和同行评议论文；看到“模型超过医生”时，先看是否是沙盒、回顾性读片还是前瞻 RCT。
+</Callout>
+
+---
+
+## 1. AI 药物发现：从“AI 辅助”走向“AI 设计药进入 Phase III”
+
+### 1.1 Rentosertib：第一个进入 Phase III 的生成式 AI 设计药物候选
+
+英矽智能的 **Rentosertib（INS018_055 / ISM001-055）** 是当前最重要的 AIDD 里程碑。公司于 **2026-09-10** 宣布在 GENESIS-IPF-3 研究中给药首例患者，临床注册号为 **NCT07687459**；ClinicalTrials.gov 显示该研究为前瞻性、多中心、随机、双盲、安慰剂对照设计，计划入组约 **320** 例特发性肺纤维化患者，主要完成日期预计为 **2029-10-30**。<Citation id="insilico-genesis" /><Citation id="rentosertib-nct" />
+
+这不是孤立事件。npj Drug Discovery 在 **2026-10-09** 的 TechBio 3.0 评论中把 Rentosertib 作为“闭环药物发现”的早期临床验证案例：靶点识别、生成化学与实验验证开始被连接成一个可迭代系统；此前 Phase IIa 研究在 71 例 IPF 患者中观察到最高剂量组 FVC 平均改善约 **98.4 mL**，超过约 **80 mL** 的最小临床重要差异阈值，且未报告最高剂量组治疗相关严重不良事件。<Citation id="techbio3" />
+
+需要保留的边界是：Phase IIa 样本小，Phase III 才是检验；截至 **2026-11-13** 的 ClinicalTrials.gov 快照中，AI 设计/AI 使能药物管线仍没有已获批品种，Rentosertib 与 Generate 的 GB-0895 是最靠前的 Phase III 候选。<Citation id="ai-trials-2026" />
+
+### 1.2 临床管线图谱：两款 Phase III 与一串早期项目
+
+Presenc AI 基于 ClinicalTrials.gov 在 **2026-11-13** 整理的名单显示，当时有 **15** 个具名 AI 使能化合物进入人体试验；其中 Phase III 为：
+
+| 药物 | 公司 | 适应症 | 关键注册信息 |
+|------|------|--------|--------------|
+| Rentosertib | Insilico Medicine | 特发性肺纤维化 | NCT07687459，2026-09-09 开始，预计 320 例 |
+| GB-0895 | Generate Biomedicines | 重症哮喘 | NCT07276724 / NCT07359846，两个试验各约 786 例 |
+
+<Callout type="tip">
+  GB-0895 是抗 TSLP 抗体，Generate 称其为“首个由 AI 使能平台工程化的生物药进入 Phase III”。这类表述应理解为公司声明；更稳妥的判断是：AI 设计药已经从临床前故事进入可审计的注册试验阶段，但疗效与安全性仍需由试验数据回答。
+</Callout>
+
+早期管线也在快速扩张。Insilico 在 **2026-07** 的披露中称拥有 13 项获批进入人体试验的项目和 8 项进行中的 Phase I；Recursion 的 REC-4881 在 FAP 相关 phase 1b/2 中报告中位息肉负荷下降约 **43%**，但同一公司也经历了脑海绵状血管瘤与 NF2 管线受挫，说明 AI 药物并不天然降低临床失败率。<Citation id="ai-drugs-clinic" /><Citation id="ai-trials-2026" />
+
+### 1.3 大药企与基础设施：AI 从“辅助任务”进入研发主干
+
+Reuters 在 **2026-11-20** 报道，GSK、Bristol Myers Squibb、Novartis、Eli Lilly、Novo Nordisk、AstraZeneca、Sanofi 等公司已把 AI 用于分子设计、候选分子排序和安全性风险识别，而不只是注册文件准备。Sanofi 称其哮喘药物 lunsekimig 因 AI 支持的早期生物学到临床决策流程而节省至少一年并跳过剂量选择研究；Novartis 称 AI 帮助优先推进五个肾病靶点；BMS 称一款镰状细胞贫血候选药若无 AI 系统可能不会被开发。<Citation id="bigpharma-ai" />
+
+资本市场同样在重估平台价值。Isomorphic Labs 在 **2026-11-17** 宣布完成 **50 亿美元** Series C，Greenoaks 与 Sequoia 领投；公司称其项目已在肿瘤学和免疫学取得“积极临床前结果”，但截至目前未在 ClinicalTrials.gov 出现以其为申办方的临床试验，首个临床试验仍是未来事件。<Citation id="isomorphic-funding" /><Citation id="ai-trials-2026" />
+
+### 1.4 方法论升级：TechBio 3.0 与“闭环”成为关键词
+
+npj Drug Discovery 提出的 **TechBio 3.0** 强调：分子预测/设计只有与实验自动化连接，才会从“模型能力”变成“发现能力”。这意味着 AIDD 的竞争焦点正在从单点生成模型转向多模态分子表征、生成化学、自动实验与数据回流的闭环系统。<Citation id="techbio3" />
+
+对学习者来说，2026 年 AIDD 的评价标准可以更新为：
+
+1. **机制是否新颖**：是否提出可验证的新靶点或新化学类型，而不是只优化已知分子。
+2. **闭环是否完整**：是否有靶点—分子—实验—反馈链路，而非只给 SMILES 或 docking 分数。
+3. **临床证据是否可审计**：是否能在 ClinicalTrials.gov 找到注册号、入组数、主要终点和申办方。
+4. **失败是否被报告**：是否同时披露阴性结果、管线裁剪和目标产品失败原因。
+
+---
+
+## 2. 蛋白质与结构生物学：从“预测结构”到“预测系综、设计 binder、读写基因组”
+
+### 2.1 蛋白结构预测仍在推进，但边界更清楚了
+
+2026 年 5 月 Communications Biology 的评论指出，结构生物学正在进入两个新的“AlphaFold 时刻”候选方向：**全构象系综预测**与**高亲和力蛋白 binder 的常规化从头设计**。前者试图估计 Boltzmann 加权的构象分布，而不是只输出一个最稳定结构；后者把 binder 设计从少数顶尖实验室的手工艺变成更可扩展的工程流程。<Citation id="struct-bio-2026" />
+
+Microsoft 的 **BioEmu** 被评论视为构象系综方向的重要代表：它用扩散式生成框架从蛋白序列采样大量构象，估计不同状态的相对自由能与布居。其优势是用分钟级生成近似分子动力学长期轨迹的统计结果；但评论也提醒，所有 AI 构象采样方法都可能受 MSA、模板和训练分布记忆影响，且与实验动态数据仍需对照。<Citation id="struct-bio-2026" />
+
+CASP16 的结果则提供了反向校准：复合体、核酸、抗体-抗原和配体共折叠仍未被“解决”；核酸预测仍处于前 AI 时代，配体 docking 存在对记忆化与错误物理的依赖。<Citation id="struct-bio-2026" />
+
+### 2.2 Evo 2：把“蛋白质语言模型”扩展到 DNA/RNA/蛋白全栈
+
+Arc Institute 与 NVIDIA 等合作发布的 **Evo 2** 已于 **2026 年 3 月** 在 Nature 发表。官方页面显示其为 **400 亿参数**、**1 Mb 上下文**的基因组基础模型，训练数据超过 **9 万亿核苷酸**，覆盖真核与原核基因组；模型开源，可用于 DNA、RNA 与蛋白相关的通用预测和设计任务。<Citation id="evo2" />
+
+公开报道中的代表能力包括：对 BRCA1 有害变异预测准确率超过 **90%**，辅助解释 VUS；设计功能性合成噬菌体；探索 CRISPR 等基因编辑系统的新版本。它的重要意义不只是“多一个大模型”，而是把变异解释、调控元件设计、合成生物学和虚拟细胞研究放进同一个可微调/可解释的序列模型框架。<Citation id="evo2" />
+
+### 2.3 对本站蛋白质内容的更新建议
+
+现有《AI+蛋白质预测》页面已经覆盖 AlphaFold 3、Boltz-1/2、ESM3、Chai-2 与 RFdiffusion3；本综述建议在后续专题中补充三条 2026 新主线：
+
+- **构象系综与自由能景观**：从“一个结构”转向“一个分布”。
+- **Binder/抗体设计的实验成功率**：把命中率、亲和力和湿实验轮次作为核心指标。
+- **基因组基础模型**：Evo 2 与虚拟细胞方向正在把蛋白质 AI 与单细胞、扰动预测连接起来。
+
+---
+
+## 3. 医学影像与数字病理：基础模型开始统一“诊断、定位、解释”
+
+### 3.1 3D CT 基础模型：nnFoundation 与 HoloCT
+
+**nnFoundation** 是 Human Radiome Project 的一对互补 3D 放射学基础模型，训练数据来自 **125 个机构/公共数据集、210 万个 CT/MRI/PET 体数据**，并在 **108 个任务**上评估分割、检测、分类、报告生成与检索。论文报告显示：卷积版本在空间局部任务上占优，Transformer 版本在全局语义与冻结特征任务上更强，说明“一个通吃模型”仍不成立，数据集感知适配很关键。<Citation id="nnfoundation" />
+
+更激进的是 **HoloCT**：它试图把 CT 诊断文本与体素级分割放进同一个 3D 基础模型，让文本结论可以被 3D mask 作为证据追溯。HoloDATA 包含 **195,921** 例 CT、**620 万**条指令对话和 **280 万**对 CT-mask；在 **346** 个任务上评估。多中心验证覆盖 **11,455** 例临床 CT、五家医院，HoloCT 在病灶分割和报告生成上分别领先约 **18.2** 和 **15.3** 分；回顾性阅片中，其甲状腺肿瘤和结肠病变筛查平均准确率 **85.1%**，超过四名参与放射科医生。<Citation id="holoct" />
+
+<Callout type="warning">
+  HoloCT 目前是 arXiv 预印本，且“超过放射科医生”来自回顾性读片研究。它代表了方向：可解释、可定位、可验证；但临床采用前仍需要前瞻性、真实工作流和错误代价评估。
+</Callout>
+
+### 3.2 跨模态可解释影像基础模型：EVLF-FM
+
+Nature Medicine 于 **2026-10-29** 发表的 **EVLF-FM** 面向皮肤、肝病、眼科、病理、肺病和放射等六个专科，整合 **18 个全球数据集、130 万+样本、10 种影像模态**；外部验证使用 **17 个独立数据集、13,443 个样本**。模型支持疾病诊断、视觉问答与像素级视觉定位，内部诊断平均准确率 **0.895**，视觉定位 Acc@0.5 为 **0.842**；混合监督与视觉强化微调生成的解释经 S.C.O.R.E. 人工评价平均 **4.25/5**。作者明确指出，仍需不同医疗场景验证和前瞻性临床研究。<Citation id="evlf-fm" />
+
+这对医学影像的意义是：竞争指标正在从“分类 AUC”扩展到“诊断—定位—解释”三件套。一个只会输出“肺结节”却无法指出三维位置和证据图块的模型，临床可审计性仍然不足。
+
+### 3.3 病理基础模型：从切片级到分子引导的全切片表示
+
+Nature Cancer 在 **2026-11-20** 发表的 **THREADS** 用 H&E 形态与基因组/转录组谱对齐，预训练超过 **47,000** 张全切片组织切片，并在 **107** 个肿瘤任务上评估亚型分级、肿瘤微环境、治疗反应和生存分析；其核心主张是：分子引导预训练能学到比纯图像目标更通用的全切片表示。<Citation id="threads" />
+
+开源生态也在补齐。Aignostics 在 **2026-08-07** 发布 **RudolfV 2**，使用超过 **30 万张**全切片图像训练，采用约 **11 亿参数**的 ViT-g 架构，并蒸馏出 RudolfV 2-B/S 轻量版；公司称其为公开可用病理基础模型中的领先者。<Citation id="rudolfv2" />
+
+### 3.4 监管面：FDA 清单在扩容，基础模型识别成为新问题
+
+FDA 的 AI-enabled medical device list 持续更新，2026 年仍以放射、心血管、病理/外科等多学科设备为主。FDA 页面明确表示正在探索如何识别并标注纳入 foundation models / LLM 功能的医疗器械，这意味着“模型是否进入器械”将成为公开透明度的新维度。<Citation id="fda-ai-list" />
+
+---
+
+## 4. 医疗大模型与 CDS：从“聊天机器人”进入 EHR 工作流，但效果边界开始显形
+
+### 4.1 真实工作流部署：Mayo Clinic CDS 与 Stanford ChatEHR
+
+Mayo Clinic Platform 于 **2026-11-03** 宣布上线 AI-enabled Clinical Decision Support：把 Mayo Clinic 知识与循证指导接入 EHR，覆盖 **35+ 专科**，聊天式 CDS 可在 EHR 内提供个体化决策支持，并引用同行评议文献；服务自 **2026 年 11 月**起向参与 Mayo Clinic Platform 项目的机构开放。<Citation id="mayo-cds" />
+
+Stanford Medicine 的 **ChatEHR** 部署经验由 Nature Medicine 于 **2026-08-10** 总结：在大型医疗中心落地 LLM 时，基于 benchmark 的评估不足以监测真实临床交互，需要新的性能监测方法。这个结论与 Mayo 的 CDS 方向一致：真正的壁垒不再是模型能不能聊天，而是能否在既有 EHR、权限、引用和审计约束下稳定工作。<Citation id="chatehr" />
+
+### 4.2 前瞻 RCT 给出冷静信号
+
+肯尼亚一项 pragmatic、cluster-randomized trial 在 **16 家基层医疗机构**、**9,691** 名患者、**103** 名临床官员中评估生成式 AI 辅助的 EHR。结果显示：LLM 辅助组 14 天治疗失败率为 **2.2%**，对照组为 **2.0%**，调整 OR 为 **0.77**（95% CI 0.55–1.08，P=0.13），差异不显著；未发现与干预相关的严重不良事件。作者结论是：LLM 辅助在该场景安全，但 14 天内未降低治疗失败，真实获益即使存在也可能很小。<Citation id="kenya-llm-trial" />
+
+与之形成对照的是乌兹别克斯坦四家教学医院的前瞻 RCT：AI 增强、EHR 集成的 CDSS 将用药错误率降低 **49.2%**、不良药物事件发生率降低 **47.2%**，警报接受率 **73.6%**，12 个月估算 ROI 约 **489%**。这说明在“高重复、低解释空间、规则清晰”的用药安全场景里，AI/CDS 已能产生可测量临床价值；但它仍来自特定国家和教学医院网络，外推需谨慎。<Citation id="medguard-rct" />
+
+### 4.3 中国市场：医疗大模型进入“深水区”
+
+IDC 中国 2026 年 4 月的评估认为，中国医疗大模型在基础性能、可解释性和幻觉控制方面继续升级，在多个高频场景中已达到较高年资临床医师水平；但下一阶段竞争将转向复杂场景能力、头部医疗机构场景拓展和多智能体体系定制。<Citation id="idc-china-llm" />
+
+这与本站已有内容中的 Hunyuan/DeepSeek/混元方向相呼应：中文医疗 LLM 的优势不只在通用问答，而在导诊、预问诊、报告解读、用药安全和基因/药械数字化场景的嵌入。<Citation id="idc-china-llm" />
+
+---
+
+## 5. 临床智能体：从 ReAct 演示到 EHR 内自主行动的第一批证据
+
+### 5.1 MIRA：沙盒 EHR 中的自主诊疗智能体
+
+Nature 于 **2026-06-17** 发表的 **MIRA** 是目前最受关注的临床智能体研究之一。它在受控沙盒 EHR 中运行，能够获取病史、开具并解读实验室/影像/微生物检查、生成鉴别诊断、制定治疗计划，包括开药、安排手术和收治。研究在 **500+** 例 MIMIC-IV 急诊病例上模拟完整流程，使用 **11 个工具、85,000+ 选项**，并遵循 FHIR 与 ICD、LOINC、ATC、NDC、RxNorm、SNOMED-CT 等编码体系。<Citation id="mira" />
+
+结果显示，MIRA 在诊断准确性上达到或超过两组医生对照（四名专科医生，以及四名住院医 + 两名专科医生的混合队列），并在指南一致性、用药安全和收治决策上表现稳定。作者同时强调：这仍是模拟研究，泛化、安全性和治理需要前瞻性真实世界验证。<Citation id="mira" />
+
+### 5.2 选择性自主：本地部署与可靠性信号
+
+一项 **2026-09-15** 的 PMC 研究提出“本地部署 + 多视角可靠性”的临床智能体框架：在两组 MIMIC-IV 派生基准上，七病诊断准确率 **90.04%**、四病任务 **83.8%**；行为一致性对正确性的区分度最高（AUC **0.860**，压力测试 **0.875**）。当一致性阈值设为 **0.90** 时，系统可保留 **49.4%** 的病例，并在该子集达到 **98.9%** 诊断准确率。<Citation id="onprem-agent" />
+
+这个结果的重要性在于，它把“自主”重新定义为**选择性自主**：不是让 AI 对所有病例拍板，而是让可靠性信号决定哪些病例可以自动处理、哪些必须交给人类。它比“AI 全面超过医生”的叙事更接近临床可接受路径。
+
+### 5.3 风险面：动作执行放大错误与提示注入
+
+The Lancet Digital Health 在 **2026-08-28** 的评论提醒，agentic AI 与传统 LLM 的本质差异在于它能规划多步行动、持久记忆并直接操作外部系统；错误、提示注入、恶意插件或意外动作可能沿 EHR、通信平台和临床流程传播。<Citation id="agentic-risk" />
+
+因此，临床智能体的成熟度不应只看 benchmark，而应看五个工程指标：
+
+- **动作空间是否最小化**：能否只调用必要工具，而不是开放整个 EHR。
+- **是否有结构化输出**：是否能被 HIS/EMR/FHIR 稳定解析。
+- **是否有可追溯证据链**：每个建议能否回链到指南、检验或影像。
+- **是否有选择性回退**：低置信/高风险病例是否自动升级人工。
+- **是否有前瞻性监测**：上线后是否持续监测错误、偏倚和 workflow failure。
+
+---
+
+## 6. 监管与产业格局：从“鼓励创新”到“可追溯、可审计、可回退”
+
+### 6.1 美国：FDA 设备清单继续扩容，基础模型识别成新议题
+
+FDA 的 AI-enabled medical device list 仍在按最终决定日期倒序更新，2026 年可见大量放射、心血管、外科与病理相关设备获得授权。FDA 同时表示将探索识别和标注纳入 foundation models / LLM 功能的医疗器械，这对未来 LLM-CDS、影像 VLM 和病理基础模型的上市路径有直接影响。<Citation id="fda-ai-list" />
+
+### 6.2 欧盟：MDR 2.0 与 Digital Omnibus 改变 AI 器械监管节奏
+
+npj Digital Medicine 在 **2026-11-18** 的评论梳理了欧盟 MDR/IVDR/AIA 的交叉改革：欧盟委员会 2025 年 12 月提出 MDR 2.0 修订包，目标是减少双重监管和文档负担；2026 年 7 月通过的 Digital Omnibus 则允许委员会在部门法规提供等效保护时限制 AIA 要求，并将高风险要求适用时间延后至 **2028 年 8 月**。评论认为改革总体方向合理，但 AIeMD 的分类边界、临床证据扩展和 Notified Body 执行仍存在未解决挑战。<Citation id="eu-mdr-2026" />
+
+### 6.3 中国：应用落地快，评估体系也在成形
+
+IDC 中国 2026 年报告把中国医疗大模型描述为“进入深水区”：高频场景能力接近高年资医生，但复杂场景、机构定制和多智能体体系成为下一阶段竞争点。<Citation id="idc-china-llm" />
+
+---
+
+## 7. 对学习者的行动清单
+
+如果你只想跟进医学 AI 的“真进展”，建议建立一个每月更新的阅读队列：
+
+1. **临床证据**：ClinicalTrials.gov、PubMed/Nature Medicine/Nature、国内 NMPA/药审中心公告。
+2. **器械监管**：FDA AI-enabled device list、欧盟 MDCG/AIB 文件、中国 NMPA AI 医疗器械审评文档。
+3. **产业动态**：公司官方新闻稿 + 独立媒体核验；区分“候选药进入临床”“临床有效”“获批上市”三个层级。
+4. **模型与代码**：GitHub/Hugging Face/arXiv，重点看许可证、训练数据、评测集和可复现脚本。
+5. **失败案例**：同样重要。Recursion 的管线裁剪、Verge 的 ALS 候选未能推进、肯尼亚 LLM CDS 未显著降低治疗失败，都是判断技术成熟度的关键证据。
+
+<Callout type="tip">
+  一个简单的判断框架：**论文证明“能做到”，注册试验证明“值得测”，RCT/真实世界研究证明“对患者有净收益”，监管批准证明“可合法使用”**。2026 年的医学 AI 正在从第一层向第三层过渡；写学习笔记时，最好把每个项目标到这四层中的哪一层。
+</Callout>
+
+---
+
+## 参考文献
+
+<ReferenceList />
