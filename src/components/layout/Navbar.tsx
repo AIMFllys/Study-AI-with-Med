@@ -2,8 +2,7 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { Github, Menu, X, Home, BookOpen, FlaskConical, Info } from 'lucide-react';
-import { useState, useEffect } from 'react';
+import { Github, Home, BookOpen, FlaskConical, Info } from 'lucide-react';
 import ThemeToggle from './ThemeToggle';
 
 const navLinks = [
