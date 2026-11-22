@@ -1,5 +1,5 @@
-import { getAllContentMeta } from './mdx';
-import type { NavItem } from '@/types/mdx';
+import { getAllContentMeta, getNavGroups } from './mdx';
+import type { NavGroupConfig, NavItem } from '@/types/mdx';
 
 /**
  * Slugs that are hidden from sidebar navigation (superseded by group structure).
@@ -14,6 +14,7 @@ export function buildNavigationTree(): NavItem[] {
   const allMeta = getAllContentMeta().filter(
     (m) => m.slug !== '' && !HIDDEN_SLUGS.has(m.slug)
   );
+  const groups = getNavGroups();
 
   const rootItems: NavItem[] = [];
 
@@ -39,11 +40,11 @@ export function buildNavigationTree(): NavItem[] {
             order: meta.order ?? 99,
           };
         } else {
-          // Directory Node (Group)
+          // Directory Node (Group): title and order come from content frontmatter
           existingNode = {
             slug: currentPath,
-            title: formatGroupTitle(segment),
-            order: getGroupOrder(segment),
+            title: resolveGroupTitle(segment, groups),
+            order: resolveGroupOrder(segment, groups),
             children: [],
           };
         }
@@ -70,38 +71,19 @@ export function buildNavigationTree(): NavItem[] {
   return rootItems;
 }
 
-function formatGroupTitle(key: string): string {
-  const titles: Record<string, string> = {
-    'ai-analysis': 'AI+X 多维分析',
-    'ai-protein': 'AI+蛋白质预测',
-    'ai-drug': 'AI+药物发现',
-    'ai-llm': 'AI+医疗大模型',
-    'ai-imaging': 'AI+精准影像',
-    'ai-agent': 'AI+临床智能体',
-    'ai-report': 'AI医疗报告论文',
-    'ai-news': '医疗 AI 每周动态',
-    'tools': '工具与部署指南',
-    knowledge: '知识点分析',
-    notes: '个人笔记区',
-    forum: '微论坛',
-  };
-  return titles[key] || key.replace(/-/g, ' ').replace(/\b\w/g, (c) => c.toUpperCase());
+/**
+ * Group titles and order are data-driven: declared per directory segment in the
+ * `groups` frontmatter of content/index.mdx. The fallbacks below only apply to a
+ * directory that has no frontmatter entry yet.
+ */
+function resolveGroupTitle(segment: string, groups: Record<string, NavGroupConfig>): string {
+  return groups[segment]?.title ?? formatGroupTitle(segment);
 }
 
-function getGroupOrder(key: string): number {
-  const orders: Record<string, number> = {
-    'ai-analysis': 1,
-    'ai-protein': 1,
-    'ai-drug': 2,
-    'ai-llm': 3,
-    'ai-imaging': 4,
-    'ai-agent': 5,
-    'ai-report': 6,
-    'ai-news': 7,
-    'tools': 90, // Display tools category lower intuitively
-    knowledge: 10,
-    notes: 80,
-    forum: 90,
-  };
-  return orders[key] ?? 50;
+function resolveGroupOrder(segment: string, groups: Record<string, NavGroupConfig>): number {
+  return groups[segment]?.order ?? 50;
+}
+
+function formatGroupTitle(key: string): string {
+  return key.replace(/-/g, ' ').replace(/\b\w/g, (c) => c.toUpperCase());
 }
