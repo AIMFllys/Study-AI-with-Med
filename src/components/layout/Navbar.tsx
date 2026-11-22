@@ -6,16 +6,16 @@ import { Github, Home, BookOpen, FlaskConical, Info } from 'lucide-react';
 import ThemeToggle from './ThemeToggle';
 
 const navLinks = [
-  { href: '/research', label: '研究报告', enabled: true },
-  { href: '/playground', label: '实验场', enabled: false },
-  { href: '/about', label: '关于', enabled: false },
+  { href: '/research', label: '研究报告' },
+  { href: '/playground', label: '实验场' },
+  { href: '/about', label: '关于' },
 ];
 
 const mobileTabLinks = [
-  { href: '/', label: '首页', icon: Home, enabled: true },
-  { href: '/research', label: '研究报告', icon: BookOpen, enabled: true },
-  { href: '/playground', label: '实验场', icon: FlaskConical, enabled: false },
-  { href: '/about', label: '关于', icon: Info, enabled: false },
+  { href: '/', label: '首页', icon: Home },
+  { href: '/research', label: '研究报告', icon: BookOpen },
+  { href: '/playground', label: '实验场', icon: FlaskConical },
+  { href: '/about', label: '关于', icon: Info },
 ];
 
 export default function Navbar() {
@@ -55,25 +55,8 @@ export default function Navbar() {
 
           {/* ── Desktop Center Nav ── */}
           <nav className="hidden md:flex items-center gap-1">
-            {navLinks.map(({ href, label, enabled }) => {
+            {navLinks.map(({ href, label }) => {
               const isActive = pathname === href || pathname.startsWith(href + '/');
-              if (!enabled) {
-                return (
-                  <span
-                    key={href}
-                    className="relative px-4 py-2 text-[13px] font-sans flex items-center gap-1.5 cursor-not-allowed select-none"
-                    style={{ color: 'var(--text-tertiary)', opacity: 0.45 }}
-                  >
-                    {label}
-                    <span
-                      className="text-[8px] tracking-widest uppercase px-1 py-px rounded-sm"
-                      style={{ border: '1px solid var(--card-border)', color: 'var(--text-tertiary)' }}
-                    >
-                      soon
-                    </span>
-                  </span>
-                );
-              }
               return (
                 <Link
                   key={href}
@@ -133,25 +116,10 @@ export default function Navbar() {
         }}
       >
         <div className="flex items-stretch h-14">
-          {mobileTabLinks.map(({ href, label, icon: Icon, enabled }) => {
+          {mobileTabLinks.map(({ href, label, icon: Icon }) => {
             const isActive = href === '/'
               ? pathname === '/'
               : pathname === href || pathname.startsWith(href + '/');
-
-            if (!enabled) {
-              return (
-                <div
-                  key={href}
-                  className="flex-1 flex flex-col items-center justify-center gap-0.5 cursor-not-allowed select-none"
-                  style={{ opacity: 0.3 }}
-                >
-                  <Icon className="w-4 h-4" style={{ color: 'var(--text-tertiary)' }} />
-                  <span className="font-sans text-[9px]" style={{ color: 'var(--text-tertiary)' }}>
-                    {label}
-                  </span>
-                </div>
-              );
-            }
 
             return (
               <Link
