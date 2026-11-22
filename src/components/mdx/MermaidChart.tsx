@@ -168,12 +168,6 @@ export default function MermaidChart({ children }: MermaidChartProps) {
       try {
         const { svg } = await mermaid.render(id, code);
         containerRef.current.innerHTML = svg;
-        const svgEl = containerRef.current.querySelector('svg');
-        if (svgEl) {
-          svgEl.style.minWidth = '600px';
-          svgEl.style.height = 'auto';
-          svgEl.style.maxHeight = expanded ? 'none' : '600px';
-        }
         fitForeignObjects(containerRef.current);
         // 字体异步加载完成后再校正一次，覆盖 webfont 替换造成的度量差
         document.fonts?.ready.then(() => {
@@ -185,7 +179,7 @@ export default function MermaidChart({ children }: MermaidChartProps) {
     };
 
     render();
-  }, [code, expanded, resolvedTheme]);
+  }, [code, resolvedTheme]);
 
   const handleCopy = async () => {
     try {
