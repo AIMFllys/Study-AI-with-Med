@@ -83,6 +83,7 @@ export default function PythonRunner({ children, code: codeProp }: PythonRunnerP
       });
 
       setOutput('运行中...');
+      await pyodide.loadPackagesFromImports(code);
       await pyodide.runPythonAsync(code);
       if (!stdout.trim()) setOutput('✓ 运行完成（无输出）');
     } catch (err: unknown) {
