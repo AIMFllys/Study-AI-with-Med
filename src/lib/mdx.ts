@@ -3,6 +3,7 @@ import path from 'path';
 import matter from 'gray-matter';
 import remarkGfm from 'remark-gfm';
 import remarkMath from 'remark-math';
+import remarkCjkFriendly from 'remark-cjk-friendly/parseOnly';
 import rehypeSlug from 'rehype-slug';
 import rehypeKatex from 'rehype-katex';
 import rehypePrettyCode from 'rehype-pretty-code';
@@ -13,7 +14,7 @@ import type { ContentMeta, HeadingItem } from '@/types/mdx';
  * Single source of truth for all remark/rehype plugin chains.
  */
 export const sharedMdxOptions = {
-  remarkPlugins: [remarkGfm, remarkMath],
+  remarkPlugins: [remarkGfm, remarkMath, remarkCjkFriendly],
   rehypePlugins: [
     rehypeSlug,
     rehypeKatex as any,
