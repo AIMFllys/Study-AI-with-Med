@@ -30,3 +30,12 @@ export interface NavItem {
   disabled?: boolean;
 }
 
+/**
+ * Sidebar group presentation declared in content frontmatter (`groups`).
+ * Keyed by content directory segment (e.g. "ai-protein", "tools").
+ */
+export interface NavGroupConfig {
+  title: string;
+  order: number;
+}
+

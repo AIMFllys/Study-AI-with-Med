@@ -9,7 +9,7 @@ import rehypeSlug from 'rehype-slug';
 import rehypeKatex from 'rehype-katex';
 import rehypePrettyCode from 'rehype-pretty-code';
 import type { MDXRemoteProps } from 'next-mdx-remote/rsc';
-import type { ContentMeta, HeadingItem } from '@/types/mdx';
+import type { ContentMeta, HeadingItem, NavGroupConfig } from '@/types/mdx';
 
 type MdxOptions = NonNullable<NonNullable<MDXRemoteProps['options']>['mdxOptions']>;
 
@@ -144,6 +144,18 @@ export function getIndexContent() {
     } as ContentMeta,
     headings: extractHeadings(content),
   };
+}
+
+/**
+ * Sidebar group titles and ordering, declared in content/index.mdx frontmatter.
+ * Keyed by content directory segment (e.g. "ai-protein", "tools").
+ */
+export function getNavGroups(): Record<string, NavGroupConfig> {
+  const filePath = path.join(CONTENT_DIR, 'index.mdx');
+  if (!fs.existsSync(filePath)) return {};
+  const raw = fs.readFileSync(filePath, 'utf-8');
+  const { data } = matter(raw);
+  return (data.groups as Record<string, NavGroupConfig> | undefined) ?? {};
 }
 
 /**
