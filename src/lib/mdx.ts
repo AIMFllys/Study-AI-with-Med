@@ -33,6 +33,13 @@ export const sharedMdxOptions: MdxOptions = {
   ],
 };
 
+// Repo-controlled MDX may pass code to components; keep dangerous-expression checks enabled.
+export const sharedMdxRemoteOptions = {
+  mdxOptions: sharedMdxOptions,
+  blockJS: false,
+  blockDangerousJS: true,
+};
+
 const CONTENT_DIR = path.join(process.cwd(), 'content');
 
 /**
