@@ -17,6 +17,7 @@ const jetbrainsMono = JetBrains_Mono({
   subsets: ['latin'],
   weight: 'variable',
   style: ['normal', 'italic'],
+  preload: false,
 });
 
 const notoSerifSC = Noto_Serif_SC({
