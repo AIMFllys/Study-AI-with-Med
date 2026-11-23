@@ -337,6 +337,14 @@ body {
   background: transparent !important;
 }
 
+/* Fenced blocks without a language get no pretty-code figure, so they render
+   as a bare <pre>; keep wide content (e.g. ASCII diagrams) scrollable inside
+   the article column instead of overflowing the page on narrow screens. */
+.mdx-content pre {
+  max-width: 100%;
+  overflow-x: auto;
+}
+
 [data-rehype-pretty-code-figure] code {
   display: grid;
   min-width: 100%;
@@ -775,6 +783,7 @@ body {
   text-decoration: underline;
   text-decoration-color: rgba(14, 165, 233, 0.3);
   text-underline-offset: 4px;
+  overflow-wrap: anywhere; /* long bare URLs wrap instead of overflowing */
   transition: all 0.25s ease;
 }
 
