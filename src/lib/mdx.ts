@@ -9,7 +9,7 @@ import rehypeSlug from 'rehype-slug';
 import rehypeKatex from 'rehype-katex';
 import rehypePrettyCode from 'rehype-pretty-code';
 import type { MDXRemoteProps } from 'next-mdx-remote/rsc';
-import type { ContentMeta, HeadingItem } from '@/types/mdx';
+import type { ContentMeta, HeadingItem, HomeMeta } from '@/types/mdx';
 
 type MdxOptions = NonNullable<NonNullable<MDXRemoteProps['options']>['mdxOptions']>;
 
@@ -115,6 +115,7 @@ export function getContentBySlug(slugSegments: string[]): {
       order: data.order ?? 99,
       tags: data.tags,
       references: data.references,
+      home: data.home as HomeMeta | undefined,
     },
     headings,
   };
@@ -141,6 +142,7 @@ export function getIndexContent() {
       order: 0,
       tags: data.tags,
       references: data.references,
+      home: data.home as HomeMeta | undefined,
     } as ContentMeta,
     headings: extractHeadings(content),
   };
@@ -165,6 +167,7 @@ export function getAllContentMeta(): ContentMeta[] {
       order: data.order ?? 99,
       tags: data.tags,
       references: data.references,
+      home: data.home as HomeMeta | undefined,
     };
   });
 }
