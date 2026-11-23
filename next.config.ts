@@ -1,10 +1,41 @@
+import fs from 'node:fs';
+import path from 'node:path';
 import type { NextConfig } from "next";
+
+function getDirectoryIndexRedirects() {
+  const contentDir = path.join(process.cwd(), 'content');
+  const redirects: { source: string; destination: string; permanent: boolean }[] = [];
+
+  function walk(dir: string, segments: string[]) {
+    for (const entry of fs.readdirSync(dir, { withFileTypes: true })) {
+      const entryPath = path.join(dir, entry.name);
+
+      if (entry.isDirectory()) {
+        walk(entryPath, [...segments, entry.name]);
+      } else if (entry.name === 'index.mdx' && segments.length > 0) {
+        const slug = segments.join('/');
+        redirects.push({
+          source: `/research/${slug}/index`,
+          destination: `/research/${slug}`,
+          permanent: true,
+        });
+      }
+    }
+  }
+
+  if (fs.existsSync(contentDir)) {
+    walk(contentDir, []);
+  }
+
+  return redirects;
+}
 
 const nextConfig: NextConfig = {
   pageExtensions: ['js', 'jsx', 'ts', 'tsx', 'md', 'mdx'],
   devIndicators: false,
   async redirects() {
     return [
+      ...getDirectoryIndexRedirects(),
       // Old single-file routes → new directory intro pages
       {
         source: '/research/ai-drug-discovery',

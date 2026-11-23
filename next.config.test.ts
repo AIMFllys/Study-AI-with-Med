@@ -32,7 +32,9 @@ function destinationFor(redirects: Redirect[], pathname: string) {
 
 function contentPathForResearchPath(pathname: string) {
   const slug = pathname.replace(/^\/research\//, '').replace(/\/$/, '');
-  return path.join(repoRoot, 'content', `${slug}.mdx`);
+  const directPath = path.join(repoRoot, 'content', `${slug}.mdx`);
+  const indexPath = path.join(repoRoot, 'content', slug, 'index.mdx');
+  return fs.existsSync(directPath) ? directPath : indexPath;
 }
 
 describe('legacy research redirects', () => {
@@ -53,6 +55,7 @@ describe('legacy research redirects', () => {
         '/research/protein-prediction/boltz-deployment-guide',
         '/research/ai-analysis/ai-protein/tools/boltz-deployment-guide',
       ],
+      ['/research/ai-news/index', '/research/ai-news'],
     ];
 
     for (const [source, expectedDestination] of cases) {

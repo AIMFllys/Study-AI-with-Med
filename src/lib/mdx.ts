@@ -75,14 +75,29 @@ function filePathToSlug(filePath: string): string[] {
     .filter(Boolean);
 }
 
+function canonicalSlugSegments(slugSegments: string[]): string[] {
+  if (slugSegments.length > 1 && slugSegments[slugSegments.length - 1] === 'index') {
+    return slugSegments.slice(0, -1);
+  }
+  return slugSegments;
+}
+
 /**
  * Get all slugs for generateStaticParams
  */
 export function getAllContentSlugs(): { slug: string[] }[] {
   const files = getAllMdxFiles();
+  const seen = new Set<string>();
+
   return files
     .filter((f) => f !== 'index.mdx')
-    .map((f) => ({ slug: filePathToSlug(f) }));
+    .map((f) => ({ slug: canonicalSlugSegments(filePathToSlug(f)) }))
+    .filter(({ slug }) => {
+      const key = slug.join('/');
+      if (seen.has(key)) return false;
+      seen.add(key);
+      return true;
+    });
 }
 
 /**
@@ -93,7 +108,13 @@ export function getContentBySlug(slugSegments: string[]): {
   frontmatter: ContentMeta;
   headings: HeadingItem[];
 } {
-  const filePath = path.join(CONTENT_DIR, ...slugSegments) + '.mdx';
+  const directFilePath = path.join(CONTENT_DIR, ...slugSegments) + '.mdx';
+  const indexFilePath = path.join(CONTENT_DIR, ...slugSegments, 'index.mdx');
+  const filePath = fs.existsSync(directFilePath)
+    ? directFilePath
+    : fs.existsSync(indexFilePath)
+      ? indexFilePath
+      : directFilePath;
 
   if (!fs.existsSync(filePath)) {
     throw new Error(`Content not found: ${filePath}`);
