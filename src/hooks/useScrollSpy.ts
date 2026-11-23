@@ -17,10 +17,20 @@ export function useScrollSpy(headings: HeadingItem[]) {
   const [readProgress, setReadProgress] = useState(0);
 
   useEffect(() => {
-    const handleScroll = () => {
+    let animationFrameId: number | null = null;
+
+    const updateReadProgress = () => {
       const scrollTop = window.scrollY;
       const docHeight = document.documentElement.scrollHeight - window.innerHeight;
       setReadProgress(docHeight > 0 ? Math.min(scrollTop / docHeight, 1) : 0);
+    };
+
+    const handleScroll = () => {
+      if (animationFrameId !== null) return;
+      animationFrameId = requestAnimationFrame(() => {
+        animationFrameId = null;
+        updateReadProgress();
+      });
     };
 
     const observer = new IntersectionObserver((entries) => {
@@ -37,11 +47,14 @@ export function useScrollSpy(headings: HeadingItem[]) {
     });
 
     window.addEventListener('scroll', handleScroll, { passive: true });
-    handleScroll();
+    updateReadProgress();
 
     return () => {
       observer.disconnect();
       window.removeEventListener('scroll', handleScroll);
+      if (animationFrameId !== null) {
+        cancelAnimationFrame(animationFrameId);
+      }
     };
   }, [headings]);
 
