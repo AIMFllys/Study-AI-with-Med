@@ -27,6 +27,7 @@ export default function GitHubCard({ repo, description }: GitHubCardProps) {
       target="_blank"
       rel="noopener noreferrer"
       className="block my-4 glass-card p-5 group hover:glow-indigo transition-all duration-300 no-underline"
+      style={{ textDecoration: 'none' }}
     >
       <div className="flex items-start gap-4">
         <div
