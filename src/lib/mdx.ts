@@ -2,6 +2,9 @@ import fs from 'fs';
 import path from 'path';
 import matter from 'gray-matter';
 import GithubSlugger from 'github-slugger';
+import { unified } from 'unified';
+import remarkParse from 'remark-parse';
+import remarkMdx from 'remark-mdx';
 import remarkGfm from 'remark-gfm';
 import remarkMath from 'remark-math';
 import remarkCjkFriendly from 'remark-cjk-friendly/parseOnly';
@@ -41,6 +44,24 @@ export const sharedMdxRemoteOptions = {
   blockJS: false,
   blockDangerousJS: true,
 };
+
+type MdastNode = {
+  type?: string;
+  lang?: string | null;
+  children?: MdastNode[];
+};
+
+const mathParser = unified().use(remarkParse).use(remarkMdx).use(remarkMath);
+
+function hasMathNode(node: MdastNode): boolean {
+  if (node.type === 'inlineMath' || node.type === 'math') return true;
+  if (node.type === 'code' && node.lang === 'math') return true;
+  return node.children?.some(hasMathNode) ?? false;
+}
+
+export function hasMathSyntax(content: string): boolean {
+  return hasMathNode(mathParser.parse(content) as MdastNode);
+}
 
 const CONTENT_DIR = path.join(process.cwd(), 'content');
 
@@ -90,6 +111,7 @@ export function getAllContentSlugs(): { slug: string[] }[] {
  */
 export function getContentBySlug(slugSegments: string[]): {
   source: string;
+  hasMath: boolean;
   frontmatter: ContentMeta;
   headings: HeadingItem[];
 } {
@@ -106,6 +128,7 @@ export function getContentBySlug(slugSegments: string[]): {
 
   return {
     source: content,
+    hasMath: hasMathSyntax(content),
     frontmatter: {
       slug: slugSegments.join('/'),
       title: data.title || slugSegments[slugSegments.length - 1],
@@ -132,6 +155,7 @@ export function getIndexContent() {
   const { data, content } = matter(raw);
   return {
     source: content,
+    hasMath: hasMathSyntax(content),
     frontmatter: {
       slug: '',
       title: data.title || '研究总览',
