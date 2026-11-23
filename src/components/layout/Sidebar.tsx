@@ -6,6 +6,11 @@ import { ChevronDown } from 'lucide-react';
 import { useState, useEffect } from 'react';
 import type { NavItem } from '@/types/mdx';
 
+function getResearchPath(slug: string, isLeaf: boolean): string {
+  const canonicalSlug = isLeaf && slug.endsWith('/index') ? slug.slice(0, -'/index'.length) : slug;
+  return `/research/${canonicalSlug}`;
+}
+
 interface SidebarProps {
   items: NavItem[];
 }
@@ -127,11 +132,12 @@ function MobileOverviewChip({ pathname }: { pathname: string }) {
 }
 
 function MobileChip({ item, pathname }: { item: NavItem; pathname: string }) {
-  const isActive = pathname.startsWith(`/research/${item.slug}`);
+  const isLeaf = !item.children || item.children.length === 0;
+  const isActive = pathname.startsWith(getResearchPath(item.slug, isLeaf));
 
   /* Find first leaf child as default href */
   const getFirstLeafHref = (node: NavItem): string => {
-    if (!node.children || node.children.length === 0) return `/research/${node.slug}`;
+    if (!node.children || node.children.length === 0) return getResearchPath(node.slug, true);
     return getFirstLeafHref(node.children[0]);
   };
 
@@ -193,14 +199,16 @@ function OverviewLink({ pathname }: { pathname: string }) {
 function SidebarItem({ item, pathname, depth }: { item: NavItem; pathname: string; depth: number }) {
   /* 检查任意后代是否激活 */
   const isDescendantActive = (navItem: NavItem): boolean => {
-    if (pathname === `/research/${navItem.slug}`) return true;
+    const isLeaf = !navItem.children || navItem.children.length === 0;
+    if (pathname === getResearchPath(navItem.slug, isLeaf)) return true;
     if (navItem.children) {
       return navItem.children.some(isDescendantActive);
     }
     return false;
   };
 
-  const isActive = pathname === `/research/${item.slug}`;
+  const isLeaf = !item.children || item.children.length === 0;
+  const isActive = pathname === getResearchPath(item.slug, isLeaf);
   const groupActive = isDescendantActive(item);
 
   /* 默认展开最外层（depth=0），或者当子项被激活时 */
@@ -283,7 +291,7 @@ function SidebarItem({ item, pathname, depth }: { item: NavItem; pathname: strin
   /* ── 叶子节点（具体内容文章） ── */
   return (
     <Link
-      href={`/research/${item.slug}`}
+      href={getResearchPath(item.slug, true)}
       className={`no-underline flex items-center gap-2 px-2 py-1.5 rounded-md font-sans transition-all duration-200 relative group ${fontSize}`}
       style={{
         color: isActive ? 'var(--accent)' : 'var(--text-secondary)',
