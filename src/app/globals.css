@@ -345,6 +345,21 @@ body {
   overflow-x: auto;
 }
 
+/* On small screens give those bare blocks the same contained code surface as
+   fenced blocks, so the clipped scroll edge reads as intentional. Desktop
+   rendering is untouched. */
+@media (max-width: 640px) {
+  .mdx-content > pre {
+    margin: 1.5rem 0;
+    padding: 0.85rem 1rem;
+    background: var(--code-bg);
+    border: 1px solid var(--card-border);
+    border-radius: 8px;
+    font-size: 0.85rem;
+    line-height: 1.6;
+  }
+}
+
 [data-rehype-pretty-code-figure] code {
   display: grid;
   min-width: 100%;
