@@ -37,6 +37,11 @@ describe('hasMathSyntax', () => {
     expect(hasMathSyntax('$$\nx^2\n$$')).toBe(true);
   });
 
+  it('detects math inside JSX', () => {
+    expect(hasMathSyntax('<div>$x^2$</div>')).toBe(true);
+    expect(hasMathSyntax('<section>\n\n$x^2$\n\n</section>')).toBe(true);
+  });
+
   it('detects math fenced code', () => {
     expect(hasMathSyntax('```math\nx^2\n```')).toBe(true);
     expect(hasMathSyntax('~~~math\nx^2\n~~~')).toBe(true);

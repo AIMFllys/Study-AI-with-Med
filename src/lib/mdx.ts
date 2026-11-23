@@ -4,6 +4,7 @@ import matter from 'gray-matter';
 import GithubSlugger from 'github-slugger';
 import { unified } from 'unified';
 import remarkParse from 'remark-parse';
+import remarkMdx from 'remark-mdx';
 import remarkGfm from 'remark-gfm';
 import remarkMath from 'remark-math';
 import remarkCjkFriendly from 'remark-cjk-friendly/parseOnly';
@@ -50,7 +51,7 @@ type MdastNode = {
   children?: MdastNode[];
 };
 
-const mathParser = unified().use(remarkParse).use(remarkMath);
+const mathParser = unified().use(remarkParse).use(remarkMdx).use(remarkMath);
 
 function hasMathNode(node: MdastNode): boolean {
   if (node.type === 'inlineMath' || node.type === 'math') return true;
