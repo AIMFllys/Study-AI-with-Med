@@ -1,3 +1,24 @@
+export interface HomeChapterMeta {
+  title: string;
+  subtitle: string;
+  description: string;
+  tags?: string[];
+}
+
+export interface HomeOverviewMeta {
+  icon: string;
+  title: string;
+  highlight: string;
+  stat: string;
+  detail: string;
+}
+
+export interface HomeMeta {
+  order?: number;
+  chapter?: HomeChapterMeta;
+  overview?: HomeOverviewMeta;
+}
+
 export interface ContentMeta {
   slug: string;
   title: string;
@@ -7,6 +28,7 @@ export interface ContentMeta {
   order?: number;
   tags?: string[];
   references?: Reference[];
+  home?: HomeMeta;
 }
 
 export interface Reference {
