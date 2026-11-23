@@ -2,6 +2,7 @@ import { MDXRemote } from 'next-mdx-remote/rsc';
 import { getIndexContent, sharedMdxRemoteOptions } from '@/lib/mdx';
 import { getMdxComponents } from '@/components/mdx';
 import { ReferenceList } from '@/components/mdx/Citation';
+import { KaTeXStyles } from '@/components/mdx/KatexStyles';
 import TableOfContents from '@/components/layout/TableOfContents';
 import type { Metadata } from 'next';
 
@@ -27,6 +28,7 @@ export default function ResearchIndex() {
 
   return (
     <>
+      {data.hasMath && <KaTeXStyles />}
       <article
         className="flex-1 min-w-0 py-16 px-8 lg:px-14"
         style={{ animation: 'page-turn 0.5s cubic-bezier(0.23,1,0.32,1) both' }}

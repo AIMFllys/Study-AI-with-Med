@@ -1,8 +1,28 @@
 import type { Metadata } from 'next';
+import { Inter, JetBrains_Mono, Noto_Serif_SC } from 'next/font/google';
 import { ThemeProvider } from 'next-themes';
 import Navbar from '@/components/layout/Navbar';
 import Footer from '@/components/layout/Footer';
 import './globals.css';
+
+const inter = Inter({
+  variable: '--font-inter',
+  subsets: ['latin'],
+  axes: ['opsz'],
+  style: ['normal', 'italic'],
+});
+
+const jetbrainsMono = JetBrains_Mono({
+  variable: '--font-jetbrains-mono',
+  subsets: ['latin'],
+  weight: 'variable',
+  style: ['normal', 'italic'],
+});
+
+const notoSerifSC = Noto_Serif_SC({
+  variable: '--font-noto-serif-sc',
+  preload: false,
+});
 
 export const metadata: Metadata = {
   title: {
@@ -30,18 +50,11 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="zh-CN" suppressHydrationWarning>
-      <head>
-        <link
-          href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;500;600;700;900&family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=JetBrains+Mono:ital,wght@0,400;0,700;1,400&display=swap"
-          rel="stylesheet"
-        />
-        <link
-          rel="stylesheet"
-          href="https://cdn.jsdelivr.net/npm/katex@0.16.21/dist/katex.min.css"
-          crossOrigin="anonymous"
-        />
-      </head>
+    <html
+      lang="zh-CN"
+      suppressHydrationWarning
+      className={`${notoSerifSC.variable} ${inter.variable} ${jetbrainsMono.variable}`}
+    >
       <body className="min-h-screen flex flex-col pb-16 md:pb-0">
         <ThemeProvider attribute="class" defaultTheme="dark" enableSystem>
           <Navbar />

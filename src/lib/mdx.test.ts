@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { compileMDX } from 'next-mdx-remote/rsc';
 import { renderToStaticMarkup } from 'react-dom/server';
-import { sharedMdxOptions } from './mdx';
+import { hasMathSyntax, sharedMdxOptions } from './mdx';
 
 async function renderMdx(source: string) {
   const { content } = await compileMDX({
@@ -26,5 +26,17 @@ describe('shared MDX options', () => {
     expect(html).toContain('<strong>羽升（YuSheng）</strong>在探索');
     expect(html).toContain('<strong>学习研究日志</strong>。');
     expect(html).not.toContain('**');
+  });
+});
+
+describe('hasMathSyntax', () => {
+  it('detects inline and display math outside code', () => {
+    expect(hasMathSyntax('公式 $E=mc^2$ 很重要')).toBe(true);
+    expect(hasMathSyntax('$$\n\\int_0^1 x\,dx\n$$')).toBe(true);
+  });
+
+  it('ignores dollar signs inside code fences and inline code', () => {
+    expect(hasMathSyntax('```powershell\n$ErrorActionPreference = "Stop"\n```')).toBe(false);
+    expect(hasMathSyntax('使用 `$variable` 表示变量')).toBe(false);
   });
 });

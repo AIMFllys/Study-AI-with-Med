@@ -42,6 +42,19 @@ export const sharedMdxRemoteOptions = {
   blockDangerousJS: true,
 };
 
+function stripCodeForMathDetection(content: string): string {
+  return content
+    .replace(/```[\s\S]*?```/g, '')
+    .replace(/~~~[\s\S]*?~~~/g, '')
+    .replace(/`[^`\n]*`/g, '');
+}
+
+export function hasMathSyntax(content: string): boolean {
+  const text = stripCodeForMathDetection(content);
+  if (text.includes('$$')) return true;
+  return /(^|[^\\$])\$[^\s$][^$\n]*\$/.test(text);
+}
+
 const CONTENT_DIR = path.join(process.cwd(), 'content');
 
 /**
@@ -90,6 +103,7 @@ export function getAllContentSlugs(): { slug: string[] }[] {
  */
 export function getContentBySlug(slugSegments: string[]): {
   source: string;
+  hasMath: boolean;
   frontmatter: ContentMeta;
   headings: HeadingItem[];
 } {
@@ -106,6 +120,7 @@ export function getContentBySlug(slugSegments: string[]): {
 
   return {
     source: content,
+    hasMath: hasMathSyntax(content),
     frontmatter: {
       slug: slugSegments.join('/'),
       title: data.title || slugSegments[slugSegments.length - 1],
@@ -132,6 +147,7 @@ export function getIndexContent() {
   const { data, content } = matter(raw);
   return {
     source: content,
+    hasMath: hasMathSyntax(content),
     frontmatter: {
       slug: '',
       title: data.title || '研究总览',

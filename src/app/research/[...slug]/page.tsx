@@ -2,6 +2,7 @@ import { MDXRemote } from 'next-mdx-remote/rsc';
 import { getContentBySlug, getAllContentSlugs, sharedMdxRemoteOptions } from '@/lib/mdx';
 import { getMdxComponents } from '@/components/mdx';
 import { ReferenceList } from '@/components/mdx/Citation';
+import { KaTeXStyles } from '@/components/mdx/KatexStyles';
 import TableOfContents from '@/components/layout/TableOfContents';
 import MobileTocFloat from '@/components/layout/MobileTocFloat';
 import { notFound } from 'next/navigation';
@@ -46,6 +47,7 @@ export default async function ResearchPage({
 
   return (
     <>
+      {data.hasMath && <KaTeXStyles />}
       <MobileTocFloat headings={data.headings} />
       <article
         className="flex-1 min-w-0 py-10 sm:py-16 px-4 sm:px-8 lg:px-14"
