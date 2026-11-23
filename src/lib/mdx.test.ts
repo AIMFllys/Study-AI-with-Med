@@ -32,11 +32,19 @@ describe('shared MDX options', () => {
 describe('hasMathSyntax', () => {
   it('detects inline and display math outside code', () => {
     expect(hasMathSyntax('公式 $E=mc^2$ 很重要')).toBe(true);
-    expect(hasMathSyntax('$$\n\\int_0^1 x\,dx\n$$')).toBe(true);
+    expect(hasMathSyntax('$ x $')).toBe(true);
+    expect(hasMathSyntax('multiline $a\nb$ end')).toBe(true);
+    expect(hasMathSyntax('$$\nx^2\n$$')).toBe(true);
+  });
+
+  it('detects math fenced code', () => {
+    expect(hasMathSyntax('```math\nx^2\n```')).toBe(true);
+    expect(hasMathSyntax('~~~math\nx^2\n~~~')).toBe(true);
   });
 
   it('ignores dollar signs inside code fences and inline code', () => {
     expect(hasMathSyntax('```powershell\n$ErrorActionPreference = "Stop"\n```')).toBe(false);
+    expect(hasMathSyntax('```powershell\n$x = 1\n```')).toBe(false);
     expect(hasMathSyntax('使用 `$variable` 表示变量')).toBe(false);
   });
 });

@@ -2,6 +2,8 @@ import fs from 'fs';
 import path from 'path';
 import matter from 'gray-matter';
 import GithubSlugger from 'github-slugger';
+import { unified } from 'unified';
+import remarkParse from 'remark-parse';
 import remarkGfm from 'remark-gfm';
 import remarkMath from 'remark-math';
 import remarkCjkFriendly from 'remark-cjk-friendly/parseOnly';
@@ -42,17 +44,22 @@ export const sharedMdxRemoteOptions = {
   blockDangerousJS: true,
 };
 
-function stripCodeForMathDetection(content: string): string {
-  return content
-    .replace(/```[\s\S]*?```/g, '')
-    .replace(/~~~[\s\S]*?~~~/g, '')
-    .replace(/`[^`\n]*`/g, '');
+type MdastNode = {
+  type?: string;
+  lang?: string | null;
+  children?: MdastNode[];
+};
+
+const mathParser = unified().use(remarkParse).use(remarkMath);
+
+function hasMathNode(node: MdastNode): boolean {
+  if (node.type === 'inlineMath' || node.type === 'math') return true;
+  if (node.type === 'code' && node.lang === 'math') return true;
+  return node.children?.some(hasMathNode) ?? false;
 }
 
 export function hasMathSyntax(content: string): boolean {
-  const text = stripCodeForMathDetection(content);
-  if (text.includes('$$')) return true;
-  return /(^|[^\\$])\$[^\s$][^$\n]*\$/.test(text);
+  return hasMathNode(mathParser.parse(content) as MdastNode);
 }
 
 const CONTENT_DIR = path.join(process.cwd(), 'content');
